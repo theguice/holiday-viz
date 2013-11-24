@@ -1,0 +1,61 @@
+/* reset */
+
+html, body, address, blockquote, del, div, h1, h2, h3, h4, h5, h6, hr, ins, noscript, p, pre, dl, dt, dd, li, ol, ul, table, caption, colgroup, col, thead, tfoot, tbody, tr, td, th, form, button, fieldset, figure, legend, label, select, optgroup, option, textarea, a, bdo, br, img, map, area, object, param, q, script, span, sub, sup, abbr, acronym, cite, code, del, dfn, em, ins, kbd, samp, strong, var, b, big, i, small, tt{border:0;font-family:inherit;font-size:100%;font-style:inherit;font-weight:inherit;margin:0;outline:0;padding:0;vertical-align:baseline;}
+ol, ul{list-style:none;}
+th{text-align:left;}
+table{border-collapse:collapse;}
+
+
+body {
+	margin:0;
+	padding:0;
+	font-family:Helvetica, Arial, sans-serif;
+	font-size:16px;
+}
+
+header {
+	position:relative;
+	width:100%;
+	background-color:#000;
+	z-index:1000;
+	padding:30px;
+}
+
+header h1 {
+	color:#fff;
+	font-family:Bangers, sans-serif;
+	letter-spacing:2px;
+	font-size:50px;
+	line-height:0px;
+	display: inline-block;
+}
+
+header h2 {
+	padding: 0 20px 0 20px;
+	font-family:Bangers, sans-serif;
+	letter-spacing:2px;
+	font-size:30px;
+	line-height:0px;
+	font-weight: 600;
+	display: inline-block;
+}
+
+#controls {
+	padding: 10px;
+	height: 50px;
+}
+
+#map-canvas {
+	position:absolute;
+	width:90%;
+	height:90%;
+}
+#container {
+	padding-bottom: 100px;
+	margin: auto;
+}
+li {
+	list-style: none;
+	display: inline-block;
+	padding: 0 20px 0 20px;
+}
