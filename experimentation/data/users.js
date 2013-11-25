@@ -1,3 +1,15 @@
+
+function User()
+{
+    this.id = 0;
+    this.name = "";
+    this.avatar = "";
+    this.twitter = "";
+    this.instagram = "";
+    this.color = "#fff";
+    this.steps =[];
+}
+
 var users = [
     {
         "id": 0,

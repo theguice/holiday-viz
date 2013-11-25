@@ -1,13 +1,13 @@
 $(document).ready(function() {
 
 	//global variable _map stores map object
-	_map = initializeMap();
-	loadData();
+//	_map = initializeMap();
+//	loadData();
 
 });
 
 
-function initializeMap() {
+function initializeMapOld() {
 	//return map object
 	var mapOptions = {
           center: new google.maps.LatLng(37.865159, -122.282138),
