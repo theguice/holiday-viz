@@ -144,13 +144,30 @@ function generateUserColors()
     }
 }
 
-function User(name)
+function User(data)
 {
-    this.id = 0;
-    this.name = (name) ? name : "";
-    this.avatar = "";
-    this.twitter = "";
-    this.instagram = "";
+    if (typeof (data) === 'string')
+    {
+        this.id = 0;
+        this.name = (name) ? name : "";
+        this.firstName = this.name;
+        this.lastName = ""
+        this.avatar = "";
+        this.twitter = "";
+        this.instagram = "";
+
+    }
+    else
+    {
+        this.id = 0;
+        this.name = (name) ? name : "";
+        this.firstName = this.name;
+        this.lastName = ""
+        this.avatar = "";
+        this.twitter = "";
+        this.instagram = "";
+
+    }
     this.color = "#fff";
     this.steps = [];
 }

@@ -18,7 +18,7 @@ var userSteps = [];
 var users = [];
 var userObjects = [];
 var infowindow;
-var currentUser;
+var currentUser = new User();
 
 function setup()
 {
@@ -28,7 +28,7 @@ function setup()
      });
      */
     $('#files').bind('change', handleFileSelect);
-    $('#files').bind('change', showUserSet);
+
     $('.map-refresh').on('click', processTrkpts);
     $('#play-button').on('click', takeSteps);
     $('#center-button').on('click', manageCenter);
@@ -37,13 +37,15 @@ function setup()
 function showUserSet() {
 //    var name = $("#users option:selected")[0].label;
     var name = $("#users").val();
-    name = (name) ? name : 'user' - (users.length + 1);
+    name = (name) ? name : 'user-' + ((users || users.length === 0) ? 1 : (users.length + 1));
     var user = new User(name);
+    currentUser = user;
     if ($.inArray(name, users) > -1)
     {
         users.push(name);
-        userObjects.push(user)
-        $('#header').append('<h2>' + name + '</h2>');
+        userObjects.push(user);
+        $('#header').append('<h2>' + user.name + '</h2>');
+        console.log('adding user name to header ' + user.name);
     }
 
 //console.log($("#users option:selected")[0].value);
@@ -53,57 +55,57 @@ function showUserSet() {
 
 }
 
+
+
 function processFile(evt) {
     var x2js = new X2JS();
     var xml_string = evt.currentTarget.result;
     var json = x2js.xml_str2json(xml_string);
 
-//    var json = $.xml2json(xml_string, true);
-    //    console.log(xml);
-    //    var jsonText = xmlToJson(xml);
-//    console.log(json);
-
-
-    // append gps point to users sub-array of gpx
-//    var user = $("#users option:selected").val();
-
-//    console.log(user);
-    if (typeof (userPoints[currentUser]) === 'undefined')
+    if (typeof (userPoints[currentUser.name]) === 'undefined')
     {
-//        console.log('initializing user point array');
-        userPoints[currentUser] = [];
+        userPoints[currentUser.name] = [];
     }
-//    console.log(userPoints);
     if ($.isArray(json.gpx.trk.trkseg))
     {
         for (var i = 0; i < json.gpx.trk.trkseg.length; i++)
         {
             for (var j = 0; j < json.gpx.trk.trkseg[i].trkpt.length; j++)
             {
-//                console.log(json.gpx.trk.trkseg[i].trkpt[j]);
                 var point = new Point(json.gpx.trk.trkseg[i].trkpt[j]);
-                userPoints[currentUser].push(point);
+                addPointToLocalArray(currentUser, point);
             }
         }
     }
     else
     {
-        for (var j = 0; j < json.gpx.trk.trkseg.trkpt.length; j++) {
-//            console.log(json.gpx.trk.trkseg.trkpt[j]);
+        for (var j = 0; j < json.gpx.trk.trkseg.trkpt.length; j++)
+        {
             var point = new Point(json.gpx.trk.trkseg.trkpt[j]);
-//            console.log(point);
-            userPoints[currentUser].push(point);
+            addPointToLocalArray(currentUser, point);
         }
     }
 
 //    console.log(userPoints);
 }
-
+/**
+ * 
+ * @param {User} username
+ * @param {Point} point
+ * @returns {undefined}
+ */
+function addPointToLocalArray(user, point)
+{
+    userPoints[user.name].push(point);
+    addGpxToDb( user, point);
+    
+}
 // http://www.html5rocks.com/en/tutorials/file/dndfiles/
 function handleFileSelect(evt)
 {
-    var user = $("#users").val();
-    currentUser = (user) ? user : 'user-' + (userPoints.length + 1);
+    showUserSet();
+
+
     var files = evt.target.files; // FileList object
 
     // Loop through the FileList and render image files as thumbnails.
@@ -132,7 +134,7 @@ function processTrkpts() {
     {
         if (typeof (userPoints[user]) !== 'undefined')
         {
-            userPoints[user] = sortPoints(userPoints[currentUser]);
+            userPoints[user] = sortPoints(userPoints[currentUser.name]);
             createPath(userPoints[user], user);
 
 
