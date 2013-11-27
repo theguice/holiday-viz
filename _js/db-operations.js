@@ -159,6 +159,8 @@ function getPoints(start, end, usersIds)
 
         }
     }
+    
+    sql+=" order by user_id, track_timestamp";
     console.log(sql);
     var jqXHR = $.ajax({'type': 'GET',
         'url': DB_FILE,

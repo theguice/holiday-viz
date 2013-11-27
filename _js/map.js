@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+var draw_elevation = false;
 $(document).ready(function() {
 // Check for the various File API support.
     if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -114,28 +114,35 @@ function createPath(pts, user, createMarkers)
         if (createMarkers)
             createPointMarker(point, point.time);
         polyPoints.push(point.LatLng);
-        if (point.elevation !== ele)
+        if (draw_elevation)
         {
-//            polyPoints.push(point.LatLng);
-//            console.log(polyPoints);
-//            var color = 'rgb(255, 0,' + getElevationColor(ele) + ')';
-            var color = new ColorCombo();
-            color = colors[pathIndex];
-//            console.log(color);
-            var path = new google.maps.Polyline({
-                path: polyPoints,
-                geodesic: true,
-                strokeColor: color.strokeColor,
-                strokeOpacity: color.strokeOpacity,
-                strokeWeight: color.strokeWeight
-            });
-            path.setMap(map);
-            ele = point.elevation;
-            polyPoints = [];
-            polyPoints.push(point.LatLng);
+            if (point.elevation !== ele)
+            {
+                drawPath(polyPoints);
+                ele = point.elevation;
+                polyPoints = [];
+                polyPoints.push(point.LatLng);
+            }
         }
     }
+    if (!draw_elevation)
+        drawPath(polyPoints);
 
+}
+
+function drawPath(polyPoints)
+{
+    var color = new ColorCombo();
+    color = colors[pathIndex];
+//            console.log(color);
+    var path = new google.maps.Polyline({
+        path: polyPoints,
+        geodesic: true,
+        strokeColor: color.strokeColor,
+        strokeOpacity: color.strokeOpacity,
+        strokeWeight: color.strokeWeight
+    });
+    path.setMap(map);
 }
 
 function getElevationColor(ele)
