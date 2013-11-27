@@ -62,8 +62,8 @@ function Point(data /*TRKPT or position*/)
             this.lon = parseFloat(data['longitude']);
             this.time = new Date(data['track_timestamp']);
             this.userId = data['user_id'];
-            this.distance = parseFlot(data['distance']);
-            this.speed = parseFlot(data['speed']);
+            this.distance = parseFloat(data['distance']);
+            this.speed = parseFloat(data['speed']);
         }
 
         this.LatLng = new google.maps.LatLng(this.lat, this.lon);

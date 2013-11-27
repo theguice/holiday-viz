@@ -141,11 +141,14 @@ function getAllUsers()
 
 function getPointsByDate(start, end)
 {
-    return getPointsByDate(start, end, userID);
+    var userID;
+    return getPoints(start, end, userID);
 }
 
 function getPointsByUser(userID)
 {
+    var start;
+    var end;
     return getPointsByDate(start, end, userID);
 }
 
