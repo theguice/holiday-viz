@@ -8,12 +8,20 @@ $con = mysqli_connect("localhost","jannah","podiumapp","jannah");
   }
 */
 
-try{
+try
+{
     mysqli_select_db($con,"jannah");
-    $query = mysqli_query($con,$q);
+    $result = mysqli_query($con,$q);
+    while($row = mysqli_fetch_assoc($result)) 
+    {
+     $rows[] = $row;
+    };
+    echo json_encode($rows);
 
-    $result = $query->fetch_assoc();
-echo json_encode($result);
+   
+
+
+
 /*    
 $results = array();
     foreach($result as $row)
