@@ -52,6 +52,26 @@ function addGpxToDb(user, point)
     });
 
 }
+
+function updatGpxInDb(user, point, keys)
+{
+    var sql = "UPDATE  gpx_track SET user_id=" + user['id']
+            + (!keys || ($.inArray('time', keys) > -1) ? ", track_timestamp='" + point.time.toISOString() + "'" : "")
+            + (!keys || ($.inArray('lat', keys) > -1) ? ", latitude=" + point.lat : "")
+            + (!keys || ($.inArray('lon', keys) > -1) ? ", longitude=" + point.lon : "")
+            + (!keys || ($.inArray('aktitude', keys) > -1) ? ", altitude=" + point.altitude : "")
+            + (!keys || ($.inArray('distance', keys) > -1) ? ", distance=" + point.distance : "")
+            + (!keys || ($.inArray('speed', keys) > -1) ? ", speec=" + point.speed : "")
+            + " where track_id=" + point.id;
+    console.log("update sql:\n" + sql);
+    $.ajax({'type': 'GET',
+        'url': DB_FILE,
+        'data': {'q': sql}
+    }).done(function(data)
+    {
+        console.log(data);
+    });
+}
 /**
  * 
  * @param {User} user
@@ -159,8 +179,8 @@ function getPoints(start, end, usersIds)
 
         }
     }
-    
-    sql+=" order by user_id, track_timestamp";
+
+    sql += " order by user_id, track_timestamp";
     console.log(sql);
     var jqXHR = $.ajax({'type': 'GET',
         'url': DB_FILE,

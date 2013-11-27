@@ -56,11 +56,14 @@ function Point(data /*TRKPT or position*/)
         {
 //            console.log('object type 4');
 //            console.log('processing data from db');
+            this.id = parseInt(data['track_id']);
             this.elevation = parseFloat(data['altitude']);
             this.lat = parseFloat(data['latitude']);
             this.lon = parseFloat(data['longitude']);
             this.time = new Date(data['track_timestamp']);
             this.userId = data['user_id'];
+            this.distance = parseFlot(data['distance']);
+            this.speed = parseFlot(data['speed']);
         }
 
         this.LatLng = new google.maps.LatLng(this.lat, this.lon);
@@ -73,6 +76,8 @@ function Point(data /*TRKPT or position*/)
         this.time;
         this.LatLng;
         this.accuracy;
+        this.speed = 0;
+        this.distance = 0;
 
     }
 
