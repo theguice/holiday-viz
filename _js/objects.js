@@ -21,7 +21,8 @@ function Point(data /*TRKPT or position*/)
     {
         if (data.coords)
         {
-//        console.log('Object Type 1');
+
+//            console.log('Object Type 1');
             this.elevation = (data.coords.altitude) ? parseFloat(data.coords.altitude) : 0;
 
             this.lat = (data.coords.latitude) ? data.coords.latitude : 0;
@@ -33,7 +34,7 @@ function Point(data /*TRKPT or position*/)
         }
         else if (data._lat)
         {
-//        console.log('Object Type 2');
+//            console.log('Object Type 2');
             this.elevation = (data.ele) ? parseFloat(data.ele) : 0;
             this.lat = (data._lat) ? parseFloat(data._lat) : 0;
             this.lon = (data._lon) ? parseFloat(data._lon) : 0;
@@ -43,13 +44,23 @@ function Point(data /*TRKPT or position*/)
         }
         else if (data.lat)
         {
-//        console.log('Object Type 3');
+//            console.log('Object Type 3');
             this.elevation = (data['ele'] && data['ele'][0]) ? parseFloat(data.ele[0].text) : 0;
             this.lat = (data.lat) ? parseFloat(data.lat) : 0;
             this.lon = (data.lon) ? parseFloat(data.lon) : 0;
             this.time = (data['time'] && data['time'][0]) ? new Date(data.time[0].text) : 0;
 
             this.accuracy = 0;
+        }
+        if (data.user_id)
+        {
+//            console.log('object type 4');
+//            console.log('processing data from db');
+            this.elevation = parseFloat(data['altitude']);
+            this.lat = parseFloat(data['latitude']);
+            this.lon = parseFloat(data['longitude']);
+            this.time = new Date(data['track_timestamp']);
+            this.userId = data['user_id'];
         }
 
         this.LatLng = new google.maps.LatLng(this.lat, this.lon);
@@ -151,22 +162,34 @@ function User(data)
         this.id = 0;
         this.name = (name) ? name : "";
         this.firstName = this.name;
-        this.lastName = ""
+        this.lastName = "";
         this.avatar = "";
         this.twitter = "";
         this.instagram = "";
 
     }
+    else if (data)
+    {
+
+        console.log(data);
+        this.id = data['id'];
+        this.firstName = data['first_name'];
+        this.lastName = data['last_name'];
+        this.name = this.firstName + " " + this.lastName;
+        this.avatar = data['picture_url'];
+        this.twitter = data['twitter'];
+        this.instagram = data['instagram'];
+
+    }
     else
     {
         this.id = 0;
-        this.name = (name) ? name : "";
-        this.firstName = this.name;
-        this.lastName = ""
+        this.name = "";
+        this.firstName = "";
+        this.lastName = "";
         this.avatar = "";
         this.twitter = "";
         this.instagram = "";
-
     }
     this.color = "#fff";
     this.steps = [];

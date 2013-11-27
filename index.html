@@ -30,31 +30,38 @@
             <h1>Our Paths</h1>
         </header>
         <div id="controls">
-            <div class="form-group">
-                <label class="col-sm-1 control-label">Traveler</label>
-                <div class="col-sm-2">
-                    <select class="form-control input-sm" id="users">
-                        <option>Select User</option>
-                        <option id='new-user-option' value='new'>New User ...</option>
-                    </select>
-                    <!--                    <input type="text" class="form-control input-sm" id="users" placeholder="Traveler Name"/>-->
-                </div>
 
-                <input class="col-sm-4" type="file" id="files" name="files[]" multiple />
-                <button type="submit" class="col-sm-2 btn btn-sm btn-success map-refresh">View Paths</button>
-                <input type="button" id='play-button' class="btn btn-sm btn-success" value="Play"/>
-                <input type="button" id='center-button' class=" btn btn-sm btn-success" value="Center"/>
+
+            <div class="form-group btn-group">
+                <input type="button" id="upload-button" class="btn btn-lg btn-success" value="Upload"/>
+                <button type="submit" class="btn btn-lg btn-success map-refresh">View Paths</button>
+                <input type="button" id="play-button" class="btn btn-lg btn-success" value="Play"/>
+                <input type="button" id="center-button" class=" btn btn-lg btn-success" value="Center"/>
             </div>
         </div>
-        <div id="new-user" class="popup-div">
-            <form id="new-user-form">
-                <input type="text" id="new-user-first-name" placeholder="First Name"/>
-                <input type="text" id="new-user-last-name" placeholder="Last Name"/>
-                <input type="text" id="new-user-twitter" placeholder="@Twitter"/>
-                <input type="text" id="new-user-instagram" placeholder="Instagram"/>
-                <input type="text" id="new-user-image-url" placeholder="Image Url"/>
-                <input type="submit" id="new-user-submit" class='btn btn-sm btn-primary' value="Submit"/>
-            </form>
+
+
+        <div id="upload-div" class="popup-div">
+            <h1> Uplaod Traveler GPX</h1>
+            <div class="">
+                <select class="form-control input-sm" id="users">
+                    <option>Select User</option>
+                    <option id='new-user-option' value='new'>New User ...</option>
+                </select>
+            </div>
+            <div id="new-user" class="popup-div">
+                <form id="new-user-form">
+                    <input type="text" id="new-user-first-name" placeholder="First Name"/>
+                    <input type="text" id="new-user-last-name" placeholder="Last Name"/>
+                    <input type="text" id="new-user-twitter" placeholder="@Twitter"/>
+                    <input type="text" id="new-user-instagram" placeholder="Instagram"/>
+                    <input type="text" id="new-user-image-url" placeholder="Image Url"/>
+                    <input type="submit" id="new-user-submit" class='btn btn-lg btn-primary' value="Submit"/>
+                    <input type="button" id="new-user-cancel" class='btn btn-lg btn-success btn-danger' value="Cancel"/>
+                </form>
+            </div>
+            <input class="btn btn-lg btn-primary" type="file" id="files" name="files[]" multiple />
+            <input class="btn btn-lg cancel-button btn-danger" type="button" id="cancel-upload-button" value ='Cancel'/>
         </div>
         <div id="map-canvas">
         </div>

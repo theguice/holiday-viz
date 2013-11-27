@@ -15,23 +15,35 @@ $(document).ready(function() {
 //var gpx = [];
 var userPoints = [];
 var userSteps = [];
-var users = [];
-var userObjects = [];
+
 var infowindow;
-var currentUser = new User();
+
 
 function setup()
 {
-    /*
-     $(users).each(function(k, v) {
-     $('#users').append('<option value="' + v.id + '">' + v.name + '</option>');
-     });
-     */
     $('#files').bind('change', handleFileSelect);
-
     $('.map-refresh').on('click', processTrkpts);
     $('#play-button').on('click', takeSteps);
     $('#center-button').on('click', manageCenter);
+    $('#upload-button').on('click', function() {
+        toggleUploadWindow(true);
+        var f = $('#files')
+        f.replaceWith(f = f.clone());
+        f.bind('change', handleFileSelect);
+//        files.replaceWith(files = files.clone(true));
+    });
+    $('#cancel-upload-button').on('click', function() {
+        toggleUploadWindow(false);
+    });
+}
+function toggleUploadWindow(show)
+{
+    console.log('toggling upload window');
+    if (show)
+        $('#upload-div').show();
+    else
+        $('#upload-div').hide();
+
 }
 
 function showUserSet() {
@@ -55,16 +67,19 @@ function showUserSet() {
 
 }
 
-
-
 function processFile(evt) {
     var x2js = new X2JS();
     var xml_string = evt.currentTarget.result;
     var json = x2js.xml_str2json(xml_string);
+    var userId = $('#users option:selected').val();
+    var user = getUser(userId);
 
-    if (typeof (userPoints[currentUser.name]) === 'undefined')
+    console.log('Processing files for ' + user.name + "\t" + user.id);
+
+
+    if (typeof (userPoints[user.name]) === 'undefined')
     {
-        userPoints[currentUser.name] = [];
+        userPoints[user.name] = [];
     }
     if ($.isArray(json.gpx.trk.trkseg))
     {
@@ -73,7 +88,7 @@ function processFile(evt) {
             for (var j = 0; j < json.gpx.trk.trkseg[i].trkpt.length; j++)
             {
                 var point = new Point(json.gpx.trk.trkseg[i].trkpt[j]);
-                addPointToLocalArray(currentUser, point);
+                addPointToLocalArray(user, point);
             }
         }
     }
@@ -82,28 +97,27 @@ function processFile(evt) {
         for (var j = 0; j < json.gpx.trk.trkseg.trkpt.length; j++)
         {
             var point = new Point(json.gpx.trk.trkseg.trkpt[j]);
-            addPointToLocalArray(currentUser, point);
+            addPointToLocalArray(user, point);
         }
     }
-
-//    console.log(userPoints);
 }
 /**
  * 
- * @param {User} username
+ * @param {User} user
  * @param {Point} point
  * @returns {undefined}
  */
 function addPointToLocalArray(user, point)
 {
-    userPoints[user.name].push(point);
-    addGpxToDb( user, point);
-    
+//    userPoints[user.name].push(point);
+    addGpxToDb(user, point);
+
 }
 // http://www.html5rocks.com/en/tutorials/file/dndfiles/
 function handleFileSelect(evt)
 {
     showUserSet();
+    toggleUploadWindow(false);
 
 
     var files = evt.target.files; // FileList object
@@ -121,38 +135,38 @@ function handleFileSelect(evt)
         reader.onloadend = processFile;
         reader.readAsText(f);
     }
-
-//    userPoints[currentUser] = sortPoints(userPoints[currentUser]);
 }
 /**
  * Refresh Map
  * @returns {undefined}
  */
-function processTrkpts() {
-
+function processTrkpts()
+{
+    var points = getPoints();
+    console.log(points);
+    userPoints = [];
+    for (var i = 0, j = points.length; i < j; i++)
+    {
+//        var point = new Point();
+        var point = points[i];
+        var id = point['userId'];
+        if (typeof (userPoints[id]) === 'undefined')
+        {
+            console.log('New user array '+id);
+            userPoints[id] = [];
+        }
+        userPoints[id].push(point);
+    }
+    console.log(userPoints);
     for (var user in userPoints)
     {
         if (typeof (userPoints[user]) !== 'undefined')
         {
-            userPoints[user] = sortPoints(userPoints[currentUser.name]);
+            userPoints[user] = sortPoints(userPoints[user]);
             createPath(userPoints[user], user);
-
-
-            /*
-             $(userPoints[i]).each(function(k, v) 
-             {
-             
-             //                createMarker(v, 2, 1, users[i].color);
-             });
-             */
         }
     }
-    //createMarker(userPoints[1][0], 3);
-//    getSteps(findEarliest(), findLatest());
-//    manageCenter();
     getSteps(timeStats.min, timeStats.max);
-
-//    takeSteps();
 }
 
 
@@ -283,169 +297,7 @@ function manageCenter()
         else if (zoomin)
         {
             mapZoomIn();
-
         }
         count++;
     }
-    /*  for (var i = 0; i < users.length; i++) {
-     if (userPoints[i] != undefined) {
-     var pos = users[i].marker.getPosition();
-     var bounds = _map.getBounds();
-     var zoom = _map.getZoom();
-     var center = _map.getCenter();
-     if (bounds.contains(pos)) {
-     
-     var lat = Math.abs(bounds.fa.b - bounds.fa.d) * .1;
-     var lon = Math.abs(bounds.ga.b - bounds.ga.d) * .1;
-     if        ((Math.abs(bounds.fa.b - pos.ob) > lat) || (Math.abs(pos.ob - bounds.fa.d) > lat)) {
-     _map.setZoom(zoom+1);
-     } else if ((Math.abs(bounds.ga.b - pos.pb) > lon) || (Math.abs(pos.pb - bounds.ga.d) > lon)) {
-     _map.setZoom(zoom+1);
-     }
-     
-     
-     } else {
-     _map.setZoom(_map.getZoom() - 1);
-     }
-     }
-     count++;
-     }
-     */
 }
-
-
-
-/*
- function loadXML()
- {
- 
- var request = new XMLHttpRequest();
- request.open("GET", "data.gpx", false);
- request.send();
- var xml = request.responseXML;
- 
- request.close;
- var json = $.xml2json(xml, true );
- //    console.log(xml);
- //    var jsonText = xmlToJson(xml);
- console.log(json);
- 
- var trkpts = json['trk'][0]['trkseg'][0].trkpt;
- console.log(trkpts.length);
- for (var i = 0, j = trkpts.length; i < j; i++)
- {
- var point = new Point(trkpts[i]);
- //        console.log(point);
- points.push(point);
- //        createMarker(point, point.time);
- 
- }
- 
- console.log(points);
- 
- creatPath(points);
- 
- }*/
-
-/*
- function initializeMap() {
- //return map object
- var mapOptions = {
- center: new google.maps.LatLng(37.865159, -122.282138),
- zoom: 14,
- mapTypeId: google.maps.MapTypeId.ROADMAP,
- styles: [
- {"featureType": "landscape.natural.terrain"}, {"elementType": "geometry.fill",
- "stylers": [
- {"hue": "#11ff00"},
- {"weight": 0.1},
- {"saturation": -52},
- {"lightness": 2},
- {"gamma": 0.66}]},
- {"featureType": "road.local",
- "stylers": [
- {"visibility": "simplified"}]}
- ]
- };
- 
- [
- {
- "elementType": "geometry.fill",
- "stylers": [
- {"hue": "#11ff00"},
- {"weight": 0.1},
- {"saturation": -52},
- {"lightness": 2},
- {"gamma": 0.66}
- ]
- }
- ]
- 
- var map = new google.maps.Map(document.getElementById("map-canvas"),
- mapOptions);
- 
- return map;
- }
- */
-
-/*
- function createMarker(pt, s, sw, c) {
- var point = new google.maps.LatLng(pt._lat, pt._lon);
- var marker = new google.maps.Marker({
- position: point,
- animation: google.maps.Animation.DROP,
- map: _map,
- title: '' + pt.time,
- icon: {
- path: google.maps.SymbolPath.CIRCLE,
- scale: s,
- fillColor: '#000',
- strokeColor: c,
- strokeWeight: sw
- },
- });
- google.maps.event.addListener(marker, 'click', function() {
- _map.setCenter(marker.getPosition());
- });
- return marker;
- }
- */
-
-/*
- function findEarliest()
- {
- 
- t = 9999999999999;
- for (var i = 0; i < users.length; i++) {
- if (userPoints[i]) {
- for (var j = 0; j < userPoints[i].length; j++) {
- 
- if (d2i(userPoints[i][j].time) < t) {
- t = d2i(userPoints[i][j].time);
- }
- }
- }
- }
- return t;
- }
- function findLatest()
- {
- t = 0;
- for (var i = 0; i < users.length; i++) {
- if (userPoints[i] != undefined) {
- for (var j = 0; j < userPoints[i].length; j++) {
- if (d2i(userPoints[i][j].time) > t) {
- t = d2i(userPoints[i][j].time);
- }
- }
- }
- }
- return t;
- }
- 
- function d2i(d)
- {
- date = new Date(d);
- return date.getTime() / 1000; // converting to seconds
- }
- */  

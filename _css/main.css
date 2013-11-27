@@ -60,26 +60,45 @@ li {
     padding: 0 20px 0 20px;
 }
 
+.popup-div{
 
-#new-user{
-    display:none;
-    z-index: 101;
-    width: 300px;
     margin: 0 auto;
-    position: absolute;
-    left: calc(50% - 150px);
-    top: 200px;
     text-align:center;
     background-color: black;
     border-radius: 10px;
     padding: 20px;
     border: 2px solid rgb(200,200,200);
 }
+#new-user{
+    display:none;
+    z-index:200;
+    width: 300px;
+    left: calc(50% - 150px);
+}
 
-#new-user input{
+#upload-div{
+    display:none;
+    position: absolute;
+    z-index:100;
+    width: 400px;
+    left: calc(50% - 200px);
+    top: 200px;
+}
+
+.popup-div input, select{
     width:90%;
     margin:5px;
-
     padding:  5px;
-    border-radius: 5px;
+    /*border-radius: 5px;*/
+    display:inline-block;
+}
+.popup-div h1{
+    color:white;
+    font-size: 1.5em;
+    margin:10px;
+}
+
+.btn{
+    padding:10px;
+    width:100px;
 }
