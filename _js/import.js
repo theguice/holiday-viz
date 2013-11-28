@@ -142,7 +142,7 @@ function handleFileSelect(evt)
  */
 function processTrkpts()
 {
-    var points = getPoints();
+    var points = getActivePoints();
     console.log(points);
     userPoints = [];
     for (var i = 0, j = points.length; i < j; i++)

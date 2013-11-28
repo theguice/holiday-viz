@@ -61,15 +61,17 @@ function updatGpxInDb(user, point, keys)
             + (!keys || ($.inArray('lon', keys) > -1) ? ", longitude=" + point.lon : "")
             + (!keys || ($.inArray('aktitude', keys) > -1) ? ", altitude=" + point.altitude : "")
             + (!keys || ($.inArray('distance', keys) > -1) ? ", distance=" + point.distance : "")
-            + (!keys || ($.inArray('speed', keys) > -1) ? ", speec=" + point.speed : "")
+            + (!keys || ($.inArray('speed', keys) > -1) ? ", speed=" + point.speed : "")
+            + (!keys || ($.inArray('active', keys) > -1) ? ", active=" + point.speed : "")
+            + (!keys || ($.inArray('deltaTime', keys) > -1) ? ", delta_time=" + point.deltaTime : "")
             + " where track_id=" + point.id;
-    console.log("update sql:\n" + sql);
+//    console.log("update sql:\n" + sql);
     $.ajax({'type': 'GET',
         'url': DB_FILE,
         'data': {'q': sql}
     }).done(function(data)
     {
-        console.log(data);
+//        console.log(data);
     });
 }
 /**
@@ -147,14 +149,21 @@ function getPointsByDate(start, end)
 
 function getPointsByUser(userID)
 {
+    console.log(userID);
     var start;
     var end;
-    return getPointsByDate(start, end, userID);
+    return getPoints(start, end, userID);
 }
-
-function getPoints(start, end, usersIds)
+function getActivePoints(start, end, usersIds)
 {
+    return getPoints(start, end, usersIds, true);
+}
+function getPoints(start, end, usersIds, activeOnly)
+{
+    if (typeof (activeOnly) === 'undefined')
+        activeOnly = false;
 
+    console.log(usersIds);
     var sql = "SELECT * FROM gpx_track ";
     var conditions = [];
     if (start)
@@ -163,16 +172,23 @@ function getPoints(start, end, usersIds)
         conditions.push("track_timestamp<=" + end);
     if (usersIds)
     {
-        if (typeof (usersIds) === 'Array')
+        if (typeof (usersIds) !== 'Array')
         {
             usersIds = [usersIds];
         }
-        var str = "user_id in [";
+        var str = "user_id in (";
         for (var i = 0, j = usersIds.length; i < j; i++)
             str += ((i !== 0) ? "," : "") + "'" + usersIds[i] + "'";
-        str += "]";
+        str += ")";
+        conditions.push(str);
     }
 
+    if (activeOnly)
+    {
+        var str = " active=1";
+        conditions.push(str);
+    }
+    console.log(conditions);
     if (conditions.length > 0)
     {
         sql += " where ";
@@ -182,6 +198,7 @@ function getPoints(start, end, usersIds)
 
         }
     }
+
 
     sql += " order by user_id, track_timestamp";
     console.log(sql);

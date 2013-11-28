@@ -64,6 +64,8 @@ function Point(data /*TRKPT or position*/)
             this.userId = data['user_id'];
             this.distance = parseFloat(data['distance']);
             this.speed = parseFloat(data['speed']);
+            this.deltaTime = parseFloat(data['delta_time']);
+            this.active = parseInt(data['active']);
         }
 
         this.LatLng = new google.maps.LatLng(this.lat, this.lon);
