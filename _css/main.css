@@ -41,27 +41,29 @@ header h2 {
 }
 
 #controls {
-    padding: 10px;
+    padding: 3px;
     height: 50px;
 }
 
 #user-pic{
 position:absolute;
-width:150px;
+width:70px;
 height:90%;
+/*padding:5px;*/
+left:5px;
 }
 
 .user-picture
 {
-width:130px;
-height:120px;
+width:60px;
+height:60px;
 }
 
 #map-canvas {
     position:absolute;
-    width:90%;
-    height:90%;
-    left:200px;
+    width:1225px;
+    height:350px;
+    left:100px;
 }
 #container {
     padding-bottom: 100px;
@@ -114,6 +116,5 @@ li {
 .btn{
     padding:10px;
     width:100px;
+    height: 40px;
 }
-
-
