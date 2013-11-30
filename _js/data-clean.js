@@ -4,15 +4,10 @@
  * and open the template in the editor.
  */
 
-<<<<<<< HEAD
 var TIME_TOLERANCE = 120; //in seconds
 var TIME_CEILING = 600; //20 minutes
 var DISTANCE_TOLERANCE = 50;//in meters
-=======
-var TIME_TOLERANCE = 180; //in seconds
-var TIME_CEILING = 1200; //20 minutes
-var DISTANCE_TOLERANCE = 50; //in meters
->>>>>>> origin/master
+
 
 $(document).ready(function() {
 	console.log("Before cleaning data!")

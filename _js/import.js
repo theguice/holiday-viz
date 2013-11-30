@@ -142,8 +142,9 @@ function handleFileSelect(evt)
  */
 function processTrkpts()
 {
-    var points = getActivePoints();
-    console.log(points);
+    var start, end;
+    var points = getActivePoints(start, end, getActiveUserIds());
+//    console.log(points);
     userPoints = [];
     for (var i = 0, j = points.length; i < j; i++)
     {
@@ -152,21 +153,22 @@ function processTrkpts()
         var id = point['userId'];
         if (typeof (userPoints[id]) === 'undefined')
         {
-            console.log('New user array ' + id);
+//            console.log('New user array ' + id);
             userPoints[id] = [];
         }
         userPoints[id].push(point);
     }
-    console.log(userPoints);
+//    console.log(userPoints);
     for (var user in userPoints)
     {
         if (typeof (userPoints[user]) !== 'undefined')
         {
             console.log('Drawing user:' + user);
-            userPoints[user] = sortPoints(userPoints[user]);
+//            userPoints[user] = sortPoints(userPoints[user]);
             createPath(userPoints[user], user);
         }
     }
+    manageCenter();
     getSteps(timeStats.min, timeStats.max);
 }
 

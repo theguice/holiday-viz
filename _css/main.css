@@ -41,31 +41,24 @@ header h2 {
 }
 
 #controls {
-    padding: 10px;
-    height: 50px;
+    padding: 10px 10px 0 10px;
+    /* height: 50px; */
 }
 
-#user-pic{
-position:absolute;
-width:150px;
-height:90%;
-}
 
-.user-picture
-{
-width:130px;
-height:120px;
-}
 
 #map-canvas {
-    position:absolute;
-    width:90%;
-    height:90%;
-    left:200px;
+    /* position:absolute; */
+    width: calc( 100% - 150px);
+    height: 1000px;
+    /* left:200px; */
+    float: left;
+    /* display: inline-block; */
 }
 #container {
-    padding-bottom: 100px;
+    padding-bottom: 10px;
     margin: auto;
+    height: 100%;
 }
 li {
     list-style: none;
@@ -116,4 +109,63 @@ li {
     width:100px;
 }
 
+.user-picture-actions{
+    height:100%;
+    width:100%;
+    background-color: rgba(255,255,255,.3);
+    z-index:200;
+    position: relative;
+    /* top: 0; */
+    /* left: 0; */
+    display: block;
+    float: left;
+}
+.user-button-img
+{
+    z-index: 200;
+    width: 100%;
+    position: relative;
+    opacity: 0;
+    height: 100%;
+}
+.user-button-img img{
+    width:60px;
+    height:60px;
+    left: 30px;
+    top:30px;
+    position: relative;
+}
+.user-button-img:hover{
+    opacity:1;
+    background-color: rgba(255,255,255,.5);
+}
 
+.selected-user{
+    opacity:1;
+}
+
+.unselected-user{
+    opacity:.5;
+}
+#user-pics{
+    /* position:absolute; */
+    width: 140px;
+    max-height: inherit;
+    float: left;
+    display: block;
+    padding: 0 10px 10px 10px;
+    overflow-y: auto;
+}
+.user-pic
+{
+    display: block;
+    height: 130px;
+}
+.user-picture
+{
+    width:120px;
+    height:120px;
+    z-index: 1;
+    display: block;
+    position: absolute;
+}
