@@ -152,7 +152,7 @@ function processTrkpts()
         var id = point['userId'];
         if (typeof (userPoints[id]) === 'undefined')
         {
-            console.log('New user array '+id);
+            console.log('New user array ' + id);
             userPoints[id] = [];
         }
         userPoints[id].push(point);
@@ -162,6 +162,7 @@ function processTrkpts()
     {
         if (typeof (userPoints[user]) !== 'undefined')
         {
+            console.log('Drawing user:' + user);
             userPoints[user] = sortPoints(userPoints[user]);
             createPath(userPoints[user], user);
         }

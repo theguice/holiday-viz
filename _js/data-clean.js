@@ -4,8 +4,8 @@
  * and open the template in the editor.
  */
 
-var TIME_TOLERANCE = 180; //in seconds
-var TIME_CEILING = 1200; //20 minutes
+var TIME_TOLERANCE = 120; //in seconds
+var TIME_CEILING = 600; //20 minutes
 var DISTANCE_TOLERANCE = 50;//in meters
 
 $(document).ready(function() {

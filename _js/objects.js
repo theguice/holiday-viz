@@ -13,7 +13,7 @@ $(document).ready(function() {
     generateUserColors();
 });
 
-var numUsers = 20;
+var numUsers = 3;
 var colors = [];
 function Point(data /*TRKPT or position*/)
 {
