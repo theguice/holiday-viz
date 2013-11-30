@@ -143,6 +143,7 @@ function handleFileSelect(evt)
 function processTrkpts()
 {
     var start, end;
+    clearMap();
     var points = getActivePoints(start, end, getActiveUserIds());
 //    console.log(points);
     userPoints = [];
@@ -168,7 +169,7 @@ function processTrkpts()
             createPath(userPoints[user], user);
         }
     }
-    manageCenter();
+//    manageCenter();
     getSteps(timeStats.min, timeStats.max);
 }
 
