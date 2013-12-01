@@ -35,8 +35,8 @@ function cleanData() {
         for (var k = 0, l = points.length; k < l; k++)
         {
             var changed = false;
-            var point = points[k];
-
+            var point = new Point(points[k]);
+           
             var previousPoint = new Point();
             var x = 1;
             while (x <= k) {
@@ -65,17 +65,21 @@ function cleanData() {
                 point.active = checkActive(point);
             }
             point.refreshTransMode();
-            
-            if(point.transMode==='Bike' && user.use_bike===0)
+
+            if (point.transMode === 'Bike' && user.use_bike === 0)
             {//TODO: NEED TO TEST
+
                 point.transMode = 'Drive';
+                console.log('trans more changed\t' + point.id + '\t' + point.transMode);
             }
 
-            changed = !((point.distance === points[k].distance)
-                    && (point.deltaTime === points[k].deltaTime)
-                    && (point.speed === points[k].speed)
-                    && (point.active === points[k].active)
-                    && (point.transMode === points[k].transMode));
+            console.log(point);
+            console.log(points[k]);
+            changed = (point.distance !== points[k].distance)
+                    || (point.deltaTime !== points[k].deltaTime)
+                    || (point.speed !== points[k].speed)
+                    || (point.active !== points[k].active)
+                    || (point.transMode !== points[k].transMode);
 
 //            point.distance = (k === 0) ? 0 : distanceBetween(point, previousPoint);
 //            point.deltaTime = (k === 0) ? -1 : timeBetween(point, previousPoint);

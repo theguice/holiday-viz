@@ -32,6 +32,22 @@ function Point(data /*TRKPT or position*/)
 
             this.accuracy = (data.coords.accuracy) ? data.coords.accuracy : 0;
         }
+        else if (data.transMode)
+        {//CLONE Point
+            console.log('cloning point');
+            this.id = (data['id']);
+            this.elevation = (data['elevation']);
+            this.lat = (data['lat']);
+            this.lon = (data['lon']);
+            this.time = (data['time']);
+            this.userId = data['user_id'];
+            this.distance = parseFloat(data['distance']);
+            this.speed = (data['speed']);
+            this.deltaTime = (data['deltaTime']);
+            this.active = (data['active']);
+            this.transMode = data['transMode'];
+            this.LatLng = data['LatLng'];
+        }
         else if (data._lat)
         {
 //            console.log('Object Type 2');
@@ -52,7 +68,7 @@ function Point(data /*TRKPT or position*/)
 
             this.accuracy = 0;
         }
-        if (data.user_id)
+        else if (data.user_id)
         {
 //            console.log('object type 4');
 //            console.log('processing data from db');
@@ -69,6 +85,7 @@ function Point(data /*TRKPT or position*/)
             this.transMode = getTransMode(this.speed);
             this.LatLng = new google.maps.LatLng(this.lat, this.lon);
         }
+//        else if(data.)
         else
         {
             this.elevation = 0;
@@ -180,7 +197,7 @@ function User(data)
         this.avatar = data['picture_url'];
         this.twitter = data['twitter'];
         this.instagram = data['instagram'];
-        this.use_bike = (data['use_bike']) ? data['use_bike'] : 0;
+        this.use_bike = (data['use_bike']) ? parseInt(data['use_bike']) : 0;
 
     }
     else
