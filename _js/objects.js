@@ -10,7 +10,7 @@ $(document).ready(function() {
 
     timeStats = {'min': new Date(), 'max': new Date(01, 01, 1970)};
     // Check for the various File API support.
-    generateUserColors();
+//    generateUserColors();
 });
 
 var numUsers = 3;
@@ -66,26 +66,31 @@ function Point(data /*TRKPT or position*/)
             this.speed = parseFloat(data['speed']);
             this.deltaTime = parseFloat(data['delta_time']);
             this.active = parseInt(data['active']);
+            this.transMode = getTransMode(this.speed);
+            this.LatLng = new google.maps.LatLng(this.lat, this.lon);
         }
+        else
+        {
+            this.elevation = 0;
+            this.lat = 0;
+            this.lon = 0;
+            this.time;
+            this.LatLng;
+            this.accuracy;
+            this.speed = 0;
+            this.distance = 0;
 
-        this.LatLng = new google.maps.LatLng(this.lat, this.lon);
-    }
-    else
-    {
-        this.elevation = 0;
-        this.lat = 0;
-        this.lon = 0;
-        this.time;
-        this.LatLng;
-        this.accuracy;
-        this.speed = 0;
-        this.distance = 0;
+        }
 
     }
 
 
 
 }
+Point.prototype.refreshTransMode = function()
+{
+    this.transMode = getTransMode(this.speed);
+};
 Point.prototype.refreshLatLng = function()
 {
     this.LatLng = new google.maps.LatLng(this.lat, this.lon);
@@ -114,13 +119,15 @@ function sortPoints(pts)
 function generateStats(sorted)
 {
     console.log('General Stats');
-    timeStats['min'] = (sorted[0]['time'] < timeStats['min']) ? sorted[0]['time'] : timeStats['min'];
-    timeStats['max'] = (sorted[sorted.length - 1]['time'] > timeStats['max']) ? sorted[sorted.length - 1]['time'] : timeStats['max'];
+//    timeStats['min'] = (sorted[0]['time'] < timeStats['min']) ? sorted[0]['time'] : timeStats['min'];
+//    timeStats['max'] = (sorted[sorted.length - 1]['time'] > timeStats['max']) ? sorted[sorted.length - 1]['time'] : timeStats['max'];
 
     for (var i = 0, j = sorted.length; i < j; i++)
     {
         var point = new Point();
         point = sorted[i];
+        timeStats['min'] = (point['time'] < timeStats['min']) ? point['time'] : timeStats['min'];
+        timeStats['max'] = (point['time'] > timeStats['max']) ? point['time'] : timeStats['max'];
 
         elevationStats['min'] = (point.elevation < elevationStats.min) ? point.elevation : elevationStats['min'];
         elevationStats['max'] = (point.elevation > elevationStats.max) ? point.elevation : elevationStats['max'];
@@ -147,20 +154,6 @@ function ColorCombo()
 }
 
 
-function generateUserColors()
-{
-
-    var cmax = 255, R = 0, G1 = 64, G2 = 255, B = cmax;
-    for (var i = 0; i < numUsers; i++)
-    {
-        var cc = new ColorCombo();
-        var tR = Math.ceil((cmax - R) * i / (numUsers - 1) + R);
-        cc.strokeColor = 'rgb(' + tR + ',' + G1 + ',' + B + ')';
-        cc.fillColor = 'rgb(' + tR + ',' + G2 + ',' + B + ')';
-        colors.push(cc);
-
-    }
-}
 
 function User(data)
 {
@@ -173,19 +166,21 @@ function User(data)
         this.avatar = "";
         this.twitter = "";
         this.instagram = "";
+        this.use_bike = 0;
 
     }
     else if (data)
     {
 
         console.log(data);
-        this.id = data['id'];
+        this.id = parseInt(data['id']);
         this.firstName = data['first_name'];
         this.lastName = data['last_name'];
         this.name = this.firstName + " " + this.lastName;
         this.avatar = data['picture_url'];
         this.twitter = data['twitter'];
         this.instagram = data['instagram'];
+        this.use_bike = (data['use_bike']) ? data['use_bike'] : 0;
 
     }
     else
@@ -197,41 +192,31 @@ function User(data)
         this.avatar = "";
         this.twitter = "";
         this.instagram = "";
+        this.use_bike = 0;
     }
     this.color = "#fff";
     this.steps = [];
 }
 
 
+function convertSpeedMStoMPH(speed)
+{
+    return Math.round(speed * 2.23694 * 100) / 100;
+}
 
-/*
- var users = [
- {
- "id": 0,
- "name": "Shaun",
- "avatar": "images/shaun.png",
- "twitter": "@theguice",
- "instagram": "theguice",
- "color": "#0ff",
- "steps": []
- },
- {
- "id": 1,
- "name": "Divyakumar",
- "avatar": "images/divya.png",
- "twitter": "",
- "instagram": "",
- "color": "#ff0",
- "steps": []
- },
- {
- "id": 2,
- "name": "Hassan",
- "avatar": "images/hassan.png",
- "twitter": "",
- "instagram": "",
- "color": "#f0f",
- "steps": []
- }
- ];
- */
+function convertDistanceMtoMI(distance)
+{
+
+    return Math.round(distance * 0.000621371 * 100) / 100;
+
+}
+
+function getTransMode(speed)
+{
+    for (var s in modes)
+        if (speed <= s)
+            return modes[s];
+}
+
+
+var modes = {0: "Stop", 2: "Walk", 6: "Bike", 45: "Drive", 400: "Fly"};

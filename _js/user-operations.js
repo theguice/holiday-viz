@@ -29,11 +29,11 @@ function loadUsers() {
             activeUserIds.push(user['id']);
             $('#users').append("<option value='" + user['id'] + "'>" + user['name'] + "</option>");
             $('#user-pics').append(formatUserSelectHTML(user));
-            console.log("Building images..");
-            console.log(user['avatar']);
+//            console.log("Building images..");
+//            console.log(user['avatar']);
         }
-        console.log("In loadUsers function: ");
-        console.log(currentUserObjects);
+//        console.log("In loadUsers function: ");
+//        console.log(currentUserObjects);
         //load from db
     }
 }
@@ -69,6 +69,7 @@ function addUserEvents() {
             user.avatar = $('#new-user-image-url').val();
             user.twitter = $('#new-user-twitter').val();
             user.instagram = $('#new-user-instagram').val();
+            user.use_bike = $('#new-user-use-bike').prop('checked');
             console.log(user);
             var user2 = addUserToDb(user);
 

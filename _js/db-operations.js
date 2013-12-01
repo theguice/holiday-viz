@@ -52,14 +52,41 @@ function addGpxToDb(user, point) {
 }
 
 function updatGpxInDb(user, point, keys) {
-    var sql = "UPDATE  gpx_track SET user_id=" + user['id'] + (!keys || ($.inArray('time', keys) > -1) ? ", track_timestamp='" + point.time.toISOString() + "'" : "") + (!keys || ($.inArray('lat', keys) > -1) ? ", latitude=" + point.lat : "") + (!keys || ($.inArray('lon', keys) > -1) ? ", longitude=" + point.lon : "") + (!keys || ($.inArray('aktitude', keys) > -1) ? ", altitude=" + point.altitude : "") + (!keys || ($.inArray('distance', keys) > -1) ? ", distance=" + point.distance : "") + (!keys || ($.inArray('speed', keys) > -1) ? ", speed=" + point.speed : "") + (!keys || ($.inArray('active', keys) > -1) ? ", active=" + point.speed : "") + (!keys || ($.inArray('deltaTime', keys) > -1) ? ", delta_time=" + point.deltaTime : "") + " where track_id=" + point.id;
-    //    console.log("update sql:\n" + sql);
+    var sql = "UPDATE  gpx_track SET user_id=" + user['id']
+            + (!keys || ($.inArray('time', keys) > -1) ? ", track_timestamp='" + point.time.toISOString() + "'" : "")
+            + (!keys || ($.inArray('lat', keys) > -1) ? ", latitude=" + point.lat : "")
+            + (!keys || ($.inArray('lon', keys) > -1) ? ", longitude=" + point.lon : "")
+            + (!keys || ($.inArray('altitude', keys) > -1) ? ", altitude=" + point.altitude : "")
+            + (!keys || ($.inArray('distance', keys) > -1) ? ", distance=" + point.distance : "")
+            + (!keys || ($.inArray('speed', keys) > -1) ? ", speed=" + point.speed : "")
+            + (!keys || ($.inArray('active', keys) > -1) ? ", active=" + point.active : "")
+            + (!keys || ($.inArray('deltaTime', keys) > -1) ? ", delta_time=" + point.deltaTime : "")
+            + (!keys || ($.inArray('transMode', keys) > -1) ? ", trans_mode='" + point.transMode + "'" : "")
+            + " where track_id=" + point.id;
+//    console.log("update sql:\n" + sql);
     $.ajax({
         'type': 'GET',
         'url': DB_FILE,
         'data': {
             'q': sql
         }
+//        ,'async':false
+    }).done(function(data) {
+        //        console.log(data);
+    });
+}
+
+
+function resetActiveGpxPoints()
+{
+    var sql = "update gpx_track set active=1";
+    $.ajax({
+        'type': 'GET',
+        'url': DB_FILE,
+        'data': {
+            'q': sql
+        }
+        , 'async': false
     }).done(function(data) {
         //        console.log(data);
     });
@@ -178,13 +205,20 @@ function getPoints(start, end, usersIds, activeOnly) {
         conditions.push("track_timestamp>=" + start);
     if (end)
         conditions.push("track_timestamp<=" + end);
-    if (usersIds) {
-        if (typeof (usersIds) !== 'Array') {
+    if (usersIds)
+    {
+
+
+        console.log(typeof (usersIds));
+        console.log(usersIds);
+        if (typeof (usersIds) === 'number')
+        {
             usersIds = [usersIds];
         }
+
         var str = "user_id in (";
         for (var i = 0, j = usersIds.length; i < j; i++)
-            str += ((i !== 0) ? "," : "") + "'" + usersIds[i] + "'";
+            str += ((i !== 0) ? "," : "") + "'" + parseInt(usersIds[i]) + "'";
         str += ")";
         conditions.push(str);
     }
@@ -221,4 +255,44 @@ function getPoints(start, end, usersIds, activeOnly) {
         points.push(new Point(data[i]));
     return points;
 
+}
+/**
+ * 
+ * @param {Point} point
+ * @returns {undefined}
+ */
+function archiveGpxPoint(point)
+{
+    console.log('archiving point '+point.id);
+    var sql = "INSERT INTO gpx_track_inactive "
+            + "(user_id, track_timestamp, latitude, longitude, altitude,active, speed, delta_time, trans_mode) "
+            + "VALUES (" + point.userId+ ",'" + point.time.toISOString()
+            + "'," + point.lat + "," + point.lon + "," + point.elevation
+            + "," + point.active + "," + point.speed + "," + point.deltaTime + ",'" + point.transMode + "'"
+            + ")";
+//         console.log(sql);
+    $.ajax({
+        'type': 'GET',
+        'url': DB_FILE,
+        'data': {
+            'q': sql
+        }
+    }).done(function(data) {
+        //        console.log(data);
+    });
+    
+}
+
+function deleteGpxPoint(point)
+{
+    console.log('Deletes point '+point.id);
+    var sql = 'delete from gpx_track where track_id=' + point.id;
+    var jqXHR = $.ajax({
+        'type': 'GET',
+        'url': DB_FILE,
+        'data': {
+            'q': sql
+        }
+//        ,'async': false
+    });
 }

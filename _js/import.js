@@ -45,7 +45,7 @@ function toggleUploadWindow(show)
         $('#upload-div').hide();
 
 }
-
+/*
 function showUserSet() {
 //    var name = $("#users option:selected")[0].label;
     var name = $("#users").val();
@@ -66,7 +66,7 @@ function showUserSet() {
 
 
 }
-
+*/
 function processFile(evt) {
     var x2js = new X2JS();
     var xml_string = evt.currentTarget.result;
@@ -74,12 +74,12 @@ function processFile(evt) {
     var userId = $('#users option:selected').val();
     var user = getUser(userId);
 
-    console.log('Processing files for ' + user.name + "\t" + user.id);
+    console.log('Processing files for ' + user.id + "\t" + user.id);
 
 
-    if (typeof (userPoints[user.name]) === 'undefined')
+    if (typeof (userPoints[user.id]) === 'undefined')
     {
-        userPoints[user.name] = [];
+        userPoints[user.id] = [];
     }
     if ($.isArray(json.gpx.trk.trkseg))
     {
@@ -116,7 +116,7 @@ function addPointToLocalArray(user, point)
 // http://www.html5rocks.com/en/tutorials/file/dndfiles/
 function handleFileSelect(evt)
 {
-    showUserSet();
+//    showUserSet();
     toggleUploadWindow(false);
 
 
@@ -128,7 +128,7 @@ function handleFileSelect(evt)
         var f = files[i];
         // Only process gpx files.
         if (!f.name.match('.gpx')) {
-            console.log('file: ', f.name, ' not permitted.  Only processing GPX files')
+            console.log('file: ', f.name, ' not permitted.  Only processing GPX files');
             continue;
         }
         var reader = new FileReader();
@@ -144,7 +144,10 @@ function processTrkpts()
 {
     var start, end;
     clearMap();
+    console.log(getActiveUserIds());
     var points = getActivePoints(start, end, getActiveUserIds());
+    generateStats(points);
+    
 //    console.log(points);
     userPoints = [];
     for (var i = 0, j = points.length; i < j; i++)
@@ -154,19 +157,19 @@ function processTrkpts()
         var id = point['userId'];
         if (typeof (userPoints[id]) === 'undefined')
         {
-//            console.log('New user array ' + id);
+            console.log('New user array ' + id);
             userPoints[id] = [];
         }
         userPoints[id].push(point);
     }
-//    console.log(userPoints);
-    for (var user in userPoints)
+    console.log(userPoints);
+    for (var userId in userPoints)
     {
-        if (typeof (userPoints[user]) !== 'undefined')
+        if (typeof (userPoints[userId]) !== 'undefined')
         {
-            console.log('Drawing user:' + user);
+            console.log('Drawing user:' + userId);
 //            userPoints[user] = sortPoints(userPoints[user]);
-            createPath(userPoints[user], user);
+            createPath(userPoints[userId], userId);
         }
     }
 //    manageCenter();
@@ -175,7 +178,8 @@ function processTrkpts()
 
 
 function moveToStep(m, user, c) {
-    window.setTimeout(function() {
+    window.setTimeout(function() 
+    {
         step = users[user].steps[c];
         console.log('step', step);
         point = new google.maps.LatLng(userPoints[user][step]._lat, userPoints[user][step]._lon);
@@ -243,65 +247,4 @@ function getSteps(starttime, endtime) {
         }
     }
     console.log(users);
-}
-
-function manageCenter()
-{
-    // using the active marker for each user
-    // if one of them gets close to an edge, zoom out
-
-    // if all are close to center, zoom in
-    console.log('Re-center');
-    var count = 0;
-
-    var center = new Point();
-    center.lat = coordinateStats.lat.min + (coordinateStats.lat.max - coordinateStats.lat.min) / 2;
-    center.lon = coordinateStats.lon.min + (coordinateStats.lon.max - coordinateStats.lon.min) / 2;
-    center.refreshLatLng();
-    centerMap(center);
-    var zoomout = false;
-    var zoomin = true;
-    while ((zoomout || zoomin) && count < 10)
-    {
-        var bounds = map.getBounds();
-        console.log(bounds);
-        console.log(coordinateStats.lat.min + "\t" + bounds.fa.d);
-
-        if (coordinateStats.lat.min < bounds.fa.d)
-        {
-            console.log('zoom rule 1');
-            zoomout = true;
-        }
-        else if (coordinateStats.lat.max > bounds.fa.b)
-        {
-            console.log('zoom rule 2');
-            zoomout = true;
-        }
-        else if (Math.abs(coordinateStats.lon.min) < Math.abs(bounds.ga.d))
-        {
-            console.log('zoom rule 3\t' + coordinateStats.lon.min + "\t" + bounds.ga.d);
-
-            zoomout = true;
-        }
-        else if (Math.abs(coordinateStats.lon.max) > Math.abs(bounds.ga.b))
-        {
-            console.log('zoom rule 4');
-            zoomout = true;
-        }
-        else
-        {
-            console.log('zoom rule 5');
-            zoomout = false;
-        }
-        if (zoomout)
-        {
-            zoomin = false;
-            mapZoomOut();
-        }
-        else if (zoomin)
-        {
-            mapZoomIn();
-        }
-        count++;
-    }
 }

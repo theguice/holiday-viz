@@ -17,7 +17,7 @@ $(document).ready(function() {
     //google.maps.event.addDomListener(window, 'load', initializeMap);
 });
 var map;
-var pathIndex = 0;
+var drawnUserIds = [];
 var currentLevel = 0;
 var points = [];
 var markers = [];
@@ -112,24 +112,39 @@ function createMarker(point, title) {
     markers.push(marker);
 }
 
-function createPath(pts, user, createMarkers) {
+function createPath(pts, userId, createMarkers) {
 
     console.log('Creating path');
-    pathIndex++;
-    user = (user) ? user : 'path-' + pathIndex;
+    var userIndex = $.inArray(userId, drawnUserIds);
+
+    if (userIndex === -1)
+    {
+        drawnUserIds.push(userId);
+        userIndex = drawnUserIds.length - 1;
+    }
+
+//    userId = (userId) ? userId : userIndex;
     createMarkers = (createMarkers) ? createMarkers : true;
     var polyPoints = [];
     var ele = pts[0].elevation;
-    console.log('ele=' + ele);
-    console.log(pts);
+//    console.log('ele=' + ele);
+//    console.log(pts);
     for (var i = 0, j = pts.length; i < j; i++) {
         var point = pts[i];
         if (createMarkers)
-            createPointMarker(point, point.time);
+            createPointMarker(point, point.time, userIndex);
+        if (point.deltaTime === -1)
+        {
+            console.log('splitting trip for ' + userId + "\t" + userIndex);
+            drawPath(polyPoints, userIndex);
+            polyPoints = [];
+            polyPoints.push(point.LatLng);
+
+        }
         polyPoints.push(point.LatLng);
         if (draw_elevation) {
             if (point.elevation !== ele) {
-                drawPath(polyPoints);
+                drawPath(polyPoints, userIndex);
                 ele = point.elevation;
                 polyPoints = [];
                 polyPoints.push(point.LatLng);
@@ -137,15 +152,19 @@ function createPath(pts, user, createMarkers) {
         }
     }
     if (!draw_elevation)
-        drawPath(polyPoints);
+        drawPath(polyPoints, userIndex);
 
 }
 
 
 
-function drawPath(polyPoints) {
+
+
+function drawPath(polyPoints, userIndex)
+{
     var color = new ColorCombo();
-    color = colors[pathIndex];
+    userIndex = (userIndex) ? userIndex : 0;
+    color = colors[userIndex];
     //            console.log(color);
     var path = new google.maps.Polyline({
         path: polyPoints,
@@ -213,6 +232,124 @@ function hidePaths()
 
 function clearMap()
 {
+
     deleteMarkers();
     deletePaths();
+    generateUserColors();
+}
+
+function processTrkpts()
+{
+    var start, end;
+    clearMap();
+    console.log(getActiveUserIds());
+    var points = getActivePoints(start, end, getActiveUserIds());
+    
+//    console.log(points);
+    userPoints = [];
+    for (var i = 0, j = points.length; i < j; i++)
+    {
+//        var point = new Point();
+        var point = points[i];
+        var id = point['userId'];
+        if (typeof (userPoints[id]) === 'undefined')
+        {
+            console.log('New user array ' + id);
+            userPoints[id] = [];
+        }
+        userPoints[id].push(point);
+    }
+    console.log(userPoints);
+    for (var userId in userPoints)
+    {
+        if (typeof (userPoints[userId]) !== 'undefined')
+        {
+            console.log('Drawing user:' + userId);
+//            userPoints[user] = sortPoints(userPoints[user]);
+            createPath(userPoints[userId], userId);
+        }
+    }
+//    manageCenter();
+    getSteps(timeStats.min, timeStats.max);
+}
+
+function manageCenter()
+{
+    // using the active marker for each user
+    // if one of them gets close to an edge, zoom out
+
+    // if all are close to center, zoom in
+    console.log('Re-center');
+    var count = 0;
+
+    var center = new Point();
+    center.lat = coordinateStats.lat.min + (coordinateStats.lat.max - coordinateStats.lat.min) / 2;
+    center.lon = coordinateStats.lon.min + (coordinateStats.lon.max - coordinateStats.lon.min) / 2;
+    center.refreshLatLng();
+    centerMap(center);
+    var zoomout = false;
+    var zoomin = true;
+    while ((zoomout || zoomin) && count < 10)
+    {
+        var bounds = map.getBounds();
+        console.log(bounds);
+        console.log(coordinateStats.lat.min + "\t" + bounds.fa.d);
+
+        if (coordinateStats.lat.min < bounds.fa.d)
+        {
+            console.log('zoom rule 1');
+            zoomout = true;
+        }
+        else if (coordinateStats.lat.max > bounds.fa.b)
+        {
+            console.log('zoom rule 2');
+            zoomout = true;
+        }
+        else if (Math.abs(coordinateStats.lon.min) < Math.abs(bounds.ga.d))
+        {
+            console.log('zoom rule 3\t' + coordinateStats.lon.min + "\t" + bounds.ga.d);
+
+            zoomout = true;
+        }
+        else if (Math.abs(coordinateStats.lon.max) > Math.abs(bounds.ga.b))
+        {
+            console.log('zoom rule 4');
+            zoomout = true;
+        }
+        else
+        {
+            console.log('zoom rule 5');
+            zoomout = false;
+        }
+        if (zoomout)
+        {
+            zoomin = false;
+            mapZoomOut();
+        }
+        else if (zoomin)
+        {
+            mapZoomIn();
+        }
+        count++;
+    }
+}
+
+function generateUserColors()
+{
+    usrs = getActiveUserIds();
+    console.log(usrs);
+    numUsers = usrs.length;
+    numUsers = (numUsers && numUsers > 0) ? numUsers : 1;
+    console.log('generating user colors for ' + numUsers);
+
+    var cmax = 255, R = 0, G1 = 64, G2 = 255, B = cmax;
+    for (var i = 0; i < numUsers; i++)
+    {
+        var cc = new ColorCombo();
+        var tR = Math.ceil((cmax - R) * i / (numUsers - 1) + R);
+        cc.strokeColor = 'rgb(' + tR + ',' + G1 + ',' + B + ')';
+        cc.fillColor = 'rgb(' + tR + ',' + G2 + ',' + B + ')';
+        colors.push(cc);
+
+    }
 }
