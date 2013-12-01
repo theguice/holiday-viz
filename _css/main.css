@@ -60,10 +60,11 @@ height:60px;
 }
 
 #map-canvas {
-    position:absolute;
+    /*position:absolute;*/
     width:1225px;
     height:350px;
     left:100px;
+    display:block;
 }
 #container {
     padding-bottom: 100px;
@@ -117,4 +118,17 @@ li {
     padding:10px;
     width:100px;
     height: 40px;
+}
+
+#image-canvas{
+left: 100px;
+margin: 10px;
+position: relative
+/*display: block;
+*/
+}
+
+.img-picture{
+    width: 400px;
+    height: 200px;
 }

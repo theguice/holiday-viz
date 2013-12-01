@@ -77,6 +77,7 @@ function showPosition(position) {
 		mapOptions);
 
 
+
 	//    centerMap(point);
 	createMarker(point, "You are here! (at least within a " + position.coords.accuracy + " meter radius)");
 }

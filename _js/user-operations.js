@@ -8,12 +8,12 @@ var currentUserObjects = {};
 var currentUserId;
 var currentUser;
 
-
 $(document).ready(function() {
 
 	loadUsers();
 	addUserEvents();
 });
+
 
 function loadUsers() {
 	console.log("Step1:")

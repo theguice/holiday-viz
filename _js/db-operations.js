@@ -6,6 +6,7 @@
 
 var currentUser = "";
 var DB_FILE = 'db-operations.php';
+_openWindow = null;
 $(document).ready(function() {
 
 });
@@ -167,8 +168,101 @@ function getActivePoints(start, end, usersIds) {
 	}
 	console.log("Generated usersids")
 	console.log(usersIds)
-
+	getImages(start, end, usersIds);
 	return getPoints(start, end, usersIds, true);
+}
+
+function getImages(start, end, usersIds) {
+	console.log("I am in getImages!")
+	if (typeof(activeOnly) === 'undefined')
+		activeOnly = false;
+
+	console.log(usersIds);
+	var sql = "SELECT * FROM gpx_pictures ";
+	var conditions = [];
+	if (start)
+		conditions.push("track_timestamp>=" + start);
+	if (end)
+		conditions.push("track_timestamp<=" + end);
+	if (usersIds) {
+		if (typeof(usersIds) !== 'Array') {
+			usersIds = [usersIds];
+		}
+		var str = "user_id in (";
+		for (var i = 0, j = usersIds.length; i < j; i++)
+			str += ((i !== 0) ? "," : "") + "" + usersIds[i] + "";
+		str += ")";
+		conditions.push(str);
+	}
+
+	console.log(conditions);
+	if (conditions.length > 0) {
+		sql += " where ";
+		for (var i = 0, j = conditions.length; i < j; i++) {
+			sql += ((i !== 0) ? " AND " : "") + conditions[i];
+
+		}
+	}
+
+
+	sql += " order by user_id, image_timestamp";
+	console.log(sql);
+	var jqXHR = $.ajax({
+		'type': 'GET',
+		'url': DB_FILE,
+		'data': {
+			'q': sql
+		},
+		'async': false
+	});
+
+	var data = $.parseJSON(jqXHR.responseText);
+	console.log(data);
+
+	var iconBase = 'http://maps.google.com/mapfiles/kml/pal2/';
+
+	// $('#image-canvas').remove();
+	// $('body').append($('<div id="image-canvas"></div>'));
+	$('#image-canvas').children().remove();
+	for (var i = 0, j = data.length; i < j; i++) {
+		$('#image-canvas').append("<a class='gallery' title='" + data[i].title + "'' href ='" + data[i].url + "' ><img src='" + data[i].url + "' class='img-picture' id='" + data[i].pic_id + "''></a>");
+		LatLng = new google.maps.LatLng(data[i].latitude, data[i].longitude)
+		var marker = new google.maps.Marker({
+			position: LatLng,
+			map: map,
+			icon: iconBase + 'icon22.png',
+			_data: data[i].title
+		});
+		// var infowindow = new google.maps.InfoWindow({
+		// 	content: '<div class="infocontent"><h4>' + data[i].pic_id + '</h4></div>;'
+		// });
+
+		google.maps.event.addListener(marker, 'click', function() {
+			console.log("In addListener", marker);
+			// if (_openWindow == null) {
+			if (!this.getMap()._infoWindow) {
+				this.getMap()._infoWindow = new google.maps.InfoWindow();
+			}
+			this.getMap()._infoWindow.close();
+			this.getMap()._infoWindow.setContent(marker._data);
+			this.getMap()._infoWindow.open(this.getMap(), this);
+			// _openWindow.close();
+			console.log(data[i].pic_id, marker);
+			// }
+
+			// infowindow.open(map, marker);
+			// _openWindow = infowindow;
+		});
+
+		console.log("URL = ", data[i].url, data[i].pic_id, data[i].latitude, _openWindow, marker);
+
+	}
+	$(".gallery").colorbox({
+		rel: 'gallery',
+		slideshow: true
+	});
+	console.log("Out of getImages!")
+
 }
 
 function getPoints(start, end, usersIds, activeOnly) {
@@ -187,9 +281,13 @@ function getPoints(start, end, usersIds, activeOnly) {
 		if (typeof(usersIds) !== 'Array') {
 			usersIds = [usersIds];
 		}
+		// var str = "user_id in (";
+		// for (var i = 0, j = usersIds.length; i < j; i++)
+		// 	str += ((i !== 0) ? "," : "") + "'" + usersIds[i] + "'";
+		// str += ")";
 		var str = "user_id in (";
 		for (var i = 0, j = usersIds.length; i < j; i++)
-			str += ((i !== 0) ? "," : "") + "'" + usersIds[i] + "'";
+			str += ((i !== 0) ? "," : "") + "'" + parseInt(usersIds[i]) + "'";
 		str += ")";
 		conditions.push(str);
 	}
