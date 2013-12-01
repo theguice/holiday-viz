@@ -237,7 +237,7 @@ function clearMap()
     deletePaths();
     generateUserColors();
 }
-
+/*
 function processTrkpts()
 {
     var start, end;
@@ -272,7 +272,7 @@ function processTrkpts()
 //    manageCenter();
     getSteps(timeStats.min, timeStats.max);
 }
-
+*/
 function manageCenter()
 {
     // using the active marker for each user

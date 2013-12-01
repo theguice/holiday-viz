@@ -41,19 +41,26 @@ header h2 {
 }
 
 #controls {
-    padding: 10px 10px 0 10px;
-    /* height: 50px; */
+    padding: 3px;
+    height: 50px;
+}
+
+#user-pic{
+position:absolute;
+width:70px;
+height:90%;
+/*padding:5px;*/
+left:5px;
 }
 
 
 
 #map-canvas {
-    /* position:absolute; */
-    width: calc( 100% - 150px);
-    height: 1000px;
-    /* left:200px; */
-    float: left;
-    /* display: inline-block; */
+    /*position:absolute;*/
+    width:1225px;
+    height:350px;
+    left:100px;
+    display:block;
 }
 #container {
     padding-bottom: 10px;
@@ -107,6 +114,7 @@ li {
 .btn{
     padding:10px;
     width:100px;
+    height: 40px;
 }
 
 .user-picture-actions{
@@ -163,9 +171,24 @@ li {
 }
 .user-picture
 {
-    width:120px;
-    height:120px;
+    
+    width:60px;
+    height:60px;
     z-index: 1;
     display: block;
     position: absolute;
+}
+
+
+#image-canvas{
+left: 100px;
+margin: 10px;
+position: relative
+/*display: block;
+*/
+}
+
+.img-picture{
+    width: 400px;
+    height: 200px;
 }

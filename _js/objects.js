@@ -1,8 +1,20 @@
-var elevationStats = {'min': 100000, 'max': 0};
-var timeStats = {'min': 0, 'max': 0};
+var elevationStats = {
+	'min': 100000,
+	'max': 0
+};
+var timeStats = {
+	'min': 0,
+	'max': 0
+};
 var coordinateStats = {
-    'lat': {'min': 180, 'max': -180},
-    'lon': {'min': 180, 'max': -180}
+	'lat': {
+		'min': 180,
+		'max': -180
+	},
+	'lon': {
+		'min': 180,
+		'max': -180
+	}
 };
 
 
@@ -113,24 +125,23 @@ Point.prototype.refreshLatLng = function()
     this.LatLng = new google.maps.LatLng(this.lat, this.lon);
 };
 
-function sortPoints(pts)
-{
-    console.log(pts);
-    var sorted = pts;
+function sortPoints(pts) {
+	console.log(pts);
+	var sorted = pts;
 
 
-    sorted.sort(function(a, b) {
-//        console.log(a);
-//        console.log(b);
-        a = a['time'];
-        b = b['time'];
-//        console.log(a + "\t" + b);
-        return a < b ? -1 : (a > b ? 1 : 0);
-    });
-//    console.log(sorted);
-//    console.log('Min Time=' + timeStats['min'] + "\t" + 'Max Time=' + timeStats['max'])\
-    generateStats(sorted);
-    return sorted;
+	sorted.sort(function(a, b) {
+		//        console.log(a);
+		//        console.log(b);
+		a = a['time'];
+		b = b['time'];
+		//        console.log(a + "\t" + b);
+		return a < b ? -1 : (a > b ? 1 : 0);
+	});
+	//    console.log(sorted);
+	//    console.log('Min Time=' + timeStats['min'] + "\t" + 'Max Time=' + timeStats['max'])\
+	generateStats(sorted);
+	return sorted;
 }
 
 function generateStats(sorted)
@@ -159,14 +170,14 @@ function generateStats(sorted)
     console.log(timeStats);
 
 }
-function ColorCombo()
-{
-    this.path = google.maps.SymbolPath.CIRCLE;
-    this.scale = 2;
-    this.fillColor = "#f00";
-    this.strokeColor = "#000";
-    this.strokeWeight = 1;
-    this.strokeOpacity = 1.0;
+
+function ColorCombo() {
+	this.path = google.maps.SymbolPath.CIRCLE;
+	this.scale = 2;
+	this.fillColor = "#f00";
+	this.strokeColor = "#000";
+	this.strokeWeight = 1;
+	this.strokeOpacity = 1.0;
 
 }
 

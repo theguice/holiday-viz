@@ -17,6 +17,7 @@ $(document).ready(function() {
     addUserEvents();
 });
 
+
 function loadUsers() {
     console.log("Step1:");
     var users = getAllUsers();
