@@ -166,3 +166,8 @@ function getActiveUserIds()
 {
     return activeUserIds;
 }
+
+function getUserObjectById(userId)
+{
+    return currentUserObjects[userId];
+}

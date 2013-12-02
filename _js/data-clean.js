@@ -5,7 +5,7 @@
  */
 
 var TIME_TOLERANCE = 120; //in seconds
-var TIME_CEILING = 600; //20 minutes
+var TIME_CEILING = 36000; //1 Hour
 var DISTANCE_TOLERANCE = 50;//in meters
 
 
@@ -36,7 +36,7 @@ function cleanData() {
         {
             var changed = false;
             var point = new Point(points[k]);
-           
+
             var previousPoint = new Point();
             var x = 1;
             while (x <= k) {
@@ -73,8 +73,8 @@ function cleanData() {
                 console.log('trans more changed\t' + point.id + '\t' + point.transMode);
             }
 
-            console.log(point);
-            console.log(points[k]);
+//            console.log(point);
+//            console.log(points[k]);
             changed = (point.distance !== points[k].distance)
                     || (point.deltaTime !== points[k].deltaTime)
                     || (point.speed !== points[k].speed)

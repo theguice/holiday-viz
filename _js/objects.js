@@ -1,20 +1,24 @@
 var elevationStats = {
-	'min': 100000,
-	'max': 0
+    'min': 100000,
+    'max': 0,
+    'range': 0
 };
 var timeStats = {
-	'min': 0,
-	'max': 0
+    'min': 0,
+    'max': 0,
+    range: 0
 };
 var coordinateStats = {
-	'lat': {
-		'min': 180,
-		'max': -180
-	},
-	'lon': {
-		'min': 180,
-		'max': -180
-	}
+    'lat': {
+        'min': 180,
+        'max': -180,
+        'range': 0
+    },
+    'lon': {
+        'min': 180,
+        'max': -180,
+        'range': 0
+    }
 };
 
 
@@ -46,7 +50,7 @@ function Point(data /*TRKPT or position*/)
         }
         else if (data.transMode)
         {//CLONE Point
-            console.log('cloning point');
+//            console.log('cloning point');
             this.id = (data['id']);
             this.elevation = (data['elevation']);
             this.lat = (data['lat']);
@@ -126,22 +130,22 @@ Point.prototype.refreshLatLng = function()
 };
 
 function sortPoints(pts) {
-	console.log(pts);
-	var sorted = pts;
+    console.log(pts);
+    var sorted = pts;
 
 
-	sorted.sort(function(a, b) {
-		//        console.log(a);
-		//        console.log(b);
-		a = a['time'];
-		b = b['time'];
-		//        console.log(a + "\t" + b);
-		return a < b ? -1 : (a > b ? 1 : 0);
-	});
-	//    console.log(sorted);
-	//    console.log('Min Time=' + timeStats['min'] + "\t" + 'Max Time=' + timeStats['max'])\
-	generateStats(sorted);
-	return sorted;
+    sorted.sort(function(a, b) {
+        //        console.log(a);
+        //        console.log(b);
+        a = a['time'];
+        b = b['time'];
+        //        console.log(a + "\t" + b);
+        return a < b ? -1 : (a > b ? 1 : 0);
+    });
+    //    console.log(sorted);
+    //    console.log('Min Time=' + timeStats['min'] + "\t" + 'Max Time=' + timeStats['max'])\
+    generateStats(sorted);
+    return sorted;
 }
 
 function generateStats(sorted)
@@ -165,6 +169,11 @@ function generateStats(sorted)
         coordinateStats.lon.max = (point.lon > coordinateStats.lon.max) ? point.lon : coordinateStats.lon.max;
     }
 
+    timeStats.range = timeStats.max - timeStats.min;
+    elevationStats.range = elevationStats.max - elevationStats.min;
+    coordinateStats.lat.range = coordinateStats.lat.max - coordinateStats.lat.min;
+    coordinateStats.lon.range = coordinateStats.lon.max - coordinateStats.lon.min;
+
     console.log(elevationStats);
     console.log(coordinateStats);
     console.log(timeStats);
@@ -172,12 +181,12 @@ function generateStats(sorted)
 }
 
 function ColorCombo() {
-	this.path = google.maps.SymbolPath.CIRCLE;
-	this.scale = 2;
-	this.fillColor = "#f00";
-	this.strokeColor = "#000";
-	this.strokeWeight = 1;
-	this.strokeOpacity = 1.0;
+    this.path = google.maps.SymbolPath.CIRCLE;
+    this.scale = 2;
+    this.fillColor = "#f00";
+    this.strokeColor = "#000";
+    this.strokeWeight = 1;
+    this.strokeOpacity = 1.0;
 
 }
 
