@@ -63,6 +63,7 @@ function updatGpxInDb(user, point, keys) {
             + (!keys || ($.inArray('active', keys) > -1) ? ", active=" + point.active : "")
             + (!keys || ($.inArray('deltaTime', keys) > -1) ? ", delta_time=" + point.deltaTime : "")
             + (!keys || ($.inArray('transMode', keys) > -1) ? ", trans_mode='" + point.transMode + "'" : "")
+            + (!keys || ($.inArray('startPoint', keys) > -1) ? ", start_point=" + point.startPoint : "")
             + " where track_id=" + point.id;
 //    console.log("update sql:\n" + sql);
     $.ajax({
@@ -71,7 +72,7 @@ function updatGpxInDb(user, point, keys) {
         'data': {
             'q': sql
         }
-//        ,'async':false
+        , 'async': false
     }).done(function(data) {
         //        console.log(data);
     });
@@ -422,9 +423,10 @@ function getSummary(start, end, usersIds, activeOnly)
 {
     var conditions = parseConditions(start, end, usersIds, activeOnly);
     var sql = "SELECT "
-            + ((users) ? "user_id," : "")
+            + ((usersIds) ? "user_id," : "")
             + ((start || end) ? "Date(track_timestamp) as date," : "")
             + "trans_mode"
+            + ",COUNT(track_id) as track_count"
             + ",ROUND(SUM(distance),2)AS total_distance_m"
             + ",ROUND(SUM(delta_time),2)AS total_time_s"
             + ",ROUND(AVG(speed),2) AS average_speed_ms"
@@ -435,9 +437,9 @@ function getSummary(start, end, usersIds, activeOnly)
 
     sql += parseConditions(start, end, usersIds, activeOnly)
     sql += " GROUP BY trans_mode"
-            + ((users) ? ",user_id" : "")
+            + ((usersIds) ? ",user_id" : "")
             + ((start || end) ? ",Date(track_timestamp)" : "");
-    
+
     console.log(sql);
     var jqXHR = $.ajax({
         'type': 'GET',

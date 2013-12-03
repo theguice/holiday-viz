@@ -37,32 +37,37 @@ function cleanData() {
             var changed = false;
             var point = new Point(points[k]);
 
-            var previousPoint = new Point();
-            var x = 1;
-            while (x <= k) {
-                previousPoint = points[k - x];
-                if (previousPoint.active === 1 || previousPoint.deltaTime === -1) {
-//                    console.log('previous point after ' + x);
-                    break;
-                }
-                x++;
 
-            }
+            /*   var x = 1;
+             while (x <= k) {
+             previousPoint = points[k - x];
+             if (previousPoint.active === 1 || previousPoint.deltaTime === -1) {
+             //                    console.log('previous point after ' + x);
+             break;
+             }
+             x++;
+             
+             }*/
             if (k === 0)
             {
                 point.distance = 0;
-                point.deltaTime = -1;
+                point.deltaTime = 0;
                 point.speed = 0;
                 point.active = 1;
-
+                point.startTrip = 1;
 
             }
             else
             {
+                var previousPoint = points[k - 1];
                 point.distance = distanceBetween(point, previousPoint);
                 point.deltaTime = timeBetween(point, previousPoint);
-                point.speed = (point.deltaTime === -1) ? 0 : calculateSpeed(point, previousPoint);
+                point.speed = calculateSpeed(point, previousPoint);
                 point.active = checkActive(point);
+                if (point.deltaTime > TIME_CEILING)
+                    point.startTrip = 1;
+                else
+                    point.startTrip = 0;
             }
             point.refreshTransMode();
 
@@ -79,22 +84,27 @@ function cleanData() {
                     || (point.deltaTime !== points[k].deltaTime)
                     || (point.speed !== points[k].speed)
                     || (point.active !== points[k].active)
-                    || (point.transMode !== points[k].transMode);
+                    || (point.transMode !== points[k].transMode)
+                    || (point.startPoint !== points[k].startPoint);
 
 //            point.distance = (k === 0) ? 0 : distanceBetween(point, previousPoint);
 //            point.deltaTime = (k === 0) ? -1 : timeBetween(point, previousPoint);
 //            point.speed = (point.deltaTime === -1) ? 0 : (k === 0) ? 0 : calculateSpeed(point, previousPoint);
 //            point.active = checkActive(point);
-            if (point.active === 0)
+     /*      if (point.active === 0)
             {
 
                 archiveGpxPoint(point);
                 deleteGpxPoint(point);
             }
-            else if (changed)
+            else */if (changed)
             {
-                console.log(point.id + "changed");
-                updatGpxInDb(user, point, ['distance', 'speed', 'deltaTime', 'active', 'transMode']);
+                console.log(point.id + " changed");
+                updatGpxInDb(user, point, ['distance', 'speed', 'deltaTime', 'active', 'transMode', 'startPoint']);
+            }
+            else
+            {
+                console.log('ignored '+ point.id);
             }
 
 
@@ -151,13 +161,11 @@ function calculateSpeed(point1, point2) {
 function timeBetween(point1, point2) {
     if (point1.time && point2.time) {
         var delta = (point1.time - point2.time) / 1000;
-        if (delta > TIME_CEILING)
-            return -1;
-        else
-            return delta;
+
+        return delta;
 
     } else
-        return -1;
+        return 0;
 }
 /**
  * Returns distanct in Meters

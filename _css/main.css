@@ -61,7 +61,7 @@ header h2 {
 
 #map-area{
     width: calc(100% - 140px);
-    
+
     display: inline-block;
 }
 #map-canvas {
@@ -86,7 +86,7 @@ header h2 {
 }
 
 input[type="range"]::-webkit-slider-thumb {
-     -webkit-appearance: none;
+    -webkit-appearance: none;
     background-color: rgb(0,120,200);
     opacity: 0.8;
     width: 10px;
@@ -221,4 +221,32 @@ li {
 .img-picture{
     width: 400px;
     height: 200px;
+}
+
+
+#dashboard{
+    width:100%;
+}
+
+#dashboard-trans-modes{
+    height: 300px;
+    /* width:33%; */
+}
+
+.overall-donut
+{
+    width: 300px;
+    height: calc(100% - 20px);
+    display: inline-block;
+    /* padding: 10px; */
+    margin: 10px;
+}
+
+
+svg .icon{
+    stroke: black;
+    fill: none;
+    stroke-width: 2;
+    stroke-miterlimit : 10;
+    stroke-linecap : round; stroke-linejoin : roundك
 }

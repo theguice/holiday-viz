@@ -7,6 +7,7 @@
     <!--<script src="_js/jquery-1.10.2.min.map"></script>-->
     <script src="_js/jquery.xml2json.js" type="text/javascript"></script>
     <script src="_js/jquery.colorbox-min.js" type="text/javascript"></script>
+     <script src="_js/d3.min.js" type="text/javascript"></script>
     <!--<script src="_js/jquery.tools.min.js"></script>-->
     <script src="_js/map.js" type="text/javascript"></script>
     <script src="_js/objects.js" type="text/javascript"></script>
@@ -73,6 +74,12 @@
 
 
             <div id="map-area">
+       
+                <input type="range" id="slider" class="range"/>
+
+                <label id="slider-value"></label>
+                <div id="map-canvas">
+                </div>        
                 <div id="dashboard">
                     <div id="dashboard-summary">
                         <label id="speed-title" class="dashboard-title">Average Speed:</label>
@@ -83,18 +90,21 @@
                         <br>
                         <label id="time-title" class="dashboard-title">Total Time:</label>
                         <label id="time-value" class="dashboard-value"></label>
+                         <br>
+                        <label id="count-title" class="dashboard-title">Track Points:</label>
+                        <label id="count-value" class="dashboard-value"></label>
 
                     </div>
+                    <div id="dashboard-table">
+                    </div>
+
                     <div id="dashboard-trans-modes">
-                        <svg id="trans-modes-viz" xmlns="http://www.w3.org/2000/svg" version="1.1">
-                        </svg>
+                        <div id="donut-by-time" class="overall-donut"></div>
+                        <div id="donut-by-distance" class="overall-donut"></div>
+                        
+                        <!--<svg id="trans-modes-viz" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>-->
                     </div>
 
-                </div>
-                <input type="range" id="slider" class="range"/>
-
-                <label id="slider-value"></label>
-                <div id="map-canvas">
                 </div>
             </div>
 

@@ -63,6 +63,7 @@ function Point(data /*TRKPT or position*/)
             this.active = (data['active']);
             this.transMode = data['transMode'];
             this.LatLng = data['LatLng'];
+            this.startPoint = data['startPoint'];
         }
         else if (data._lat)
         {
@@ -100,6 +101,7 @@ function Point(data /*TRKPT or position*/)
             this.active = parseInt(data['active']);
             this.transMode = getTransMode(this.speed);
             this.LatLng = new google.maps.LatLng(this.lat, this.lon);
+            this.startPoint = parseInt(data['start_point']);
         }
 //        else if(data.)
         else
