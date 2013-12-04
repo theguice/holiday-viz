@@ -250,3 +250,12 @@ svg .icon{
     stroke-miterlimit : 10;
     stroke-linecap : round; stroke-linejoin : roundك
 }
+
+svg .summary-icon{
+    display:none;
+    /*opacity: .2;*/
+}
+
+.dropdown-toggle{
+    width:150px;
+}

@@ -211,7 +211,7 @@ function User(data)
     else if (data)
     {
 
-        console.log(data);
+//        console.log(data);
         this.id = parseInt(data['id']);
         this.firstName = data['first_name'];
         this.lastName = data['last_name'];

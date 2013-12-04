@@ -176,23 +176,25 @@ function getPointsByUser(userID) {
     return getPoints(start, end, userID);
 }
 
-function getActivePoints(start, end, usersIds) {
-    console.log("I am here now-4!")
-    console.log(usersIds)
+function getActivePoints(start, end, usersIds) 
+{
+    console.log(start + "\t" + end);
+//    console.log("I am here now-4!")
+//    console.log(usersIds)
     // usersIds = 21
     var n = $("input:checked").length;
-    console.log("n=", n)
+//    console.log("n=", n)
     if (n > 0) {
         usersIds = new Array();
         $("input:checkbox").each(function() {
             if ($(this).is(":checked")) {
-                console.log($(this))
+//                console.log($(this));
                 usersIds.push($(this).attr("id"));
             }
         });
     }
-    console.log("Generated usersids")
-    console.log(usersIds)
+//    console.log("Generated usersids")
+//    console.log(usersIds)
     getImages(start, end, usersIds);
     return getPoints(start, end, usersIds, true);
 }
@@ -206,9 +208,9 @@ function getImages(start, end, usersIds) {
     var sql = "SELECT * FROM gpx_pictures ";
     var conditions = [];
     if (start)
-        conditions.push("track_timestamp>=" + start);
+        conditions.push("image_timestamp>='" + start.toISOString()+"'");
     if (end)
-        conditions.push("track_timestamp<=" + end);
+        conditions.push("image_timestamp<='" + end.toISOString()+"'");
     if (usersIds) {
         if (typeof (usersIds) !== 'Array') {
             usersIds = [usersIds];
@@ -289,13 +291,21 @@ function getImages(start, end, usersIds) {
     console.log("Out of getImages!")
 
 }
+/*
+ * 
+ * @param {Date} start
+ * @param {Date} end
+ * @param {type} usersIds
+ * @param {type} activeOnly
+ * @returns {String}
+ */
 function parseConditions(start, end, usersIds, activeOnly)
 {
     var conditions = [];
     if (start)
-        conditions.push("track_timestamp>=" + start);
+        conditions.push("track_timestamp>='" + start.toISOString()+"'");
     if (end)
-        conditions.push("track_timestamp<=" + end);
+        conditions.push("track_timestamp<='" + end.toISOString()+"'");
     if (usersIds)
     {
         console.log(typeof (usersIds));
@@ -339,7 +349,7 @@ function getPoints(start, end, usersIds, activeOnly) {
 
 
     sql += " order by user_id, track_timestamp";
-//    console.log(sql);
+    console.log(sql);
     var jqXHR = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -354,6 +364,8 @@ function getPoints(start, end, usersIds, activeOnly) {
     var points = [];
     for (var i = 0, j = data.length; i < j; i++)
         points.push(new Point(data[i]));
+
+    console.log(points.length + ' points retrieved');
     return points;
 
 }
@@ -418,13 +430,13 @@ function getDataSummary()
     return data;
 
 }
-
-function getSummary(start, end, usersIds, activeOnly)
+//function getSummaryByDate()
+function getSummary(start, end, usersIds, activeOnly, byDate)
 {
     var conditions = parseConditions(start, end, usersIds, activeOnly);
     var sql = "SELECT "
             + ((usersIds) ? "user_id," : "")
-            + ((start || end) ? "Date(track_timestamp) as date," : "")
+            + ((byDate) ? "Date(track_timestamp) as date," : "")
             + "trans_mode"
             + ",COUNT(track_id) as track_count"
             + ",ROUND(SUM(distance),2)AS total_distance_m"
@@ -438,7 +450,7 @@ function getSummary(start, end, usersIds, activeOnly)
     sql += parseConditions(start, end, usersIds, activeOnly)
     sql += " GROUP BY trans_mode"
             + ((usersIds) ? ",user_id" : "")
-            + ((start || end) ? ",Date(track_timestamp)" : "");
+            + ((byDate) ? ",Date(track_timestamp)" : "");
 
     console.log(sql);
     var jqXHR = $.ajax({
@@ -471,6 +483,26 @@ function getUserDataSummary()
     );
     var data = $.parseJSON(jqXHR.responseText);
     console.log('summary data');
+    console.log(data);
+    return data;
+}
+
+
+function getDatesFromDb()
+{
+    var sql = "select distinct Date(track_timestamp) as track_timestamp from gpx_track where active=1 order by 1";
+
+    var jqXHR = $.ajax({
+        'type': 'GET',
+        'url': DB_FILE,
+        'data': {
+            'q': sql
+        },
+        'async': false
+    }
+    );
+    var data = $.parseJSON(jqXHR.responseText);
+    console.log('dates');
     console.log(data);
     return data;
 }

@@ -7,7 +7,7 @@
     <!--<script src="_js/jquery-1.10.2.min.map"></script>-->
     <script src="_js/jquery.xml2json.js" type="text/javascript"></script>
     <script src="_js/jquery.colorbox-min.js" type="text/javascript"></script>
-     <script src="_js/d3.min.js" type="text/javascript"></script>
+    <script src="_js/d3.min.js" type="text/javascript"></script>
     <!--<script src="_js/jquery.tools.min.js"></script>-->
     <script src="_js/map.js" type="text/javascript"></script>
     <script src="_js/objects.js" type="text/javascript"></script>
@@ -36,9 +36,28 @@
             <div id="controls">
                 <div class="form-group btn-group">
                     <input type="button" id="upload-button" class="btn btn-lg btn-success" value="Upload"/>
-                    <button type="submit" class="btn btn-lg btn-success map-refresh">View Paths</button>
-                    <input type="button" id="play-button" class="btn btn-lg btn-success" value="Play"/>
+                    <button type="submit" class="btn btn-lg btn-success map-refresh">Animate</button>
+                    <input type="button" id="draw-button" class=" btn btn-lg btn-success" value="Draw"/>
                     <input type="button" id="center-button" class=" btn btn-lg btn-success" value="Center"/>
+                </div> 
+                <div class="form-group btn-group" data-toggle="buttons" >
+
+                    <button id="play-button" class="btn btn-success" data-loading-text="Playing" data-toggle="button">Play</button>
+                    <button id="auto-center-button" class="btn btn-success" data-toggle="button">Auto Center</button>
+                </div>
+                <div class="form-group btn-group  date-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        Start Date <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu date-dropdown" role="menu" id='start-date-menu' >
+                    </ul>
+                </div>
+                <div class="form-group btn-group date-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        End Date <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu date-dropdown" role="menu" id='end-date-menu'>
+                    </ul>
                 </div>
             </div>
         </header>
@@ -74,7 +93,7 @@
 
 
             <div id="map-area">
-       
+
                 <input type="range" id="slider" class="range"/>
 
                 <label id="slider-value"></label>
@@ -90,7 +109,7 @@
                         <br>
                         <label id="time-title" class="dashboard-title">Total Time:</label>
                         <label id="time-value" class="dashboard-value"></label>
-                         <br>
+                        <br>
                         <label id="count-title" class="dashboard-title">Track Points:</label>
                         <label id="count-value" class="dashboard-value"></label>
 
@@ -101,7 +120,7 @@
                     <div id="dashboard-trans-modes">
                         <div id="donut-by-time" class="overall-donut"></div>
                         <div id="donut-by-distance" class="overall-donut"></div>
-                        
+
                         <!--<svg id="trans-modes-viz" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>-->
                     </div>
 

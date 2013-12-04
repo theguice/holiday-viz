@@ -32,7 +32,8 @@ function cleanData() {
         var points = getPointsByUser(user['id']);
 //        console.log(points.length + " points retrieved");
         var skipped = 0;
-        for (var k = 0, l = points.length; k < l; k++)
+        var len = points.length;
+        for (var k = 0; k < len; k++)
         {
             var changed = false;
             var point = new Point(points[k]);
@@ -70,14 +71,22 @@ function cleanData() {
                     point.startTrip = 0;
             }
             point.refreshTransMode();
-
             if (point.transMode === 'Bike' && user.use_bike === 0)
             {//TODO: NEED TO TEST
-
                 point.transMode = 'Drive';
                 console.log('trans more changed\t' + point.id + '\t' + point.transMode);
             }
+            if (typof(point.transMode === 'undefined'))
+            {
+                console.log('invalid trans mode' + point.id + '\t' + point.transMode);
+                point.active = 0;
+            }
 
+            if (point.acive === 1 && point.distance === 0 && point.startTrip === 0)
+            {
+                console.log('idle point' + point.id + '\t' + point.transMode);
+                point.active = 0;
+            }
 //            console.log(point);
 //            console.log(points[k]);
             changed = (point.distance !== points[k].distance)
@@ -91,20 +100,22 @@ function cleanData() {
 //            point.deltaTime = (k === 0) ? -1 : timeBetween(point, previousPoint);
 //            point.speed = (point.deltaTime === -1) ? 0 : (k === 0) ? 0 : calculateSpeed(point, previousPoint);
 //            point.active = checkActive(point);
-     /*      if (point.active === 0)
+            /*      if (point.active === 0)
+             {
+             
+             archiveGpxPoint(point);
+             deleteGpxPoint(point);
+             }
+             else */if (changed)
             {
-
-                archiveGpxPoint(point);
-                deleteGpxPoint(point);
-            }
-            else */if (changed)
-            {
-                console.log(point.id + " changed");
+                console.log(k + "/" + len + "\t" + point.id + " changed");
+                console.log(point);
+                console.log(points[k]);
                 updatGpxInDb(user, point, ['distance', 'speed', 'deltaTime', 'active', 'transMode', 'startPoint']);
             }
             else
             {
-                console.log('ignored '+ point.id);
+                console.log('ignored ' + point.id);
             }
 
 
