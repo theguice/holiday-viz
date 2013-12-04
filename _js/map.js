@@ -496,8 +496,8 @@ function reloadSlider()
         sliderMap[i] = newDate;
         boundaryTimeStats[i] = {'lat': {'min': 180, 'max': -180}, 'lon': {'min': 180, 'max': -180}};
     }
-    console.log(sliderMap);
-    console.log(boundaryTimeStats);
+//    console.log(sliderMap);
+//    console.log(boundaryTimeStats);
     slider.prop('min', min).prop('max', max).prop('value', min);
 
     addSliderEvent();
@@ -555,25 +555,37 @@ function prepareUsersTimePoints()
             }
             else
             {
-                mapCount++;
-                userTimePoints[userId][mapCount] = [];
+                var skipped = 0;
+                while (point.time > sliderMap[mapCount])
+                {
+
+                    mapCount++;
+                    skipped++;
+                    userTimePoints[userId][mapCount] = [];
+
+                }
+//                console.log('skipped ' + skipped);
                 userTimePoints[userId][mapCount].push(point);
                 updateCoundaryStats(mapCount, point);
-//                i--;
+//                  i--;
             }
 
         }
     }
 
 
-    for (var i in boundaryTimeStats )
+    for (var i in boundaryTimeStats)
     {
         var temp;
-        if (boundaryTimeStats[i]['lat']['min'] === 180 && boundaryTimeStats[i]['lat']['max'] == -180)
+//       
+        if (boundaryTimeStats[i]['lat']['min'] === 180 && boundaryTimeStats[i]['lat']['max'] === -180)
         {
-            console.log('clearing boundary ' + i);
+//            console.log('clearing boundary ' + i);
+
             boundaryTimeStats[i] = temp;
         }
+        else
+            console.log(i + "\t" + boundaryTimeStats[i]['lat']['min'] + "\t" + boundaryTimeStats[i]['lat']['max']);
     }
     console.log(boundaryTimeStats);
 //    console.log(userTimePoints);
@@ -631,7 +643,7 @@ function drawUsersTimePoints(sliderMapVal, window)
         {
             var sliderStep = sliderMapVal - k;
 //            console.log(sliderStep);
-            if (sliderStep >= 0)
+            if (sliderStep >= 0 && userTimePoints[id] )
                 points = points.concat(userTimePoints[id][sliderStep]);
         }
 //        console.log(points);

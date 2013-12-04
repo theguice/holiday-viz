@@ -17,9 +17,10 @@ header {
     position:relative;
     /* width:100%; */
     background-color:#000;
-    z-index:1000;
+    z-index: 200;
     padding: 10px;
     vertical-align: middle;
+    float: right;
 }
 
 header h1 {
@@ -60,14 +61,16 @@ header h2 {
 
 
 #map-area{
-    width: calc(100% - 140px);
+    width: 100%;
 
+    height: 100%;
     display: inline-block;
+    position: absolute;
 }
 #map-canvas {
     /*position:absolute;*/
     width:100%;
-    height: 360px;
+    height: 100%;
     /*left:100px;*/
     display:block;
 }
@@ -76,6 +79,8 @@ header h2 {
 {
     width:100%;
     height: 15px;
+    z-index: 400;
+    position: absolute;
     -webkit-appearance: none;  -webkit-border-radius: 5px;  -webkit-box-shadow: inset 0 0 5px #333;
 }
 #slider-value{
@@ -162,9 +167,11 @@ li {
 {
     z-index: 200;
     width: 100%;
-    position: relative;
+    /* position: relative; */
     opacity: 0;
     height: 100%;
+    border-radius: inherit;
+    display: inline-block;
 }
 .user-button-img img{
     width:60px;
@@ -186,18 +193,22 @@ li {
     opacity:.5;
 }
 #user-pics{
-    /* position:absolute; */
-    width: 140px;
-    max-height: inherit;
+    position:absolute;
+    width: 80%;
+    height: 140px;
     float: left;
     display: block;
     padding: 0 10px 10px 10px;
     overflow-y: auto;
+    z-index: 100;
 }
 .user-pic
 {
-    display: block;
+    display: inline-block;
     height: 130px;
+    width: 130px;
+    border-radius: 60px;
+    float: left;
 }
 .user-picture
 {
@@ -207,15 +218,21 @@ li {
     z-index: 1;
     display: block;
     position: absolute;
+    
+
+    border-radius: inherit;
+
 }
 
 
 #image-canvas{
-    left: 100px;
+    z-index: 100;
+    left: 50%;
     margin: 10px;
-    position: relative
-        /*display: block;
-        */
+    position: absolute;
+    top: 70%;
+    height: 30%;
+    overflow-y:  auto;
 }
 
 .img-picture{
@@ -225,7 +242,14 @@ li {
 
 
 #dashboard{
-    width:100%;
+    width: 50%;
+    z-index: 100;
+    position: absolute;
+    float: left;
+    background-color: white;
+    overflow-y: auto;
+    height: 30%;
+    top: 70%;
 }
 
 #dashboard-trans-modes{
@@ -248,7 +272,7 @@ svg .icon{
     fill: none;
     stroke-width: 2;
     stroke-miterlimit : 10;
-    stroke-linecap : round; stroke-linejoin : roundك
+    stroke-linecap : round; stroke-linejoin : round?
 }
 
 svg .summary-icon{
