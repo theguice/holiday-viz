@@ -236,7 +236,7 @@ function getImages(start, end, usersIds) {
 		// var infowindow = new google.maps.InfoWindow({
 		// 	content: '<div class="infocontent"><h4>' + data[i].pic_id + '</h4></div>;'
 		// });
-
+		//
 		google.maps.event.addListener(marker, 'click', function() {
 			console.log("In addListener", marker);
 			// if (_openWindow == null) {
