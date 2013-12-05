@@ -56,6 +56,7 @@ function cleanData() {
                 point.speed = 0;
                 point.active = 1;
                 point.startTrip = 1;
+                point.transMode = 'Stop';
 
             }
             else
@@ -69,23 +70,24 @@ function cleanData() {
                     point.startTrip = 1;
                 else
                     point.startTrip = 0;
-            }
-            point.refreshTransMode();
-            if (point.transMode === 'Bike' && user.use_bike === 0)
-            {//TODO: NEED TO TEST
-                point.transMode = 'Drive';
-                console.log('trans more changed\t' + point.id + '\t' + point.transMode);
-            }
-            if (typof(point.transMode === 'undefined'))
-            {
-                console.log('invalid trans mode' + point.id + '\t' + point.transMode);
-                point.active = 0;
-            }
 
-            if (point.acive === 1 && point.distance === 0 && point.startTrip === 0)
-            {
-                console.log('idle point' + point.id + '\t' + point.transMode);
-                point.active = 0;
+                point.refreshTransMode();
+                if (point.transMode === 'Bike' && user.use_bike === 0)
+                {//TODO: NEED TO TEST
+                    point.transMode = 'Drive';
+                    console.log('trans more changed\t' + point.id + '\t' + point.transMode);
+                }
+                if (typeof (point.transMode) === 'undefined')
+                {
+                    console.log('invalid trans mode' + point.id + '\t' + point.transMode);
+                    point.active = 0;
+                }
+
+                if (point.acive === 1 && point.distance === 0 && point.startTrip === 0)
+                {
+                    console.log('idle point' + point.id + '\t' + point.transMode);
+                    point.active = 0;
+                }
             }
 //            console.log(point);
 //            console.log(points[k]);
@@ -109,8 +111,8 @@ function cleanData() {
              else */if (changed)
             {
                 console.log(k + "/" + len + "\t" + point.id + " changed");
-                console.log(point);
-                console.log(points[k]);
+//                console.log(point);
+//                console.log(points[k]);
                 updatGpxInDb(user, point, ['distance', 'speed', 'deltaTime', 'active', 'transMode', 'startPoint']);
             }
             else

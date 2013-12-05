@@ -76,45 +76,47 @@ function initMap() {
 function loadDates()
 {
     var dates = getDatesFromDb();
-
-    for (var i = 0, j = dates.length; i < j; i++)
+    if (dates !== null)
     {
-        var date = new Date(dates[i]['track_timestamp']);
-        var str = "<li><a href='#'>" + date.toLocaleDateString() + "</a></li>";
-        $('#start-date-menu').append(str);
-        $('#end-date-menu').append(str);
-    }
+        for (var i = 0, j = dates.length; i < j; i++)
+        {
+            var date = new Date(dates[i]['track_timestamp']);
+            var str = "<li><a href='#'>" + date.toLocaleDateString() + "</a></li>";
+            $('#start-date-menu').append(str);
+            $('#end-date-menu').append(str);
+        }
 
-    $('.date-dropdown li a').on('click', function()
-    {
+        $('.date-dropdown li a').on('click', function()
+        {
 //        startDate = new Date();
 //        endDate = new Date();
 
-        var self = $(this);
+            var self = $(this);
 //        console.log(self);
-        self.parent().parent().attr('data-date', self.text());
-        self.parent().parent().siblings('.dropdown-toggle').text(self.text());
+            self.parent().parent().attr('data-date', self.text());
+            self.parent().parent().siblings('.dropdown-toggle').text(self.text());
 //        console.log(self.text());
 //        console.log(self.parent().parent().singlins('.dropdown-toggle'));
 
-        var dateType = self.parent().parent().attr('id');
-        console.log(dateType);
-        var date = new Date(self.text());
-        console.log(date.toString());
-        if (dateType === 'end-date-menu')
-        {
+            var dateType = self.parent().parent().attr('id');
+            console.log(dateType);
+            var date = new Date(self.text());
+            console.log(date.toString());
+            if (dateType === 'end-date-menu')
+            {
 
-            setEndDate(date);
-            console.log('changed endDate=' + endDate);
-        } else
-        {
-            setStartDate(date);
-            console.log('changed startDate=' + startDate);
+                setEndDate(date);
+                console.log('changed endDate=' + endDate);
+            } else
+            {
+                setStartDate(date);
+                console.log('changed startDate=' + startDate);
 
-        }
-        console.log(startDate + "\t" + endDate);
-        initDashboard(startDate, endDate);
-    });
+            }
+            console.log(startDate + "\t" + endDate);
+            initDashboard(startDate, endDate);
+        });
+    }
 }
 function setStartDate(date)
 {
@@ -643,7 +645,7 @@ function drawUsersTimePoints(sliderMapVal, window)
         {
             var sliderStep = sliderMapVal - k;
 //            console.log(sliderStep);
-            if (sliderStep >= 0 && userTimePoints[id] )
+            if (sliderStep >= 0 && userTimePoints[id])
                 points = points.concat(userTimePoints[id][sliderStep]);
         }
 //        console.log(points);
