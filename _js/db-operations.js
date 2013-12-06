@@ -6,6 +6,8 @@
 
 var currentUser = "";
 var DB_FILE = 'db-operations.php';
+var DELTA_TIME_DELETE_TOLERANCE = 15;
+
 _openWindow = null;
 $(document).ready(function() {
 
@@ -176,7 +178,7 @@ function getPointsByUser(userID) {
     return getPoints(start, end, userID);
 }
 
-function getActivePoints(start, end, usersIds) 
+function getActivePoints(start, end, usersIds)
 {
     console.log(start + "\t" + end);
 //    console.log("I am here now-4!")
@@ -208,9 +210,9 @@ function getImages(start, end, usersIds) {
     var sql = "SELECT * FROM gpx_pictures ";
     var conditions = [];
     if (start)
-        conditions.push("image_timestamp>='" + start.toISOString()+"'");
+        conditions.push("image_timestamp>='" + start.toISOString() + "'");
     if (end)
-        conditions.push("image_timestamp<='" + end.toISOString()+"'");
+        conditions.push("image_timestamp<='" + end.toISOString() + "'");
     if (usersIds) {
         if (typeof (usersIds) !== 'Array') {
             usersIds = [usersIds];
@@ -303,9 +305,9 @@ function parseConditions(start, end, usersIds, activeOnly)
 {
     var conditions = [];
     if (start)
-        conditions.push("track_timestamp>='" + start.toISOString()+"'");
+        conditions.push("track_timestamp>='" + start.toISOString() + "'");
     if (end)
-        conditions.push("track_timestamp<='" + end.toISOString()+"'");
+        conditions.push("track_timestamp<='" + end.toISOString() + "'");
     if (usersIds)
     {
         console.log(typeof (usersIds));
@@ -394,6 +396,20 @@ function archiveGpxPoint(point)
         //        console.log(data);
     });
 
+}
+
+function deleteUselessPoints()
+{
+
+    var sql = 'delete from gpx_track where active=0 and start_point=0 and distance=0 and deltaTime<' + DELTA_TIME_DELETE_TOLERANCE;
+    var jqXHR = $.ajax({
+        'type': 'GET',
+        'url': DB_FILE,
+        'data': {
+            'q': sql
+        }
+//        ,'async': false
+    });
 }
 
 function deleteGpxPoint(point)
@@ -505,4 +521,56 @@ function getDatesFromDb()
     console.log('dates');
     console.log(data);
     return data;
+}
+
+function reloadTable(table)
+{
+
+    cloneTable(table, 'gpx_track');
+}
+
+function backupTable(table)
+{
+    cloneTable('gpx_track', table);
+}
+
+
+function cloneTable(from, to)
+{
+    console.log('cloning table from ' + from + " to " + to);
+    var sql = "DROP TABLE IF EXISTS " + to;
+    var jqXHR = $.ajax({
+        'type': 'GET',
+        'url': DB_FILE,
+        'data': {
+            'q': sql
+        },
+        'async': false
+    }
+    );
+    sql = "CREATE TABLE " + to + " LIKE " + from;
+
+    jqXHR = $.ajax({
+        'type': 'GET',
+        'url': DB_FILE,
+        'data': {
+            'q': sql
+        },
+        'async': false
+    }
+    );
+
+
+
+    sql = " INSERT " + to + " SELECT * FROM " + from;
+
+    jqXHR = $.ajax({
+        'type': 'GET',
+        'url': DB_FILE,
+        'data': {
+            'q': sql
+        },
+        'async': false
+    }
+    );
 }

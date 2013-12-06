@@ -165,7 +165,7 @@ li {
 }
 .user-button-img
 {
-    z-index: 200;
+    z-index: 310;
     width: 100%;
     /* position: relative; */
     opacity: 0;
@@ -174,11 +174,12 @@ li {
     display: inline-block;
 }
 .user-button-img img{
-    width:60px;
-    height:60px;
-    left: 30px;
-    top:30px;
+    width: 70%;
+    height: 70%;
+    left: 15%;
+    top: 15%;
     position: relative;
+    z-index: 320;
 }
 .user-button-img:hover{
     opacity:1;
@@ -194,29 +195,37 @@ li {
 }
 #user-pics{
     position:absolute;
-    width: 80%;
-    height: 140px;
+    width: 50%;
+    height: 100px;
     float: left;
     display: block;
     padding: 0 10px 10px 10px;
     overflow-y: auto;
-    z-index: 100;
+    z-index: 300;
 }
 .user-pic
 {
     display: inline-block;
-    height: 130px;
-    width: 130px;
-    border-radius: 60px;
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
     float: left;
+    z-index: inherit;
+    border: 6px solid;
 }
 .user-picture
 {
 
-    width:120px;
-    height:120px;
-    z-index: 1;
+    width: 70px;
+    
+
+    height: 70px;
+    
+
+    z-index: inherit;
     display: block;
+    
+
     position: absolute;
     
 
@@ -282,4 +291,10 @@ svg .summary-icon{
 
 .dropdown-toggle{
     width:150px;
+}
+
+.oldPath
+{
+    strokeOpacity: .4;
+    strokeWeight: 2;
 }

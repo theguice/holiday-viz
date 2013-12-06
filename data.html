@@ -14,6 +14,7 @@ and open the template in the editor.
         <script src="_js/objects.js" type="text/javascript"></script>
         <script src="_js/db-operations.js" type="text/javascript"></script>
         <script src="_js/data-clean.js" type="text/javascript"></script>
+        <script src="_js/d3.min.js" type="text/javascript"></script>
         <link href='http://fonts.googleapis.com/css?family=Bangers' rel='stylesheet' type='text/css'>
         <script type="text/javascript" src="https://x2js.googlecode.com/hg/xml2json.js"></script>
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBH30-Vvic6qUsyjnuOMkujZGXY4wGHhW8&sensor=false"></script>
@@ -23,6 +24,15 @@ and open the template in the editor.
     </head>
     <body>
         <div>
+            <input type="button" id="clean" value="Clean"/>
+            <input type="button" id="backup" value="Backup"/>
+            <label> Backup To </label> <input id="backup-target" type="text" value="gpx_track_raw"/>
+            <input type="button" id="reload" value="Reload"/>
+            <label> Reload From </label> <input id="reload-target" type="text" value="gpx_track_raw"/>
+            <ul id="colors">
+                
+            </ul>
+            
             <ul id="users">
 
             </ul>

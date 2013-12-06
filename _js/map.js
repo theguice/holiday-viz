@@ -21,6 +21,7 @@ var playing = false;
 var autoCenter = false;
 var increment = 5; //step increment in minutes
 var pointWindow = 60; ///in minutes
+var oldPointWindow = 10000;
 var intervalDelay = 300;
 var startDate;
 var endDate;
@@ -111,7 +112,6 @@ function loadDates()
             {
                 setStartDate(date);
                 console.log('changed startDate=' + startDate);
-
             }
             console.log(startDate + "\t" + endDate);
             initDashboard(startDate, endDate);
@@ -164,7 +164,6 @@ function showMap(point)
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         styles: mapStyle
     };
-
     map = new google.maps.Map(document.getElementById("map-canvas"),
             mapOptions);
     createMarker(point, "You are here!");
@@ -209,23 +208,21 @@ function createUserMarker(point, userId)
     var marker = new google.maps.Marker({
         position: point.LatLng,
         map: map,
-        title: user.firstName + " " + user.lastName
+        title: user.firstName + " " + user.lastName,
+        icon: {path: google.maps.SymbolPath.CIRCLE,
+            scale: 8,
+            fillColor: colorScale(userId),
+            strokeColor: colorScale(userId)}
     });
     userMarkers[userId] = marker;
 //    console.log(userMarkers);
 }
 
-function createPath(pts, userId, createMarkers) {
+function createPath(pts, userId, createMarkers, oldPath) {
 
 //    console.log('Creating path');
-    var userIndex = $.inArray(userId, drawnUserIds);
-    if (userIndex === -1)
-    {
-        drawnUserIds.push(userId);
-        userIndex = drawnUserIds.length - 1;
-    }
-
-//    userId = (userId) ? userId : userIndex;
+    userId = (userId) ? userId : 0;
+//    userId = (userId) ? userId : userId;
 //    createMarkers = (createMarkers) ? createMarkers : true;
     var polyPoints = [];
     var ele = 0;
@@ -244,18 +241,17 @@ function createPath(pts, userId, createMarkers) {
         {
 //            createUserMarker(point, userId);
         }
-        if (i === (j - 1))
+        if (i === (j - 1) && !oldPath)
         {
             if (userMarkers[userId])
             {
                 userMarkers[userId].setPosition(point.LatLng);
-
             } else
                 createUserMarker(point, userId);
         }
         if (point.deltaTime === -1)
         {
-            drawPath(polyPoints, userIndex);
+            drawPath(polyPoints, userId, oldPath);
             polyPoints = [];
             polyPoints.push(point.LatLng);
         }
@@ -264,7 +260,7 @@ function createPath(pts, userId, createMarkers) {
         {
             if (point.elevation !== ele)
             {
-                drawPath(polyPoints, userIndex);
+                drawPath(polyPoints, userId, oldPath);
                 ele = point.elevation;
                 polyPoints = [];
                 polyPoints.push(point.LatLng);
@@ -274,24 +270,50 @@ function createPath(pts, userId, createMarkers) {
 
 
     if (!draw_elevation)
-        drawPath(polyPoints, userIndex);
-
-
+        drawPath(polyPoints, userId);
 }
 
-function drawPath(polyPoints, userIndex)
+function drawPath(polyPoints, userId, oldPath)
 {
+//    oldPath = (typeof (oldPath) === 'undefined') ? false : oldPath;
     var color = new ColorCombo();
-    userIndex = (userIndex) ? userIndex : 0;
-    color = colors[userIndex];
+    userId = (userId) ? userId : 0;
+//    color = colors[userIndex];
     //            console.log(color);
-    var path = new google.maps.Polyline({
-        path: polyPoints,
-        geodesic: true,
-        strokeColor: color.strokeColor,
-        strokeOpacity: color.strokeOpacity,
-        strokeWeight: color.strokeWeight
-    });
+
+    var path;
+    if (oldPath)
+    {
+        console.log('oldPath');
+        var lineSymbol = {
+            path: 'M 0,-1 0,1',
+            strokeOpacity: .3,
+            strokeWeight: 2
+        };
+        var icon = [{icon: lineSymbol,
+                offset: '0',
+                repeat: '10px'
+            }];
+
+
+        path = new google.maps.Polyline({
+            path: polyPoints,
+//            geodesic: true,
+            icons: icon
+        });
+    }
+    else
+    {
+        path = new google.maps.Polyline({
+            path: polyPoints,
+            geodesic: true,
+            strokeColor: colorScale(userId),
+            strokeWeight: 2,
+            strokeOpacity: 1});
+
+    }
+
+
     paths.push(path);
     // path.setMap(null);
     path.setMap(map);
@@ -378,23 +400,30 @@ function manageCenter(evt, statistics)
     {
         var bounds = map.getBounds();
         console.log(bounds);
-        console.log(stat.lat.min + "\t" + bounds.fa.d);
-        if (stat.lat.min < bounds.fa.d)
+        var bounds2 = [];
+        counter = 0;
+        for (var key in bounds)
+        {
+            bounds2.push(bounds[key]);
+        }
+        console.log(bounds2);
+        console.log(stat.lat.min + "\t" + bounds2[0]['d']);
+        if (stat.lat.min < bounds2[0]['d'])
         {
 //            console.log('zoom rule 1');
             zoomout = true;
         }
-        else if (stat.lat.max > bounds.fa.b)
+        else if (stat.lat.max > bounds2[0]['b'])
         {
 //            console.log('zoom rule 2');
             zoomout = true;
         }
-        else if (Math.abs(stat.lon.min) < Math.abs(bounds.ga.d))
+        else if (Math.abs(stat.lon.min) < Math.abs(bounds2[1]['d']))
         {
 //            console.log('zoom rule 3\t' + stat.lon.min + "\t" + bounds.ga.d);
             zoomout = true;
         }
-        else if (Math.abs(stat.lon.max) > Math.abs(bounds.ga.b))
+        else if (Math.abs(stat.lon.max) > Math.abs(bounds2[0]['b']))
         {
 //            console.log('zoom rule 4');
             zoomout = true;
@@ -433,6 +462,7 @@ function generateUserColors()
         cc.fillColor = 'rgb(' + tR + ',' + G2 + ',' + B + ')';
         colors.push(cc);
     }
+
 }
 
 
@@ -457,7 +487,6 @@ function drawAll()
 {
     prepareData();
     drawUsersPoints();
-
 }
 
 function prepareData()
@@ -501,9 +530,7 @@ function reloadSlider()
 //    console.log(sliderMap);
 //    console.log(boundaryTimeStats);
     slider.prop('min', min).prop('max', max).prop('value', min);
-
     addSliderEvent();
-
 }
 
 function addSliderEvent()
@@ -514,7 +541,7 @@ function addSliderEvent()
         var val = self.val();
         $('#slider-value').text(sliderMap[val].toString());
         clearMap();
-        drawUsersTimePoints(val, pointWindow);
+        drawUsersTimePoints(val, pointWindow, oldPointWindow);
         if (autoCenter && boundaryTimeStats[val])
             manageCenter(val, boundaryTimeStats[val]);
     });
@@ -564,7 +591,6 @@ function prepareUsersTimePoints()
                     mapCount++;
                     skipped++;
                     userTimePoints[userId][mapCount] = [];
-
                 }
 //                console.log('skipped ' + skipped);
                 userTimePoints[userId][mapCount].push(point);
@@ -628,10 +654,13 @@ function drawUsersPoints()
 //    getSteps(timeStats.min, timeStats.max);
 }
 
-function drawUsersTimePoints(sliderMapVal, window)
+function drawUsersTimePoints(sliderMapVal, window, oldPathWindow)
 {
+
+    oldPathWindow = (oldPathWindow) ? oldPathWindow : 0;
 //    var start = new Date(end.getTime() - window * 60 * 1000);
     var stepCount = Math.floor(window / increment);
+    var oldStepCount = Math.floor(oldPathWindow / increment);
 //    console.log('drawing time points ' + sliderMapVal);
     var activeUserIds = getActiveUserIds();
 //    console.log(activeUserIds);
@@ -641,20 +670,24 @@ function drawUsersTimePoints(sliderMapVal, window)
         var id = activeUserIds[i];
 //        console.log('drawing user ' + id);
         var points = [];
+        var oldPoints = [];
         for (var k = stepCount; k >= 0; k--)
         {
             var sliderStep = sliderMapVal - k;
-//            console.log(sliderStep);
             if (sliderStep >= 0 && userTimePoints[id])
                 points = points.concat(userTimePoints[id][sliderStep]);
         }
-//        console.log(points);
-//        var points = getPoints(start, end, id);
-//        console.log(points);
-//        console.log('Drawing user:' + id);
-//            userPoints[user] = sortPoints(userPoints[user]);
+        for (var k = oldStepCount - stepCount; k >= 0; k--)
+        {
+            var sliderStep = sliderMapVal - k;
+            if (sliderStep >= 0 && userTimePoints[id])
+                oldPoints = oldPoints.concat(userTimePoints[id][sliderStep]);
+        }
+        console.log(oldPoints);
         if (points.length > 0)
-            createPath(points, id);
+            createPath(points, id, false, false);
+        if (oldPoints.length > 0)
+            createPath(oldPoints, id, false, true);
     }
 //    manageCenter();
 //    getSteps(timeStats.min, timeStats.max);
@@ -663,7 +696,6 @@ function drawUsersTimePoints(sliderMapVal, window)
 function toggleAutoCenter()
 {
     autoCenter = !autoCenter;
-
     if (autoCenter)
     {
         $('#auto-center-button').removeClass('btn-success').addClass('btn-info');
@@ -677,14 +709,12 @@ function play()
 {
     console.log('clicked play');
     playing = !playing;
-
     if (playing)
     {
         $('#play-button').text('Pause').removeClass('btn-success').addClass('btn-info');
     }
     else
         $('#play-button').text('Play').removeClass('btn-info').addClass('btn-success');
-
 //    console.log(sliderMap.length);
 //    console.log('playing ' + playing);
     var val = parseInt($('#slider').val())
@@ -694,8 +724,7 @@ function play()
         {
 
             return playing = setInterval(doPlay, intervalDelay);
-
-            doPlay();//(*)
+            doPlay(); //(*)
         }
     }
 

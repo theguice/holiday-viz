@@ -7,14 +7,42 @@
 var TIME_TOLERANCE = 120; //in seconds
 var TIME_CEILING = 36000; //1 Hour
 var DISTANCE_TOLERANCE = 50;//in meters
+var TEMP_TABLE = 'gpx_track_raw';
 
 
-$(document).ready(function() {
-    console.log("Before cleaning data!")
 
-    cleanData();
+
+$(document).ready(function()
+{
+    $('#clean').click(function() {
+        cleanData();
+    });
+    $('#reload').click(function() {
+        reloadTable($('#reload-target').val());
+    });
+    $('#backup').click(function() {
+        backupTable($('#backup-target').val());
+    });
+
+    generateColors();
+//    console.log("Before cleaning data!")
+
+//    cleanData();
 });
+function generateColors()
+{
+    var colorScale = d3.scale.category20();
 
+    console.log(colorScale);
+
+    for (var i = 0; i < 40; i++)
+    {
+        var color = colorScale(i);
+        console.log(color);
+        var str = "<li><label style='background-color:" + color + ";'> COLOR " + i + "</label></li>";
+        $('#colors').append(str);
+    }
+}
 function cleanData() {
     console.log('cleaning');
     resetActiveGpxPoints();
@@ -29,113 +57,128 @@ function cleanData() {
         users.push(user);
 //        console.log("I am here now-67!")
         $('#users').append(formatUserHTML(user));
-        var points = getPointsByUser(user['id']);
+        cleanUserData(user);
+//        console.log(points);
+    }
+
+    deleteUselessPoints();
+
+//    console.log(users);
+}
+
+function cleanUserData(user)
+{
+    var points = getPointsByUser(user['id']);
 //        console.log(points.length + " points retrieved");
-        var skipped = 0;
-        var len = points.length;
-        for (var k = 0; k < len; k++)
+    var skipped = 0;
+    var len = points.length;
+    for (var k = 0; k < len; k++)
+    {
+        var changed = false;
+        var point = new Point(points[k]);
+
+
+        /*   var x = 1;
+         while (x <= k) {
+         previousPoint = points[k - x];
+         if (previousPoint.active === 1 || previousPoint.deltaTime === -1) {
+         //                    console.log('previous point after ' + x);
+         break;
+         }
+         x++;
+         
+         }*/
+        var previousPoint;
+        if (k === 0)
         {
-            var changed = false;
-            var point = new Point(points[k]);
+            point.distance = 0;
+            point.deltaTime = 0;
+            point.speed = 0;
+            point.active = 1;
+            point.startTrip = 1;
+            point.transMode = 'Stop';
 
-
-            /*   var x = 1;
-             while (x <= k) {
-             previousPoint = points[k - x];
-             if (previousPoint.active === 1 || previousPoint.deltaTime === -1) {
-             //                    console.log('previous point after ' + x);
-             break;
-             }
-             x++;
-             
-             }*/
-            if (k === 0)
-            {
-                point.distance = 0;
-                point.deltaTime = 0;
-                point.speed = 0;
-                point.active = 1;
+        }
+        else
+        {
+            previousPoint = points[k - 1];
+            point.distance = distanceBetween(point, previousPoint);
+            point.deltaTime = timeBetween(point, previousPoint);
+            point.speed = calculateSpeed(point, previousPoint);
+            point.active = checkActive(point);
+            if (point.deltaTime > TIME_CEILING)
                 point.startTrip = 1;
-                point.transMode = 'Stop';
-
-            }
             else
-            {
-                var previousPoint = points[k - 1];
-                point.distance = distanceBetween(point, previousPoint);
-                point.deltaTime = timeBetween(point, previousPoint);
-                point.speed = calculateSpeed(point, previousPoint);
-                point.active = checkActive(point);
-                if (point.deltaTime > TIME_CEILING)
-                    point.startTrip = 1;
-                else
-                    point.startTrip = 0;
+                point.startTrip = 0;
 
-                point.refreshTransMode();
-                if (point.transMode === 'Bike' && user.use_bike === 0)
-                {//TODO: NEED TO TEST
-                    point.transMode = 'Drive';
-                    console.log('trans more changed\t' + point.id + '\t' + point.transMode);
-                }
-                if (typeof (point.transMode) === 'undefined')
-                {
-                    console.log('invalid trans mode' + point.id + '\t' + point.transMode);
-                    point.active = 0;
-                }
-
-                if (point.acive === 1 && point.distance === 0 && point.startTrip === 0)
-                {
-                    console.log('idle point' + point.id + '\t' + point.transMode);
-                    point.active = 0;
-                }
+            point.refreshTransMode();
+            if (point.transMode === 'Bike' && user.use_bike === 0)
+            {//TODO: NEED TO TEST
+                point.transMode = 'Drive';
+                console.log('trans more changed\t' + point.id + '\t' + point.transMode);
             }
+            if (typeof (point.transMode) === 'undefined')
+            {
+                console.log('invalid trans mode' + point.id + '\t' + point.transMode);
+                point.active = 0;
+            }
+
+            if (point.acive === 1 && point.distance === 0 && point.startTrip === 0)
+            {
+                console.log('idle point' + point.id + '\t' + point.transMode);
+                point.active = 0;
+            }
+        }
 //            console.log(point);
 //            console.log(points[k]);
-            changed = (point.distance !== points[k].distance)
-                    || (point.deltaTime !== points[k].deltaTime)
-                    || (point.speed !== points[k].speed)
-                    || (point.active !== points[k].active)
-                    || (point.transMode !== points[k].transMode)
-                    || (point.startPoint !== points[k].startPoint);
+        changed = (point.distance !== points[k].distance)
+                || (point.deltaTime !== points[k].deltaTime)
+                || (point.speed !== points[k].speed)
+                || (point.active !== points[k].active)
+                || (point.transMode !== points[k].transMode)
+                || (point.startPoint !== points[k].startPoint);
 
 //            point.distance = (k === 0) ? 0 : distanceBetween(point, previousPoint);
 //            point.deltaTime = (k === 0) ? -1 : timeBetween(point, previousPoint);
 //            point.speed = (point.deltaTime === -1) ? 0 : (k === 0) ? 0 : calculateSpeed(point, previousPoint);
 //            point.active = checkActive(point);
-            /*      if (point.active === 0)
-             {
-             
-             archiveGpxPoint(point);
-             deleteGpxPoint(point);
-             }
-             else */if (changed)
-            {
-                console.log(k + "/" + len + "\t" + point.id + " changed");
+        /*      if (point.active === 0)
+         {
+         
+         archiveGpxPoint(point);
+         deleteGpxPoint(point);
+         }
+         else */
+
+
+        if (changed)
+        {
+            console.log(k + "/" + len + "\t" + point.id + " changed");
 //                console.log(point);
 //                console.log(points[k]);
-                updatGpxInDb(user, point, ['distance', 'speed', 'deltaTime', 'active', 'transMode', 'startPoint']);
-            }
-            else
-            {
-                console.log('ignored ' + point.id);
-            }
+            updatGpxInDb(user, point, ['distance', 'speed', 'deltaTime', 'active', 'transMode', 'startPoint']);
 
-
-
-            if (point.active === 1) {
-                var str = "<tr><td>" + skipped + " points skipped" + "</td></tr>";
-//                $('#user-' + user.id + " table").append(str);
-                skipped = 0;
-//                $('#user-' + user.id + " table").append(formatPointHTML(point));
-            } else {
-                skipped++;
-
-            }
 
         }
-//        console.log(points);
+        else
+        {
+            console.log('ignored ' + point.id);
+        }
+
+
+
+
+        if (point.active === 1) {
+            var str = "<tr><td>" + skipped + " points skipped" + "</td></tr>";
+//                $('#user-' + user.id + " table").append(str);
+            skipped = 0;
+//                $('#user-' + user.id + " table").append(formatPointHTML(point));
+        } else {
+            skipped++;
+
+        }
+
     }
-//    console.log(users);
 }
 /**
  *
@@ -174,7 +217,8 @@ function calculateSpeed(point1, point2) {
 function timeBetween(point1, point2) {
     if (point1.time && point2.time) {
         var delta = (point1.time - point2.time) / 1000;
-
+        if (!delta)
+            delta = 0;
         return delta;
 
     } else

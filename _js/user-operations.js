@@ -9,21 +9,23 @@ var currentUserId;
 var currentUser;
 
 var activeUserIds = [];
-
+var colorScale;
 
 $(document).ready(function() {
-
+    colorScale = d3.scale.category20();
     loadUsers();
     addUserEvents();
+
 });
 
 
 function loadUsers() {
-    console.log("Step1:");
+//    console.log("Step1:");
     var users = getAllUsers();
     //    console.log(users);
     if (users) {
-        for (var i = 0, j = users.length; i < j; i++) {
+        for (var i = 0, j = users.length; i < j; i++)
+        {
             var user = new User(users[i]);
             currentUsers.push(user['id']);
             currentUserObjects[user['id']] = user;
@@ -112,7 +114,7 @@ function getUser(id) {
  */
 function formatUserSelectHTML(user)
 {
-    var str = "<div class='user-pic' data-id='" + user.id + "'>"
+    var str = "<div class='user-pic' data-id='" + user.id + "' style='border-color:" + colorScale(user.id) + "'>"
 //    + "<img src='" + user['avatar'] + "' class='user-picture'><input type='checkbox' id = '" + user['id'] + "'>"
             + "<img src='" + user['avatar'] + "' class='user-picture selected-user' alt='" + user.firstName + " " + user.lastName + "'/>"
             + "<div class='user-button-img' data-mode='remove'><img src='_images/remove-button.png'/>"
