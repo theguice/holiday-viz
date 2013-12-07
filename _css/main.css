@@ -18,19 +18,22 @@ header {
     /* width:100%; */
     background-color:#000;
     z-index: 200;
-    padding: 10px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+
     vertical-align: middle;
-    float: right;
 }
 
 header h1 {
     color:#fff;
     font-family:Bangers, sans-serif;
     letter-spacing:2px;
-    font-size: 3em;
-    /* line-height:0px; */
+    font-size: 30px;
     display: inline-block;
     margin-right:  20px;
+    float: left;
 }
 
 header h2 {
@@ -48,9 +51,10 @@ header h2 {
     /* float: left; */
     display: inline-block;
 }
+/*
 #main-section{
     margin-top:10px;
-}
+}*/
 #user-pic{
     position:absolute;
     width:70px;
@@ -75,12 +79,14 @@ header h2 {
     display:block;
 }
 
+.time-control {
+    padding-top: 5px;
+}
 #slider
 {
-    width:100%;
-    height: 15px;
+    width:95%;
+    height: 10px;
     z-index: 400;
-    position: absolute;
     -webkit-appearance: none;  -webkit-border-radius: 5px;  -webkit-box-shadow: inset 0 0 5px #333;
 }
 #slider-value{
@@ -160,12 +166,17 @@ li {
     margin:10px;
 }
 
+.form-group {
+margin-bottom: 0px;
+}
+
+/*
 .btn{
     padding:10px;
     width:100px;
     height: 40px;
 }
-
+*/
 .user-picture-actions{
     height:100%;
     width:100%;
@@ -208,43 +219,31 @@ li {
     opacity:.5;
 }
 #user-pics{
-    position:absolute;
     /*width: 50%;*/
-    height: 100px;
-    float: left;
-    display: block;
+    height: 30px;
+    display: inline-block;
     padding: 0 10px 10px 10px;
     overflow-y: auto;
     z-index: 300;
+    float: left;
 }
 .user-pic
 {
     display: inline-block;
-    height: 80px;
-    width: 80px;
-    border-radius: 50%;
+    height: 35px;
+    width: 35px;
     float: left;
     z-index: inherit;
-    border: 6px solid;
 }
 .user-picture
 {
-
-    width: 70px;
-    
-
-    height: 70px;
-    
-
+    width: 35px;
+    height: 35px;
     z-index: inherit;
     display: block;
-    
-
-    position: absolute;
-    
-
-    border-radius: inherit;
-
+    /*border-radius: inherit; */
+    border-radius: 50%;
+    border: 5px solid;
 }
 
 

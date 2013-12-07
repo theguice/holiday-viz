@@ -32,35 +32,41 @@
 <body>
     <div id="container">
         <header id="header">
-            <h1><label> Our Paths</label></h1> 
+            <h1>Our Paths</h1> 
+
+            <div id="user-pics"></div>
 
             <div id="controls">
                 <div class="form-group btn-group">
-                    <button id="upload-button" class="btn btn-lg btn-success" value="Upload"><i class="fa fa-upload fa-1x"></i></button>
-                    <button type="submit" class="btn btn-lg btn-success map-refresh">Animate</button>
-                    <button id="draw-button" class=" btn btn-lg btn-success">Draw</button>
-                    <button type="button" id="center-button" class=" btn btn-lg btn-success">Center</button>
+                    <button id="upload-button" class="btn btn-sm btn-success" value="Upload"><i class="fa fa-upload fa-1x"></i></button>
+                    <button type="submit" class="btn btn-sm btn-success map-refresh">Animate</button>
+                    <button id="draw-button" class=" btn btn-sm btn-success">Draw</button>
+                    <button type="button" id="center-button" class=" btn btn-sm btn-success">Center</button>
                 </div> 
                 <div class="form-group btn-group" data-toggle="buttons" >
 
-                    <button id="play-button" class="btn btn-success" data-loading-text="Playing" data-toggle="button"><i class="fa fa-play fa-2x"></i></button>
-                    <button id="auto-center-button" class="btn btn-success" data-toggle="button">Auto Center</button>
-                    <button id="config-button" class="btn  btn-warning" data-toggle="button"><i class="fa fa-cog fa-2x"></i></button>
+                    <button id="play-button" class="btn btn-sm btn-success" data-loading-text="Playing" data-toggle="button"><i class="fa fa-play"></i></button>
+                    <button id="auto-center-button" class="btn  btn-sm btn-success" data-toggle="button">Auto Center</button>
+                    <button id="config-button" class="btn  btn-sm btn-warning" data-toggle="button"><i class="fa fa-cog"></i></button>
                 </div>
                 <div class="form-group btn-group  date-group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-calendar fa-1x"></i> Start Date <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu date-dropdown" role="menu" id='start-date-menu' >
                     </ul>
                 </div>
                 <div class="form-group btn-group  date-group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-calendar fa-1x"></i> End Date <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu date-dropdown" role="menu" id='end-date-menu'>
                     </ul>
                 </div>
+            </div>
+            <div class="time-control">
+                <input type="range" id="slider" class="range"/>
+                <label id="slider-value"></label>
             </div>
         </header>
         <section id="main-section">
@@ -103,18 +109,11 @@
                         <input class="btn btn-lg btn-primary" type="file" id="files" name="files[]" multiple />
                         <button class="btn btn-lg cancel-button btn-danger" type="button" id="cancel-upload-button"><i class="fa fa-ban fa-1x"></i> Cancel</button>
                         </div>
-                        <div id="user-pics">
-
-                        </div>
 
 
                         <div id="map-area">
-
-                            <input type="range" id="slider" class="range"/>
-
-                            <label id="slider-value"></label>
                             <div id="map-canvas">
-                            </div>        
+                        </div>        
 
                         </div>
                         <div id="dashboard">
