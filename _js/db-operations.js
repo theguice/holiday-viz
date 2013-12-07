@@ -7,6 +7,7 @@
 var currentUser = "";
 var DB_FILE = 'db-operations.php';
 var DELTA_TIME_DELETE_TOLERANCE = 15;
+var doLog = true;
 
 _openWindow = null;
 $(document).ready(function() {
@@ -14,7 +15,7 @@ $(document).ready(function() {
 });
 
 function initDb() {
-    console.log('initiating database');
+    if(doLog) console.log('initiating database');
     var sql = [];
     sql.push("DELETE FROM gpx_users WHERE 1");
     sql.push("DELETE FROM gpx_track WHERE 1");
@@ -27,7 +28,7 @@ function initDb() {
                 'q': sql[i]
             }
         }).done(function(data) {
-            console.log(data);
+            if(doLog) console.log(data);
         });
     }
 
@@ -41,7 +42,7 @@ function initDb() {
 function addGpxToDb(user, point) {
 
     var sql = "INSERT INTO gpx_track " + "(user_id, track_timestamp, latitude, longitude, altitude) " + "VALUES (" + user['id'] + ",'" + point.time.toISOString() + "'," + point.lat + "," + point.lon + "," + point.elevation + ")";
-    //     console.log(sql);
+    //     if(doLog) console.log(sql);
     $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -49,7 +50,7 @@ function addGpxToDb(user, point) {
             'q': sql
         }
     }).done(function(data) {
-        //        console.log(data);
+        //        if(doLog) console.log(data);
     });
 
 }
@@ -67,7 +68,7 @@ function updatGpxInDb(user, point, keys) {
             + (!keys || ($.inArray('transMode', keys) > -1) ? ", trans_mode='" + point.transMode + "'" : "")
             + (!keys || ($.inArray('startPoint', keys) > -1) ? ", start_point=" + point.startPoint : "")
             + " where track_id=" + point.id;
-//    console.log("update sql:\n" + sql);
+//    if(doLog) console.log("update sql:\n" + sql);
     $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -76,7 +77,7 @@ function updatGpxInDb(user, point, keys) {
         }
         , 'async': false
     }).done(function(data) {
-        //        console.log(data);
+        //        if(doLog) console.log(data);
     });
 }
 
@@ -92,7 +93,7 @@ function resetActiveGpxPoints()
         }
         , 'async': false
     }).done(function(data) {
-        //        console.log(data);
+        //        if(doLog) console.log(data);
     });
 }
 /**
@@ -103,7 +104,7 @@ function resetActiveGpxPoints()
 function addUserToDb(user) {
     var sql = "INSERT INTO gpx_users " + "(first_name, last_name, picture_url, twitter, instagram)" + " VALUES ('" + user.firstName + "','" + user.lastName + "','" + user.avatar + "','" + user.twitter + "','" + user.instagram + "')";
 
-    //    console.log(sql);
+    //    if(doLog) console.log(sql);
 
     var jqXHR1 = $.ajax({
         'type': 'GET',
@@ -113,10 +114,10 @@ function addUserToDb(user) {
         },
         'async': false
     });
-    console.log(jqXHR1.responseText);
+    if(doLog) console.log(jqXHR1.responseText);
 
     var sql2 = "SELECT * FROM gpx_users WHERE first_name='" + user.firstName + "'" + " and last_name='" + user.lastName + "'" + " and twitter='" + user.twitter + "'";
-    console.log(sql2);
+    if(doLog) console.log(sql2);
     var jqXHR2 = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -128,13 +129,13 @@ function addUserToDb(user) {
 
     var data = $.parseJSON(jqXHR2.responseText);
 
-    console.log(data);
+    if(doLog) console.log(data);
     return new User(data[0]);
 }
 
 function getUserById(id) {
-    var sql = "SELECT * FROM gpx_users WHERE id=" + id;
-    console.log(sql2);
+    var sql = "SELECT * FROM gpx_users WHERE user_id=" + id;
+    if(doLog) console.log(sql2);
     var jqXHR2 = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -146,7 +147,7 @@ function getUserById(id) {
 
     var data = $.parseJSON(jqXHR2.responseText);
 
-    console.log(data);
+    if(doLog) console.log(data);
     return new User(data[0]);
 }
 
@@ -162,8 +163,8 @@ function getAllUsers() {
     });
 
     var data = $.parseJSON(jqXHR.responseText);
-//	console.log("getAllUsers:");
-//	console.log(data);
+//	if(doLog) console.log("getAllUsers:");
+//	if(doLog) console.log(data);
     return data;
 }
 
@@ -180,33 +181,33 @@ function getPointsByUser(userID) {
 
 function getActivePoints(start, end, usersIds)
 {
-    console.log(start + "\t" + end);
-//    console.log("I am here now-4!")
-//    console.log(usersIds)
+    if(doLog) console.log(start + "\t" + end);
+//    if(doLog) console.log("I am here now-4!")
+//    if(doLog) console.log(usersIds)
     // usersIds = 21
     var n = $("input:checked").length;
-//    console.log("n=", n)
+//    if(doLog) console.log("n=", n)
     if (n > 0) {
         usersIds = new Array();
         $("input:checkbox").each(function() {
             if ($(this).is(":checked")) {
-//                console.log($(this));
+//                if(doLog) console.log($(this));
                 usersIds.push($(this).attr("id"));
             }
         });
     }
-//    console.log("Generated usersids")
-//    console.log(usersIds)
+//    if(doLog) console.log("Generated usersids")
+//    if(doLog) console.log(usersIds)
     getImages(start, end, usersIds);
     return getPoints(start, end, usersIds, true);
 }
 
 function getImages(start, end, usersIds) {
-    console.log("I am in getImages!")
+    if(doLog) console.log("I am in getImages!")
     if (typeof (activeOnly) === 'undefined')
         activeOnly = false;
 
-    console.log(usersIds);
+    if(doLog) console.log(usersIds);
     var sql = "SELECT * FROM gpx_pictures ";
     var conditions = [];
     if (start)
@@ -224,7 +225,7 @@ function getImages(start, end, usersIds) {
         conditions.push(str);
     }
 
-    console.log(conditions);
+    if(doLog) console.log(conditions);
     if (conditions.length > 0) {
         sql += " where ";
         for (var i = 0, j = conditions.length; i < j; i++) {
@@ -235,7 +236,7 @@ function getImages(start, end, usersIds) {
 
 
     sql += " order by user_id, image_timestamp";
-    console.log(sql);
+    if(doLog) console.log(sql);
     var jqXHR = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -246,7 +247,7 @@ function getImages(start, end, usersIds) {
     });
 
     var data = $.parseJSON(jqXHR.responseText);
-    console.log(data);
+    if(doLog) console.log(data);
 
     var iconBase = 'http://maps.google.com/mapfiles/kml/pal2/';
 
@@ -267,7 +268,7 @@ function getImages(start, end, usersIds) {
         // });
 
         google.maps.event.addListener(marker, 'click', function() {
-            console.log("In addListener", marker);
+            if(doLog) console.log("In addListener", marker);
             // if (_openWindow == null) {
             if (!this.getMap()._infoWindow) {
                 this.getMap()._infoWindow = new google.maps.InfoWindow();
@@ -276,21 +277,21 @@ function getImages(start, end, usersIds) {
             this.getMap()._infoWindow.setContent(marker._data);
             this.getMap()._infoWindow.open(this.getMap(), this);
             // _openWindow.close();
-            console.log(data[i].pic_id, marker);
+            if(doLog) console.log(data[i].pic_id, marker);
             // }
 
             // infowindow.open(map, marker);
             // _openWindow = infowindow;
         });
 
-        console.log("URL = ", data[i].url, data[i].pic_id, data[i].latitude, _openWindow, marker);
+        if(doLog) console.log("URL = ", data[i].url, data[i].pic_id, data[i].latitude, _openWindow, marker);
 
     }
     $(".gallery").colorbox({
         rel: 'gallery',
         slideshow: true
     });
-    console.log("Out of getImages!")
+    if(doLog) console.log("Out of getImages!")
 
 }
 /*
@@ -310,8 +311,8 @@ function parseConditions(start, end, usersIds, activeOnly)
         conditions.push("track_timestamp<='" + end.toISOString() + "'");
     if (usersIds)
     {
-        console.log(typeof (usersIds));
-        console.log(usersIds);
+        if(doLog) console.log(typeof (usersIds));
+        if(doLog) console.log(usersIds);
         if (typeof (usersIds) === 'number')
         {
             usersIds = [usersIds];
@@ -327,7 +328,7 @@ function parseConditions(start, end, usersIds, activeOnly)
         var str = " active=1";
         conditions.push(str);
     }
-    console.log(conditions);
+    if(doLog) console.log(conditions);
     var sql = "";
     if (conditions.length > 0) {
         sql += " where ";
@@ -339,11 +340,11 @@ function parseConditions(start, end, usersIds, activeOnly)
     return sql;
 }
 function getPoints(start, end, usersIds, activeOnly) {
-//    console.log("I am here now-3!")
+//    if(doLog) console.log("I am here now-3!")
     if (typeof (activeOnly) === 'undefined')
         activeOnly = false;
 
-//    console.log(usersIds);
+//    if(doLog) console.log(usersIds);
     var sql = "SELECT * FROM gpx_track ";
     sql += parseConditions(start, end, usersIds, activeOnly)
 
@@ -351,7 +352,7 @@ function getPoints(start, end, usersIds, activeOnly) {
 
 
     sql += " order by user_id, track_timestamp";
-    console.log(sql);
+    if(doLog) console.log(sql);
     var jqXHR = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -362,12 +363,12 @@ function getPoints(start, end, usersIds, activeOnly) {
     });
 
     var data = $.parseJSON(jqXHR.responseText);
-//    console.log(data);
+//    if(doLog) console.log(data);
     var points = [];
     for (var i = 0, j = data.length; i < j; i++)
         points.push(new Point(data[i]));
 
-    console.log(points.length + ' points retrieved');
+    if(doLog) console.log(points.length + ' points retrieved');
     return points;
 
 }
@@ -378,14 +379,14 @@ function getPoints(start, end, usersIds, activeOnly) {
  */
 function archiveGpxPoint(point)
 {
-    console.log('archiving point ' + point.id);
+    if(doLog) console.log('archiving point ' + point.id);
     var sql = "INSERT INTO gpx_track_inactive "
             + "(user_id, track_timestamp, latitude, longitude, altitude,active, speed, delta_time, trans_mode) "
             + "VALUES (" + point.userId + ",'" + point.time.toISOString()
             + "'," + point.lat + "," + point.lon + "," + point.elevation
             + "," + point.active + "," + point.speed + "," + point.deltaTime + ",'" + point.transMode + "'"
             + ")";
-//         console.log(sql);
+//         if(doLog) console.log(sql);
     $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -393,7 +394,7 @@ function archiveGpxPoint(point)
             'q': sql
         }
     }).done(function(data) {
-        //        console.log(data);
+        //        if(doLog) console.log(data);
     });
 
 }
@@ -414,7 +415,7 @@ function deleteUselessPoints()
 
 function deleteGpxPoint(point)
 {
-    console.log('Deletes point ' + point.id);
+    if(doLog) console.log('Deletes point ' + point.id);
     var sql = 'delete from gpx_track where track_id=' + point.id;
     var jqXHR = $.ajax({
         'type': 'GET',
@@ -441,8 +442,8 @@ function getDataSummary()
     });
 
     var data = $.parseJSON(jqXHR.responseText);
-    console.log('summary data');
-    console.log(data);
+    if(doLog) console.log('summary data');
+    if(doLog) console.log(data);
     return data;
 
 }
@@ -468,7 +469,7 @@ function getSummary(start, end, usersIds, activeOnly, byDate)
             + ((usersIds) ? ",user_id" : "")
             + ((byDate) ? ",Date(track_timestamp)" : "");
 
-    console.log(sql);
+    if(doLog) console.log(sql);
     var jqXHR = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -479,8 +480,8 @@ function getSummary(start, end, usersIds, activeOnly, byDate)
     }
     );
     var data = $.parseJSON(jqXHR.responseText);
-    console.log('summary data');
-    console.log(data);
+    if(doLog) console.log('summary data');
+    if(doLog) console.log(data);
     return data;
 
 }
@@ -498,8 +499,8 @@ function getUserDataSummary()
     }
     );
     var data = $.parseJSON(jqXHR.responseText);
-    console.log('summary data');
-    console.log(data);
+    if(doLog) console.log('summary data');
+    if(doLog) console.log(data);
     return data;
 }
 
@@ -518,8 +519,8 @@ function getDatesFromDb()
     }
     );
     var data = $.parseJSON(jqXHR.responseText);
-    console.log('dates');
-    console.log(data);
+    if(doLog) console.log('dates');
+    if(doLog) console.log(data);
     return data;
 }
 
@@ -537,7 +538,7 @@ function backupTable(table)
 
 function cloneTable(from, to)
 {
-    console.log('cloning table from ' + from + " to " + to);
+    if(doLog) console.log('cloning table from ' + from + " to " + to);
     var sql = "DROP TABLE IF EXISTS " + to;
     var jqXHR = $.ajax({
         'type': 'GET',

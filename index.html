@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-    <meta charset="UTF-8" />
+    <meta  http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title>Our Paths</title>
     <link href='http://fonts.googleapis.com/css?family=Bangers' rel='stylesheet' type='text/css'>
     <script src="_js/jquery-1.10.2.min.js"></script>
@@ -20,7 +20,8 @@
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBH30-Vvic6qUsyjnuOMkujZGXY4wGHhW8&sensor=false"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <!--<link rel="stylesheet" href="_css/font-awesome-4.0.3/css/font-awesome.min.css">-->
 
     <!-- rangeinput styling -->
     <!--<link rel="stylesheet" type="text/css" href="_css/skin1.css"/>-->
@@ -35,26 +36,26 @@
 
             <div id="controls">
                 <div class="form-group btn-group">
-                    <input type="button" id="upload-button" class="btn btn-lg btn-success" value="Upload"/>
+                    <button id="upload-button" class="btn btn-lg btn-success" value="Upload"><i class="fa fa-upload fa-1x"></i></button>
                     <button type="submit" class="btn btn-lg btn-success map-refresh">Animate</button>
-                    <input type="button" id="draw-button" class=" btn btn-lg btn-success" value="Draw"/>
-                    <input type="button" id="center-button" class=" btn btn-lg btn-success" value="Center"/>
+                    <button id="draw-button" class=" btn btn-lg btn-success">Draw</button>
+                    <button type="button" id="center-button" class=" btn btn-lg btn-success">Center</button>
                 </div> 
                 <div class="form-group btn-group" data-toggle="buttons" >
 
-                    <button id="play-button" class="btn btn-success" data-loading-text="Playing" data-toggle="button">Play</button>
+                    <button id="play-button" class="btn btn-success" data-loading-text="Playing" data-toggle="button"><i class="fa fa-play fa-2x"></i></button>
                     <button id="auto-center-button" class="btn btn-success" data-toggle="button">Auto Center</button>
+                    <button id="config-button" class="btn  btn-warning" data-toggle="button"><i class="fa fa-cog fa-2x"></i></button>
                 </div>
                 <div class="form-group btn-group  date-group">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        Start Date <span class="caret"></span>
+                        <i class="fa fa-calendar fa-1x"></i> Start Date <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu date-dropdown" role="menu" id='start-date-menu' >
                     </ul>
-                </div>
-                <div class="form-group btn-group date-group">
+
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        End Date <span class="caret"></span>
+                        <i class="fa fa-calendar fa-1x"></i> End Date <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu date-dropdown" role="menu" id='end-date-menu'>
                     </ul>
@@ -62,82 +63,96 @@
             </div>
         </header>
         <section id="main-section">
-            <div id="upload-div" class="popup-div">
-                <h1> Upload Traveler GPX</h1>
-                <div class="">
-                    <select class="form-control input-sm" id="users">
-                        <option>Select User</option>
-                        <option id='new-user-option' value='new'>New User ...</option>
-                    </select>
-                </div>
+            <div id="config-div" class="popup-div">
+                <form id="config-form" class="form-group">
+                    <h1>Enter Durations in Minutes</h1>
+                    <h1>Step Interval</h1>
+                    <input type="text" id="step-duration">
+                    <h1>Active Interval</h1>
+                    <input type="text" id="active-window">
+                    <h1>Inactive Interval</h1>
+                    <input type="text" id="inactive-steps">
 
-                <div id="new-user" class="popup-div">
-                    <form id="new-user-form" class='form-group'>
-                        <input type="text" id="new-user-first-name" placeholder="First Name"/>
-                        <input type="text" id="new-user-last-name" placeholder="Last Name"/>
-                        <input type="text" id="new-user-twitter" placeholder="@Twitter"/>
-                        <input type="text" id="new-user-instagram" placeholder="Instagram"/>
-                        <input type="text" id="new-user-image-url" placeholder="Image Url"/>
-                        <h2><label> <input type="checkbox" id="new-user-use-bike" class="checkbox"/> Use Bike </label></h2>
-                        <input type="submit" id="new-user-submit" class='btn btn-lg btn-primary' value="Submit"/>
+                    <button type="submit" class='btn btn-lg btn-primary' id="save-config"><i class="fa fa-save fa-1x"></i> Save</button>
+                    <button type="button" class='btn btn-lg btn-danger' value="Cancel" id="hide-config"><i class="fa fa-ban fa-1x"></i> Cancel</button>
+                            </form>
+                            </div>
+                            <div id="upload-div" class="popup-div">
+                            <h1> Upload Traveler GPX</h1>
+                            <div class="">
+                            <select class="form-control input-sm" id="users">
+                            <option>Select User</option>
+                            <option id='new-user-option' value='new'>New User ...</option>
+                        </select>
+                        </div>
 
-                        <input type="button" id="new-user-cancel" class='btn btn-lg btn-success btn-danger' value="Cancel"/>
-                    </form>
-                </div>
-                <input class="btn btn-lg btn-primary" type="file" id="files" name="files[]" multiple />
-                <input class="btn btn-lg cancel-button btn-danger" type="button" id="cancel-upload-button" value ='Cancel'/>
-            </div>
-            <div id="user-pics">
+                        <div id="new-user" class="popup-div">
+                            <form id="new-user-form" class='form-group'>
+                                <input type="text" id="new-user-first-name" placeholder="First Name"/>
+                                <input type="text" id="new-user-last-name" placeholder="Last Name"/>
+                                <input type="text" id="new-user-twitter" placeholder="@Twitter"/>
+                                <input type="text" id="new-user-instagram" placeholder="Instagram"/>
+                                <input type="text" id="new-user-image-url" placeholder="Image Url"/>
+                                <h2><label> <input type="checkbox" id="new-user-use-bike" class="checkbox"/> Use Bike </label></h2>
+                                <button type="submit" id="new-user-submit" class='btn btn-lg btn-primary'><i class="fa fa-save fa-1x"></i> Submit</button>
+                                <button id="new-user-cancel" class='btn btn-lg btn-success btn-danger'><i class="fa fa-ban fa-1x"></i> Cancel</button>
+                            </form>
+                        </div>
+                        <input class="btn btn-lg btn-primary" type="file" id="files" name="files[]" multiple />
+                        <button class="btn btn-lg cancel-button btn-danger" type="button" id="cancel-upload-button"><i class="fa fa-ban fa-1x"></i> Cancel</button>
+                        </div>
+                        <div id="user-pics">
 
-            </div>
+                        </div>
 
 
-            <div id="map-area">
+                        <div id="map-area">
 
-                <input type="range" id="slider" class="range"/>
+                            <input type="range" id="slider" class="range"/>
 
-                <label id="slider-value"></label>
-                <div id="map-canvas">
-                </div>        
-              
-            </div>
-  <div id="dashboard">
-                    <div id="dashboard-summary">
-                        <label id="speed-title" class="dashboard-title">Average Speed:</label>
-                        <label id="speed-value" class="dashboard-value"></label>
-                        <br>
-                        <label id="distance-title" class="dashboard-title">Total Distance:</label>
-                        <label id="distance-value" class="dashboard-value"></label>
-                        <br>
-                        <label id="time-title" class="dashboard-title">Total Time:</label>
-                        <label id="time-value" class="dashboard-value"></label>
-                        <br>
-                        <label id="count-title" class="dashboard-title">Track Points:</label>
-                        <label id="count-value" class="dashboard-value"></label>
+                            <label id="slider-value"></label>
+                            <div id="map-canvas">
+                            </div>        
 
-                    </div>
-                    <div id="dashboard-table">
-                    </div>
+                        </div>
+                        <div id="dashboard">
+                            <div id="dashboard-summary">
+                                <label id="speed-title" class="dashboard-title">Average Speed:</label>
+                                <label id="speed-value" class="dashboard-value"></label>
+                                <br>
+                                <label id="distance-title" class="dashboard-title">Total Distance:</label>
+                                <label id="distance-value" class="dashboard-value"></label>
+                                <br>
+                                <label id="time-title" class="dashboard-title">Total Time:</label>
+                                <label id="time-value" class="dashboard-value"></label>
+                                <br>
+                                <label id="count-title" class="dashboard-title">Track Points:</label>
+                                <label id="count-value" class="dashboard-value"></label>
 
-                    <div id="dashboard-trans-modes">
-                        <div id="donut-by-time" class="overall-donut"></div>
-                        <div id="donut-by-distance" class="overall-donut"></div>
+                            </div>
+                            <div id="dashboard-table">
+                            </div>
 
-                        <!--<svg id="trans-modes-viz" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>-->
-                    </div>
+                            <div id="dashboard-trans-modes">
+                                <div id="donut-by-time" class="overall-donut"></div>
+                                <div id="donut-by-distance" class="overall-donut"></div>
 
-                </div>
-            <div id="image-canvas">
-            </div>
-            <!--         <a class='gallery' href='http://farm4.staticflickr.com/3727/11123312783_8a9fbd9519_z.jpg'>Photo_1</a>
-                    <a class='gallery' href='http://farm8.staticflickr.com/7356/11119087036_1e6e01aa7c_z.jpg'>Photo_2</a>
-                    <script>
-                        // jQuery('a.gallery').colorbox();
-                        $(".gallery").colorbox({rel:'gallery', slideshow:true});
-            
-                    </script>
-            -->   
+                                <!--<svg id="trans-modes-viz" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>-->
+                            </div>
 
-        </section></div>
-</body>
-</html>
+                        </div>
+                        <div id="image-canvas">
+                        </div>
+                        <!--         <a class='gallery' href='http://farm4.staticflickr.com/3727/11123312783_8a9fbd9519_z.jpg'>Photo_1</a>
+                                <a class='gallery' href='http://farm8.staticflickr.com/7356/11119087036_1e6e01aa7c_z.jpg'>Photo_2</a>
+                                <script>
+                                    // jQuery('a.gallery').colorbox();
+                                    $(".gallery").colorbox({rel:'gallery', slideshow:true});
+                        
+                                </script>
+                        -->   
+
+                        </section>
+                        </div>
+                        </body>
+                        </html>

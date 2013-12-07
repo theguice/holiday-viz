@@ -212,7 +212,7 @@ function User(data)
     {
 
 //        console.log(data);
-        this.id = parseInt(data['id']);
+        this.id = parseInt(data['user_id']);
         this.firstName = data['first_name'];
         this.lastName = data['last_name'];
         this.name = this.firstName + " " + this.lastName;

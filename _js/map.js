@@ -69,10 +69,37 @@ function initMap() {
     $('#play-button').on('click', play);
     $('#auto-center-button').on('click', toggleAutoCenter);
     $('#center-button').on('click', manageCenter);
+    addConfigEvents();
     mapCenter = new google.maps.LatLng(37.865159, -122.282138);
     google.maps.visualRefresh = true;
     google.maps.event.addDomListener(window, 'load', setCurrentLocation);
     // location.reload()
+}
+
+
+function addConfigEvents()
+{
+
+    ($('#step-duration').val(increment));
+    ($('#active-window').val(pointWindow));
+    ($('#inactive-steps').val(oldPointWindow));
+    $('#config-button').on('click', function()
+    {
+        console.log('show config');
+        $('#config-div').show();
+    });
+    $('#hide-config').on('click', function() {
+        $('#config-div').hide();
+    });
+
+    $('#config-form').on('submit', function() {
+        increment = parseInt($('#step-duration').val());
+        pointWindow = parseInt($('#active-window').val());
+        oldPointWindow = parseInt($('#inactive-steps').val());
+               $('#config-div').hide();
+        return false;
+//        $('#map-refresh').trigger('click');
+    })
 }
 function loadDates()
 {
@@ -237,33 +264,36 @@ function createPath(pts, userId, createMarkers, oldPath) {
     for (var i = 0, j = pts.length; i < j; i++)
     {
         var point = pts[i];
-        if (i === 0)
+        if (point)
         {
-//            createUserMarker(point, userId);
-        }
-        if (i === (j - 1) && !oldPath)
-        {
-            if (userMarkers[userId])
+            if (i === 0)
             {
-                userMarkers[userId].setPosition(point.LatLng);
-            } else
-                createUserMarker(point, userId);
-        }
-        if (point.deltaTime === -1)
-        {
-            drawPath(polyPoints, userId, oldPath);
-            polyPoints = [];
-            polyPoints.push(point.LatLng);
-        }
-        polyPoints.push(point.LatLng);
-        if (draw_elevation)
-        {
-            if (point.elevation !== ele)
+//            createUserMarker(point, userId);
+            }
+            if (i === (j - 1) && !oldPath)
+            {
+                if (userMarkers[userId])
+                {
+                    userMarkers[userId].setPosition(point.LatLng);
+                } else
+                    createUserMarker(point, userId);
+            }
+            if (point.deltaTime === -1)
             {
                 drawPath(polyPoints, userId, oldPath);
-                ele = point.elevation;
                 polyPoints = [];
                 polyPoints.push(point.LatLng);
+            }
+            polyPoints.push(point.LatLng);
+            if (draw_elevation)
+            {
+                if (point.elevation !== ele)
+                {
+                    drawPath(polyPoints, userId, oldPath);
+                    ele = point.elevation;
+                    polyPoints = [];
+                    polyPoints.push(point.LatLng);
+                }
             }
         }
     }
@@ -492,9 +522,10 @@ function drawAll()
 function prepareData()
 {
     clearMap();
-    generateUserColors();
+//    generateUserColors();
 //    var start, end;
     var points = getActivePoints(startDate, endDate, getActiveUserIds());
+
     generateStats(points);
     prepareUsersPoints(points);
 }
@@ -518,7 +549,7 @@ function reloadSlider()
     var dateRangeMinutes = (maxDate - minDate) / (1000 * 60);
     console.log("dateRange=" + dateRangeMinutes);
     var min = 0;
-    var max = Math.ceil(dateRangeMinutes / 15);
+    var max = Math.ceil(dateRangeMinutes / increment);
     for (var i = 0; i <= max; i++)
     {
         var dateInc = i * increment * 1000 * 60;
@@ -561,7 +592,7 @@ function prepareUsersPoints(points)
         }
         userPoints[id].push(point);
     }
-//    console.log(userPoints);
+    console.log(userPoints);
 
 }
 
@@ -612,8 +643,8 @@ function prepareUsersTimePoints()
 
             boundaryTimeStats[i] = temp;
         }
-        else
-            console.log(i + "\t" + boundaryTimeStats[i]['lat']['min'] + "\t" + boundaryTimeStats[i]['lat']['max']);
+//        else
+//            console.log(i + "\t" + boundaryTimeStats[i]['lat']['min'] + "\t" + boundaryTimeStats[i]['lat']['max']);
     }
     console.log(boundaryTimeStats);
 //    console.log(userTimePoints);
@@ -683,7 +714,7 @@ function drawUsersTimePoints(sliderMapVal, window, oldPathWindow)
             if (sliderStep >= 0 && userTimePoints[id])
                 oldPoints = oldPoints.concat(userTimePoints[id][sliderStep]);
         }
-        console.log(oldPoints);
+//        console.log(oldPoints);
         if (points.length > 0)
             createPath(points, id, false, false);
         if (oldPoints.length > 0)
@@ -711,10 +742,14 @@ function play()
     playing = !playing;
     if (playing)
     {
-        $('#play-button').text('Pause').removeClass('btn-success').addClass('btn-info');
+        $('#play-button').removeClass('btn-success').addClass('btn-info');
+        $('#play-button i').removeClass('fa-play').addClass('fa-pause');
     }
     else
-        $('#play-button').text('Play').removeClass('btn-info').addClass('btn-success');
+    {
+        $('#play-button').removeClass('btn-info').addClass('btn-success');
+        $('#play-button i').removeClass('fa-pause').addClass('fa-play');
+    }
 //    console.log(sliderMap.length);
 //    console.log('playing ' + playing);
     var val = parseInt($('#slider').val())
