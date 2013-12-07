@@ -256,7 +256,7 @@ li {
     top: 70%;
     height: 30%;
     overflow-y:  auto;
-    display: none;
+    /*display: none;*/
 }
 
 .img-picture{
@@ -274,7 +274,7 @@ li {
     overflow-y: auto;
     height: 30%;
     top: 70%;
-    display: none;
+    /*display: none;*/
 }
 
 #dashboard-trans-modes{
