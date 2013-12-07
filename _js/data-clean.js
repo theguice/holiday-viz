@@ -131,12 +131,12 @@ function cleanUserData(user)
         }
 //            console.log(point);
 //            console.log(points[k]);
-        changed = (point.distance !== points[k].distance)
-                || (point.deltaTime !== points[k].deltaTime)
-                || (point.speed !== points[k].speed)
-                || (point.active !== points[k].active)
-                || (point.transMode !== points[k].transMode)
-                || (point.startPoint !== points[k].startPoint);
+        changed = (point.distance !== points[k]['distance'])
+                || (point.deltaTime !== points[k]['deltaTime'])
+                || (point.speed !== points[k]['speed'])
+                || (point.active !== points[k]['active'])
+                || (point.transMode !== points[k]['transMode'])
+                || (point.startPoint !== points[k]['startPoint']);
 
 //            point.distance = (k === 0) ? 0 : distanceBetween(point, previousPoint);
 //            point.deltaTime = (k === 0) ? -1 : timeBetween(point, previousPoint);

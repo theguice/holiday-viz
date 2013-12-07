@@ -16,7 +16,6 @@ $(document).ready(function() {
 
 
 
-
 function setup()
 {
     $('#files').bind('change', handleFileSelect);
@@ -40,29 +39,8 @@ function toggleUploadWindow(show)
         $('#upload-div').hide();
 
 }
-/*
-function showUserSet() {
-//    var name = $("#users option:selected")[0].label;
-    var name = $("#users").val();
-    name = (name) ? name : 'user-' + ((users || users.length === 0) ? 1 : (users.length + 1));
-    var user = new User(name);
-    currentUser = user;
-    if ($.inArray(name, users) > -1)
-    {
-        users.push(name);
-        userObjects.push(user);
-        $('#header').append('<h2>' + user.name + '</h2>');
-        console.log('adding user name to header ' + user.name);
-    }
-
-//console.log($("#users option:selected")[0].value);
-//    var val = $("#users option:selected")[0].value;
-//    $('#header').append('<h2 style="color: ' + users[val].color + '">' + name + '</h2>');
-
-
-}
-*/
 function processFile(evt) {
+
     var userPoints = [];
     var x2js = new X2JS();
     var xml_string = evt.currentTarget.result;
@@ -71,44 +49,52 @@ function processFile(evt) {
     var user = getUser(userId);
 
     console.log('Processing files for ' + user.id + "\t" + user.id);
-
+    console.log(json);
 
     if (typeof (userPoints[user.id]) === 'undefined')
     {
         userPoints[user.id] = [];
     }
-    if ($.isArray(json.gpx.trk.trkseg))
+
+    console.log(typeof (json.gpx.trk.trkseg));
+    console.log($.isArray(json.gpx.trk.trkseg));
+    if ($.isArray(json.gpx.trk))
     {
-        for (var i = 0; i < json.gpx.trk.trkseg.length; i++)
+        for (var i = 0, j = json.gpx.trk.length; i < j; i++)
+            addTrk(user, json.gpx.trk[i]);
+    }
+    else
+        addTrk(user, json.gpx.trk);
+}
+
+function addTrk(user, trk)
+{
+    if ($.isArray(trk.trkseg))
+    {
+
+        for (var i = 0; i < trk.trkseg.length; i++)
         {
-            for (var j = 0; j < json.gpx.trk.trkseg[i].trkpt.length; j++)
+            for (var j = 0; j < trk.trkseg[i].trkpt.length; j++)
             {
-                var point = new Point(json.gpx.trk.trkseg[i].trkpt[j]);
-                addPointToLocalArray(user, point);
+                var point = new Point(trk.trkseg[i].trkpt[j]);
+                if (j === 0)
+                    point.startPoint = 1;
+                addGpxToDb(user, point);
             }
         }
     }
     else
     {
-        for (var j = 0; j < json.gpx.trk.trkseg.trkpt.length; j++)
+        for (var j = 0; j < trk.trkseg.trkpt.length; j++)
         {
-            var point = new Point(json.gpx.trk.trkseg.trkpt[j]);
-            addPointToLocalArray(user, point);
+            var point = new Point(trk.trkseg.trkpt[j]);
+            if (j === 0)
+                point.startPoint = 1;
+            addGpxToDb(user, point);
         }
     }
 }
-/**
- * 
- * @param {User} user
- * @param {Point} point
- * @returns {undefined}
- */
-function addPointToLocalArray(user, point)
-{
-//    userPoints[user.name].push(point);
-    addGpxToDb(user, point);
 
-}
 // http://www.html5rocks.com/en/tutorials/file/dndfiles/
 function handleFileSelect(evt)
 {

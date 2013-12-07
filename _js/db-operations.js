@@ -15,7 +15,8 @@ $(document).ready(function() {
 });
 
 function initDb() {
-    if(doLog) console.log('initiating database');
+    if (doLog)
+        console.log('initiating database');
     var sql = [];
     sql.push("DELETE FROM gpx_users WHERE 1");
     sql.push("DELETE FROM gpx_track WHERE 1");
@@ -28,11 +29,15 @@ function initDb() {
                 'q': sql[i]
             }
         }).done(function(data) {
-            if(doLog) console.log(data);
+            if (doLog)
+                console.log(data);
         });
     }
 
 }
+
+
+var insertCount = 0;
 /**
  *
  * @param {User} user
@@ -41,14 +46,21 @@ function initDb() {
  */
 function addGpxToDb(user, point) {
 
-    var sql = "INSERT INTO gpx_track " + "(user_id, track_timestamp, latitude, longitude, altitude) " + "VALUES (" + user['id'] + ",'" + point.time.toISOString() + "'," + point.lat + "," + point.lon + "," + point.elevation + ")";
-    //     if(doLog) console.log(sql);
+
+    var sql = "INSERT INTO gpx_track "
+            + "(user_id, track_timestamp, latitude, longitude, altitude, start_point) "
+            + "VALUES (" + user['id'] + ",'" + point.time.toISOString() + "'," + point.lat
+            + "," + point.lon + "," + point.elevation + ","
+            + ((point.startPoint) ? point.startPoint : 0) + ")";
+    if (doLog)
+        console.log((insertCount++) + "\t" + sql);
     $.ajax({
         'type': 'GET',
         'url': DB_FILE,
         'data': {
             'q': sql
-        }
+        },
+        async: 'false'
     }).done(function(data) {
         //        if(doLog) console.log(data);
     });
@@ -114,10 +126,12 @@ function addUserToDb(user) {
         },
         'async': false
     });
-    if(doLog) console.log(jqXHR1.responseText);
+    if (doLog)
+        console.log(jqXHR1.responseText);
 
     var sql2 = "SELECT * FROM gpx_users WHERE first_name='" + user.firstName + "'" + " and last_name='" + user.lastName + "'" + " and twitter='" + user.twitter + "'";
-    if(doLog) console.log(sql2);
+    if (doLog)
+        console.log(sql2);
     var jqXHR2 = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -129,13 +143,15 @@ function addUserToDb(user) {
 
     var data = $.parseJSON(jqXHR2.responseText);
 
-    if(doLog) console.log(data);
+    if (doLog)
+        console.log(data);
     return new User(data[0]);
 }
 
 function getUserById(id) {
     var sql = "SELECT * FROM gpx_users WHERE user_id=" + id;
-    if(doLog) console.log(sql2);
+    if (doLog)
+        console.log(sql2);
     var jqXHR2 = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -147,7 +163,8 @@ function getUserById(id) {
 
     var data = $.parseJSON(jqXHR2.responseText);
 
-    if(doLog) console.log(data);
+    if (doLog)
+        console.log(data);
     return new User(data[0]);
 }
 
@@ -181,33 +198,38 @@ function getPointsByUser(userID) {
 
 function getActivePoints(start, end, usersIds)
 {
-    if(doLog) console.log(start + "\t" + end);
+    if (doLog)
+        console.log(start + "\t" + end);
+
+
 //    if(doLog) console.log("I am here now-4!")
 //    if(doLog) console.log(usersIds)
     // usersIds = 21
-    var n = $("input:checked").length;
-//    if(doLog) console.log("n=", n)
-    if (n > 0) {
-        usersIds = new Array();
-        $("input:checkbox").each(function() {
-            if ($(this).is(":checked")) {
-//                if(doLog) console.log($(this));
-                usersIds.push($(this).attr("id"));
-            }
-        });
-    }
-//    if(doLog) console.log("Generated usersids")
-//    if(doLog) console.log(usersIds)
-    getImages(start, end, usersIds);
+    /*    var n = $("input:checked").length;
+     //    if(doLog) console.log("n=", n)
+     if (n > 0) {
+     usersIds = new Array();
+     $("input:checkbox").each(function() {
+     if ($(this).is(":checked")) {
+     //                if(doLog) console.log($(this));
+     usersIds.push($(this).attr("id"));
+     }
+     });
+     }
+     //    if(doLog) console.log("Generated usersids")
+     //    if(doLog) console.log(usersIds)
+     */
     return getPoints(start, end, usersIds, true);
 }
 
 function getImages(start, end, usersIds) {
-    if(doLog) console.log("I am in getImages!")
+    if (doLog)
+        console.log("I am in getImages!")
     if (typeof (activeOnly) === 'undefined')
         activeOnly = false;
 
-    if(doLog) console.log(usersIds);
+    if (doLog)
+        console.log(usersIds);
     var sql = "SELECT * FROM gpx_pictures ";
     var conditions = [];
     if (start)
@@ -225,7 +247,8 @@ function getImages(start, end, usersIds) {
         conditions.push(str);
     }
 
-    if(doLog) console.log(conditions);
+    if (doLog)
+        console.log(conditions);
     if (conditions.length > 0) {
         sql += " where ";
         for (var i = 0, j = conditions.length; i < j; i++) {
@@ -236,7 +259,8 @@ function getImages(start, end, usersIds) {
 
 
     sql += " order by user_id, image_timestamp";
-    if(doLog) console.log(sql);
+    if (doLog)
+        console.log(sql);
     var jqXHR = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -247,52 +271,63 @@ function getImages(start, end, usersIds) {
     });
 
     var data = $.parseJSON(jqXHR.responseText);
-    if(doLog) console.log(data);
+    if (data) {
+        if (doLog)
+            console.log(data);
 
-    var iconBase = 'http://maps.google.com/mapfiles/kml/pal2/';
+        var iconBase = 'http://maps.google.com/mapfiles/kml/pal2/';
 
-    // $('#image-canvas').remove();
-    // $('body').append($('<div id="image-canvas"></div>'));
-    $('#image-canvas').children().remove();
-    for (var i = 0, j = data.length; i < j; i++) {
-        $('#image-canvas').append("<a class='gallery' title='" + data[i].title + "'' href ='" + data[i].url + "' ><img src='" + data[i].url + "' class='img-picture' id='" + data[i].pic_id + "''></a>");
-        LatLng = new google.maps.LatLng(data[i].latitude, data[i].longitude)
-        var marker = new google.maps.Marker({
-            position: LatLng,
-            map: map,
-            icon: iconBase + 'icon22.png',
-            _data: data[i].title
+        // $('#image-canvas').remove();
+        // $('body').append($('<div id="image-canvas"></div>'));
+        $('#image-canvas').children().remove();
+        for (var i = 0, j = data.length; i < j; i++) {
+            $('#image-canvas').append("<a class='gallery' title='" + data[i].title + "'' href ='" + data[i].url + "' ><img src='" + data[i].url + "' class='img-picture' id='" + data[i].pic_id + "''></a>");
+            LatLng = new google.maps.LatLng(data[i].latitude, data[i].longitude)
+            var marker = new google.maps.Marker({
+                position: LatLng,
+                map: map,
+                icon: iconBase + 'icon22.png',
+                _data: data[i].title
+            });
+            // var infowindow = new google.maps.InfoWindow({
+            // 	content: '<div class="infocontent"><h4>' + data[i].pic_id + '</h4></div>;'
+            // });
+
+            google.maps.event.addListener(marker, 'click', function() {
+                if (doLog)
+                    console.log("In addListener", marker);
+                // if (_openWindow == null) {
+                if (!this.getMap()._infoWindow) {
+                    this.getMap()._infoWindow = new google.maps.InfoWindow();
+                }
+                this.getMap()._infoWindow.close();
+                this.getMap()._infoWindow.setContent(marker._data);
+                this.getMap()._infoWindow.open(this.getMap(), this);
+                // _openWindow.close();
+                if (doLog)
+                    console.log(data[i].pic_id, marker);
+                // }
+
+                // infowindow.open(map, marker);
+                // _openWindow = infowindow;
+            });
+
+            if (doLog)
+                console.log("URL = ", data[i].url, data[i].pic_id, data[i].latitude, _openWindow, marker);
+
+        }
+        $(".gallery").colorbox({
+            rel: 'gallery',
+            slideshow: true
         });
-        // var infowindow = new google.maps.InfoWindow({
-        // 	content: '<div class="infocontent"><h4>' + data[i].pic_id + '</h4></div>;'
-        // });
-
-        google.maps.event.addListener(marker, 'click', function() {
-            if(doLog) console.log("In addListener", marker);
-            // if (_openWindow == null) {
-            if (!this.getMap()._infoWindow) {
-                this.getMap()._infoWindow = new google.maps.InfoWindow();
-            }
-            this.getMap()._infoWindow.close();
-            this.getMap()._infoWindow.setContent(marker._data);
-            this.getMap()._infoWindow.open(this.getMap(), this);
-            // _openWindow.close();
-            if(doLog) console.log(data[i].pic_id, marker);
-            // }
-
-            // infowindow.open(map, marker);
-            // _openWindow = infowindow;
-        });
-
-        if(doLog) console.log("URL = ", data[i].url, data[i].pic_id, data[i].latitude, _openWindow, marker);
-
+        if (doLog)
+            console.log("Out of getImages!")
     }
-    $(".gallery").colorbox({
-        rel: 'gallery',
-        slideshow: true
-    });
-    if(doLog) console.log("Out of getImages!")
-
+    else
+    {
+        if (doLog)
+            console.log('No Pictures');
+    }
 }
 /*
  * 
@@ -311,8 +346,10 @@ function parseConditions(start, end, usersIds, activeOnly)
         conditions.push("track_timestamp<='" + end.toISOString() + "'");
     if (usersIds)
     {
-        if(doLog) console.log(typeof (usersIds));
-        if(doLog) console.log(usersIds);
+        if (doLog)
+            console.log(typeof (usersIds));
+        if (doLog)
+            console.log(usersIds);
         if (typeof (usersIds) === 'number')
         {
             usersIds = [usersIds];
@@ -328,7 +365,8 @@ function parseConditions(start, end, usersIds, activeOnly)
         var str = " active=1";
         conditions.push(str);
     }
-    if(doLog) console.log(conditions);
+    if (doLog)
+        console.log(conditions);
     var sql = "";
     if (conditions.length > 0) {
         sql += " where ";
@@ -352,7 +390,8 @@ function getPoints(start, end, usersIds, activeOnly) {
 
 
     sql += " order by user_id, track_timestamp";
-    if(doLog) console.log(sql);
+    if (doLog)
+        console.log(sql);
     var jqXHR = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -365,12 +404,16 @@ function getPoints(start, end, usersIds, activeOnly) {
     var data = $.parseJSON(jqXHR.responseText);
 //    if(doLog) console.log(data);
     var points = [];
-    for (var i = 0, j = data.length; i < j; i++)
-        points.push(new Point(data[i]));
+    if (data)
+    {
 
-    if(doLog) console.log(points.length + ' points retrieved');
+        for (var i = 0, j = data.length; i < j; i++)
+            points.push(new Point(data[i]));
+
+        if (doLog)
+            console.log(points.length + ' points retrieved');
+    }
     return points;
-
 }
 /**
  * 
@@ -379,7 +422,8 @@ function getPoints(start, end, usersIds, activeOnly) {
  */
 function archiveGpxPoint(point)
 {
-    if(doLog) console.log('archiving point ' + point.id);
+    if (doLog)
+        console.log('archiving point ' + point.id);
     var sql = "INSERT INTO gpx_track_inactive "
             + "(user_id, track_timestamp, latitude, longitude, altitude,active, speed, delta_time, trans_mode) "
             + "VALUES (" + point.userId + ",'" + point.time.toISOString()
@@ -411,11 +455,22 @@ function deleteUselessPoints()
         }
 //        ,'async': false
     });
+
+    var sql = 'delete from gpx_track where start_point=0 and distance=0 and delta_time=0 and trans_mode = ""';
+    var jqXHR = $.ajax({
+        'type': 'GET',
+        'url': DB_FILE,
+        'data': {
+            'q': sql
+        }
+//        ,'async': false
+    });
 }
 
 function deleteGpxPoint(point)
 {
-    if(doLog) console.log('Deletes point ' + point.id);
+    if (doLog)
+        console.log('Deletes point ' + point.id);
     var sql = 'delete from gpx_track where track_id=' + point.id;
     var jqXHR = $.ajax({
         'type': 'GET',
@@ -442,8 +497,10 @@ function getDataSummary()
     });
 
     var data = $.parseJSON(jqXHR.responseText);
-    if(doLog) console.log('summary data');
-    if(doLog) console.log(data);
+    if (doLog)
+        console.log('summary data');
+    if (doLog)
+        console.log(data);
     return data;
 
 }
@@ -464,12 +521,13 @@ function getSummary(start, end, usersIds, activeOnly, byDate)
             + ",ROUND((AVG(speed)*2.23694),2) AS average_speed_mph "
             + " FROM gpx_track "
 
-    sql += parseConditions(start, end, usersIds, activeOnly)
+    sql += conditions;
     sql += " GROUP BY trans_mode"
             + ((usersIds) ? ",user_id" : "")
             + ((byDate) ? ",Date(track_timestamp)" : "");
 
-    if(doLog) console.log(sql);
+    if (doLog)
+        console.log(sql);
     var jqXHR = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -480,8 +538,10 @@ function getSummary(start, end, usersIds, activeOnly, byDate)
     }
     );
     var data = $.parseJSON(jqXHR.responseText);
-    if(doLog) console.log('summary data');
-    if(doLog) console.log(data);
+    if (doLog)
+        console.log('summary data');
+    if (doLog)
+        console.log(data);
     return data;
 
 }
@@ -499,8 +559,10 @@ function getUserDataSummary()
     }
     );
     var data = $.parseJSON(jqXHR.responseText);
-    if(doLog) console.log('summary data');
-    if(doLog) console.log(data);
+    if (doLog)
+        console.log('summary data');
+    if (doLog)
+        console.log(data);
     return data;
 }
 
@@ -519,8 +581,10 @@ function getDatesFromDb()
     }
     );
     var data = $.parseJSON(jqXHR.responseText);
-    if(doLog) console.log('dates');
-    if(doLog) console.log(data);
+    if (doLog)
+        console.log('dates');
+    if (doLog)
+        console.log(data);
     return data;
 }
 
@@ -538,7 +602,8 @@ function backupTable(table)
 
 function cloneTable(from, to)
 {
-    if(doLog) console.log('cloning table from ' + from + " to " + to);
+    if (doLog)
+        console.log('cloning table from ' + from + " to " + to);
     var sql = "DROP TABLE IF EXISTS " + to;
     var jqXHR = $.ajax({
         'type': 'GET',

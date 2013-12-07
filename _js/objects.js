@@ -45,7 +45,6 @@ function Point(data /*TRKPT or position*/)
             this.lon = (data.coords.longitude) ? data.coords.longitude : 0;
             console.log(data.timestamp);
             this.time = data.timestamp;
-
             this.accuracy = (data.coords.accuracy) ? data.coords.accuracy : 0;
         }
         else if (data.transMode)
@@ -82,6 +81,7 @@ function Point(data /*TRKPT or position*/)
             this.lat = (data.lat) ? parseFloat(data.lat) : 0;
             this.lon = (data.lon) ? parseFloat(data.lon) : 0;
             this.time = (data['time'] && data['time'][0]) ? new Date(data.time[0].text) : 0;
+            this.startPoint = 0;
 
             this.accuracy = 0;
         }
@@ -114,7 +114,7 @@ function Point(data /*TRKPT or position*/)
             this.accuracy;
             this.speed = 0;
             this.distance = 0;
-
+            this.startPoint = 0;
         }
 
     }

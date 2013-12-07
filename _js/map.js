@@ -22,7 +22,9 @@ var autoCenter = false;
 var increment = 5; //step increment in minutes
 var pointWindow = 60; ///in minutes
 var oldPointWindow = 10000;
+var drawPointMarkers = true;
 var intervalDelay = 300;
+var distance_limit = 200;
 var startDate;
 var endDate;
 var userPoints = [];
@@ -96,7 +98,9 @@ function addConfigEvents()
         increment = parseInt($('#step-duration').val());
         pointWindow = parseInt($('#active-window').val());
         oldPointWindow = parseInt($('#inactive-steps').val());
-               $('#config-div').hide();
+        drawPointMarkers = Boolean($('#draw-markers').prop('checked'));
+        console.log("Config="+increment + "\t" + pointWindow + "\t" + oldPointWindow + "\t" + drawPointMarkers)
+        $('#config-div').hide();
         return false;
 //        $('#map-refresh').trigger('click');
     })
@@ -201,15 +205,18 @@ function centerMap(point) {
     map.setCenter(mapCenter);
 }
 
-function createPointMarker(point, title, userIndex) {
+function createPointMarker(point, title, userId) {
 //    console.log('adding marker ' + point.lat + ' ' + point.lon);
 
-    userIndex = (userIndex) ? userIndex : 0;
+    userId = (userId) ? userId : 0;
     var marker = new google.maps.Marker({
         position: point.LatLng,
         map: map,
         title: title + "",
-        icon: colors[userIndex]
+        icon: {path: google.maps.SymbolPath.CIRCLE,
+            scale: 2,
+            fillColor: colorScale(userId),
+            strokeColor: colorScale(userId)}
     });
     markers.push(marker);
 }
@@ -245,7 +252,7 @@ function createUserMarker(point, userId)
 //    console.log(userMarkers);
 }
 
-function createPath(pts, userId, createMarkers, oldPath) {
+function createPath(pts, userId, oldPath) {
 
 //    console.log('Creating path');
     userId = (userId) ? userId : 0;
@@ -276,7 +283,17 @@ function createPath(pts, userId, createMarkers, oldPath) {
                 {
                     userMarkers[userId].setPosition(point.LatLng);
                 } else
+                {
                     createUserMarker(point, userId);
+                }
+            }
+            else
+            {
+                if (drawPointMarkers && point.distance >= distance_limit)
+                {
+                    var title = userId + "\t" + point.id + "\t" + point.time + "\t" + point.lat + "\t" + point.lon;
+                    createPointMarker(point, title, userId);
+                }
             }
             if (point.deltaTime === -1)
             {
@@ -308,8 +325,6 @@ function drawPath(polyPoints, userId, oldPath)
 //    oldPath = (typeof (oldPath) === 'undefined') ? false : oldPath;
     var color = new ColorCombo();
     userId = (userId) ? userId : 0;
-//    color = colors[userIndex];
-    //            console.log(color);
 
     var path;
     if (oldPath)
@@ -524,8 +539,11 @@ function prepareData()
     clearMap();
 //    generateUserColors();
 //    var start, end;
-    var points = getActivePoints(startDate, endDate, getActiveUserIds());
-
+    console.log('preparing data');
+    var activeUsers = getActiveUserIds();
+//    console.log(activeUsers);
+    var points = getActivePoints(startDate, endDate, activeUsers);
+    getImages(startDate, endDate, activeUsers);
     generateStats(points);
     prepareUsersPoints(points);
 }
@@ -716,9 +734,9 @@ function drawUsersTimePoints(sliderMapVal, window, oldPathWindow)
         }
 //        console.log(oldPoints);
         if (points.length > 0)
-            createPath(points, id, false, false);
+            createPath(points, id, false);
         if (oldPoints.length > 0)
-            createPath(oldPoints, id, false, true);
+            createPath(oldPoints, id, true);
     }
 //    manageCenter();
 //    getSteps(timeStats.min, timeStats.max);
