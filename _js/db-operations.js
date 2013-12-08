@@ -6,12 +6,15 @@
 
 var currentUser = "";
 var DB_FILE = 'db-operations.php';
+var MAP_FILE = 'map-api.php';
+var PROXY_FILE = 'ba-simple-proxy.php'
 var DELTA_TIME_DELETE_TOLERANCE = 15;
 var doLog = true;
+var geocoder;
 
 _openWindow = null;
 $(document).ready(function() {
-
+    geocoder = new google.maps.Geocoder();
 });
 
 function initDb() {
@@ -79,8 +82,20 @@ function updatGpxInDb(user, point, keys) {
             + (!keys || ($.inArray('deltaTime', keys) > -1) ? ", delta_time=" + point.deltaTime : "")
             + (!keys || ($.inArray('transMode', keys) > -1) ? ", trans_mode='" + point.transMode + "'" : "")
             + (!keys || ($.inArray('startPoint', keys) > -1) ? ", start_point=" + point.startPoint : "")
+            + (!keys || ($.inArray('street', keys) > -1) ? ", street='" + point.address.street + "'" : "")
+            + (!keys || ($.inArray('city', keys) > -1) ? ", city='" + point.address.city + "'" : "")
+            + (!keys || ($.inArray('county', keys) > -1) ? ", county='" + point.address.county + "'" : "")
+            + (!keys || ($.inArray('state', keys) > -1) ? ", state='" + point.address.state + "'" : "")
+            + (!keys || ($.inArray('country', keys) > -1) ? ", country='" + point.address.country + "'" : "")
+            + (!keys || ($.inArray('zip', keys) > -1) ? ", zip='" + point.address.zip + "'" : "")
+
+//    ,'street', 'city','county','state', 'country', 'zip'
+
             + " where track_id=" + point.id;
-//    if(doLog) console.log("update sql:\n" + sql);
+    if (doLog)
+        console.log("update sql:\n" + sql);
+
+    var address = getAddress(point.lat, point.lon);
     $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -639,4 +654,45 @@ function cloneTable(from, to)
         'async': false
     }
     );
+}
+
+
+function getAddress(lat, lon)
+{
+    /*
+     var latlng = new google.maps.LatLng(lat, lng);
+     geocoder.geocode({'latLng': latlng}, function(results, status) {
+     if (status == google.maps.GeocoderStatus.OK) {
+     if (results[1]) {
+     console.log(results[1]);
+     return results[1];
+     } else {
+     alert('No results found');
+     }
+     } else {
+     alert('Geocoder failed due to: ' + status);
+     }
+     });
+     */
+
+    var url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + lon + '&sensor=true';
+    var enc_url = encodeURI(url);
+//    console.log(enc_url);
+    jqXHR = $.ajax({
+        'type': 'GET',
+        'url': PROXY_FILE,
+        'data': {'url': enc_url},
+        'async': false
+    }
+    );
+//    console.log(jqXHR);
+//    var response = $.parseJSON(jqXHR.responseText);
+//    console.log(response);
+    var data = jqXHR.responseJSON.contents.results;
+//    var data = $.parseJSON(response.responseText);
+    var address = new Address(data[0]);
+    /*   if (doLog)
+     console.log(address);
+     */ return address;
+
 }

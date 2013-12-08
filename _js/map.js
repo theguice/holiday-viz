@@ -17,6 +17,7 @@ $(document).ready(function() {
     //google.maps.event.addDomListener(window, 'load', initializeMap);
 });
 var map;
+var geocoder;
 var playing = false;
 var autoCenter = false;
 var increment = 5; //step increment in minutes
@@ -72,6 +73,7 @@ function initMap() {
     $('#auto-center-button').on('click', toggleAutoCenter);
     $('#center-button').on('click', manageCenter);
     addConfigEvents();
+    geocoder = new google.maps.Geocoder();
     mapCenter = new google.maps.LatLng(37.865159, -122.282138);
     google.maps.visualRefresh = true;
     google.maps.event.addDomListener(window, 'load', setCurrentLocation);
@@ -99,7 +101,7 @@ function addConfigEvents()
         pointWindow = parseInt($('#active-window').val());
         oldPointWindow = parseInt($('#inactive-steps').val());
         drawPointMarkers = Boolean($('#draw-markers').prop('checked'));
-        console.log("Config="+increment + "\t" + pointWindow + "\t" + oldPointWindow + "\t" + drawPointMarkers)
+        console.log("Config=" + increment + "\t" + pointWindow + "\t" + oldPointWindow + "\t" + drawPointMarkers)
         $('#config-div').hide();
         return false;
 //        $('#map-refresh').trigger('click');
@@ -175,6 +177,8 @@ function showPosition(position) {
     var point = new Point(position);
 //    console.log(position);
 //    console.log(point);
+
+    getAddress(point.lat, point.lon);
 
     showMap(point);
 }

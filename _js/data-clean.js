@@ -8,6 +8,7 @@ var TIME_TOLERANCE = 120; //in seconds
 var TIME_CEILING = 36000; //1 Hour
 var DISTANCE_TOLERANCE = 50;//in meters
 var TEMP_TABLE = 'gpx_track_raw';
+var CLEAN_LIMIT = 2;
 
 
 
@@ -72,12 +73,12 @@ function cleanUserData(user)
 //        console.log(points.length + " points retrieved");
     var skipped = 0;
     var len = points.length;
-    for (var k = 0; k < len; k++)
+    for (var k = 0; k < len && k < CLEAN_LIMIT; k++)
     {
         var changed = false;
         var point = new Point(points[k]);
-
-
+//        if (!point.address || point.address.city === null || point.address.city === 0 || point.address.city === 1)
+            point.refreshAddress();
         /*   var x = 1;
          while (x <= k) {
          previousPoint = points[k - x];
@@ -151,12 +152,14 @@ function cleanUserData(user)
          else */
 
 
-        if (changed)
+        if (changed || k === 0)
         {
             console.log(k + "/" + len + "\t" + point.id + " changed");
 //                console.log(point);
 //                console.log(points[k]);
-            updatGpxInDb(user, point, ['distance', 'speed', 'deltaTime', 'active', 'transMode', 'startPoint']);
+//            address = getAddress(point.lat, point.lon);
+            updatGpxInDb(user, point, ['distance', 'speed', 'deltaTime', 'active', 'transMode', 'startPoint'
+                        , 'street', 'city', 'county', 'state', 'country', 'zip']);
 
 
         }

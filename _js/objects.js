@@ -46,6 +46,7 @@ function Point(data /*TRKPT or position*/)
             console.log(data.timestamp);
             this.time = data.timestamp;
             this.accuracy = (data.coords.accuracy) ? data.coords.accuracy : 0;
+            this.address = getAddress(this.lat, this.lon);
         }
         else if (data.transMode)
         {//CLONE Point
@@ -63,6 +64,7 @@ function Point(data /*TRKPT or position*/)
             this.transMode = data['transMode'];
             this.LatLng = data['LatLng'];
             this.startPoint = data['startPoint'];
+            this.address = data['address'];
         }
         else if (data._lat)
         {
@@ -71,6 +73,7 @@ function Point(data /*TRKPT or position*/)
             this.lat = (data._lat) ? parseFloat(data._lat) : 0;
             this.lon = (data._lon) ? parseFloat(data._lon) : 0;
             this.time = (data.time) ? new Date(data.time) : 0;
+            this.address = getAddress(this.lat, this.lon);
 
             this.accuracy = 0;
         }
@@ -82,6 +85,7 @@ function Point(data /*TRKPT or position*/)
             this.lon = (data.lon) ? parseFloat(data.lon) : 0;
             this.time = (data['time'] && data['time'][0]) ? new Date(data.time[0].text) : 0;
             this.startPoint = 0;
+            this.address = getAddress(this.lat, this.lon);
 
             this.accuracy = 0;
         }
@@ -102,6 +106,7 @@ function Point(data /*TRKPT or position*/)
             this.transMode = getTransMode(this.speed);
             this.LatLng = new google.maps.LatLng(this.lat, this.lon);
             this.startPoint = parseInt(data['start_point']);
+            this.address = new Address(data);
         }
 //        else if(data.)
         else
@@ -115,9 +120,11 @@ function Point(data /*TRKPT or position*/)
             this.speed = 0;
             this.distance = 0;
             this.startPoint = 0;
+            this.address = new Address();
         }
 
     }
+
 
 
 
@@ -129,6 +136,13 @@ Point.prototype.refreshTransMode = function()
 Point.prototype.refreshLatLng = function()
 {
     this.LatLng = new google.maps.LatLng(this.lat, this.lon);
+};
+
+Point.prototype.refreshAddress = function()
+{
+    console.log('refreshing address');
+    this.address = getAddress(this.lat, this.lon);
+    console.log(this.address);
 };
 
 function sortPoints(pts) {
@@ -237,6 +251,45 @@ function User(data)
     this.steps = [];
 }
 
+function Address(data)
+{
+    if (!data)
+    {
+        this.street = "";
+        this.city = "";
+        this.county = "";
+        this.state = "";
+        this.state_short = "";
+        this.country = "";
+        this.country_short = "";
+        this.zip = "";
+    }
+    else if (data.address_components)
+    {
+        this.street = data.address_components[1].long_name;
+        this.city = data.address_components[2].long_name;
+        this.county = data.address_components[3].long_name;
+        this.state = data.address_components[4].long_name;
+        this.state_short = data.address_components[4].short_name;
+        this.country = data.address_components[5].long_name;
+        this.country_short = data.address_components[5].short_name;
+        this.zip = data.address_components[6].long_name;
+        ;
+    }
+    else if (data.street)
+    {
+
+        this.street = data.street;
+        this.city = data.address;
+        this.county = data.county;
+        this.state = data.state;
+        this.state_short = data.state_short;
+        this.country = data.country;
+        this.country_short = data.country_short;
+        this.zip = data.zip;
+    }
+
+}
 
 function convertSpeedMStoMPH(speed)
 {
