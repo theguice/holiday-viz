@@ -5,7 +5,6 @@ ol, ul{list-style:none;}
 th{text-align:left;}
 table{border-collapse:collapse;}
 
-
 body {
     margin:0;
     padding:0;
@@ -25,6 +24,7 @@ header {
 
     vertical-align: middle;
 }
+
 
 header h1 {
     color:#fff;
@@ -344,4 +344,20 @@ svg .summary-icon{
     font-size:1.5em;
     color: rgb(220,220,220);
     
+}
+
+
+/* user selection overlay */
+#user-selection {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(220,220,220,.5);
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 500;
+}
+#selected {
+    width: 90%;
+    height: 50px;
 }

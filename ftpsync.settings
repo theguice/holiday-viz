@@ -1,0 +1,12 @@
+ {
+    "primary": {
+        "host": "ischool.berkeley.edu",
+        "username": "shaun",
+        "password": null,
+        "path": "/public_html/iolab/",
+        "port": 22,
+
+        "upload_on_save": true,
+        "tls": true
+    }
+}
