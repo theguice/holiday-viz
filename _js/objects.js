@@ -43,7 +43,7 @@ function Point(data /*TRKPT or position*/)
 
             this.lat = (data.coords.latitude) ? data.coords.latitude : 0;
             this.lon = (data.coords.longitude) ? data.coords.longitude : 0;
-            console.log(data.timestamp);
+//            console.log(data.timestamp);
             this.time = data.timestamp;
             this.accuracy = (data.coords.accuracy) ? data.coords.accuracy : 0;
             this.address = getAddress(this.lat, this.lon);
@@ -140,13 +140,13 @@ Point.prototype.refreshLatLng = function()
 
 Point.prototype.refreshAddress = function()
 {
-    console.log('refreshing address');
+//    console.log('refreshing address');
     this.address = getAddress(this.lat, this.lon);
-    console.log(this.address);
+//    console.log(this.address);
 };
 
 function sortPoints(pts) {
-    console.log(pts);
+//    console.log(pts);
     var sorted = pts;
 
 

@@ -26,7 +26,7 @@ var oldPointWindow = 10000;
 var drawPointMarkers = false;
 var drawMarkersToggle = false;
 var autoCenterToggle = false;
-var intervalDelay = 300;
+var intervalDelay = 100;
 var distance_limit = 200;
 var startDate;
 var endDate;

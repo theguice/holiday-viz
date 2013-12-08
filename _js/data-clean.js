@@ -8,7 +8,7 @@ var TIME_TOLERANCE = 120; //in seconds
 var TIME_CEILING = 36000; //1 Hour
 var DISTANCE_TOLERANCE = 50;//in meters
 var TEMP_TABLE = 'gpx_track_raw';
-var CLEAN_LIMIT = 2;
+var CLEAN_LIMIT = -1;
 
 
 
@@ -49,7 +49,7 @@ function cleanData() {
     resetActiveGpxPoints();
     var usersJSON = getAllUsers();
     var users = [];
-    console.log(usersJSON);
+//    console.log(usersJSON);
     console.log(usersJSON.length + " users retrieved");
     for (var i = 0, j = usersJSON.length; i < j; i++)
     {
@@ -73,7 +73,7 @@ function cleanUserData(user)
 //        console.log(points.length + " points retrieved");
     var skipped = 0;
     var len = points.length;
-    for (var k = 0; k < len && k < CLEAN_LIMIT; k++)
+    for (var k = 0; k < len && (k < CLEAN_LIMIT || CLEAN_MIMIT===-1); k++)
     {
         var changed = false;
         var point = new Point(points[k]);
