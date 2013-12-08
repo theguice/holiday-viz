@@ -38,31 +38,18 @@
 
             <div id="controls">
                 <div class="form-group btn-group">
-                    <button id="upload-button" class="btn btn-sm btn-success" value="Upload"><i class="fa fa-upload fa-1x"></i></button>
-                    <button type="submit" class="btn btn-sm btn-success map-refresh">Animate</button>
-                    <button id="draw-button" class=" btn btn-sm btn-success">Draw</button>
-                    <button type="button" id="center-button" class=" btn btn-sm btn-success">Center</button>
-                </div> 
-                <div class="form-group btn-group" data-toggle="buttons" >
 
-                    <button id="play-button" class="btn btn-sm btn-success" data-loading-text="Playing" data-toggle="button"><i class="fa fa-play"></i></button>
-                    <button id="auto-center-button" class="btn  btn-sm btn-success" data-toggle="button">Auto Center</button>
+                    <button id="draw-button" class=" btn btn-sm btn-success">Draw</button>
+                    <button type="button" id="center-button" class=" btn btn-sm">Center</button>
+                </div> 
+                <div class="form-group btn-group" >
+                    <button type="submit" class="btn btn-sm btn-success map-refresh">Animate</button>
+                    <button  data-toggle="buttons" id="play-button" class="btn btn-sm btn-success" data-loading-text="Playing" data-toggle="button"><i class="fa fa-play"></i></button>
+                </div> 
+                <div class="form-group btn-group" >
                     <button id="config-button" class="btn  btn-sm btn-warning" data-toggle="button"><i class="fa fa-cog"></i></button>
                 </div>
-                <div class="form-group btn-group  date-group">
-                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-calendar fa-1x"></i> Start Date <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu date-dropdown" role="menu" id='start-date-menu' >
-                    </ul>
-                </div>
-                <div class="form-group btn-group  date-group">
-                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-calendar fa-1x"></i> End Date <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu date-dropdown" role="menu" id='end-date-menu'>
-                    </ul>
-                </div>
+
             </div>
             <div class="time-control">
                 <input type="range" id="slider" class="range"/>
@@ -72,88 +59,106 @@
         <section id="main-section">
             <div id="config-div" class="popup-div">
                 <form id="config-form" class="form-group">
+                    <button id="upload-button" class="btn btn-sm" value="Upload"><i class="fa fa-upload fa-1x"></i>Upload</button>
+                    <button id="auto-center-button" class="btn  btn-sm" data-toggle="button">Auto Center Animate</button>
+                    <h1>Filters</h1>
+                    <div class="form-group btn-group  date-group">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-calendar fa-1x"></i> Start Date <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu date-dropdown" role="menu" id='start-date-menu' >
+                        </ul>
+                    </div>
+                    <div class="form-group btn-group  date-group">
+                        <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-calendar fa-1x"></i> End Date <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu date-dropdown" role="menu" id='end-date-menu'>
+                        </ul>
+                    </div>
                     <h1>Enter Durations in Minutes</h1>
-                    <h1>Step Interval</h1>
+                    <h2>Step Interval</h2>
                     <input type="text" id="step-duration">
-                    <h1>Active Interval</h1>
+                    <h2>Active Interval</h2>
                     <input type="text" id="active-window">
-                    <h1>Inactive Interval</h1>
+                    <h2>Inactive Interval</h2>
                     <input type="text" id="inactive-steps">
-                    <h1 ><label><input id='draw-markers' type='checkbox' checked/>Draw Markers</label></h1>
+                    <button type='button' id="draw-markers-button" class="btn btn-sm btn-default" data-toggle="button">Draw Point Markers (Slow)</button>
+                    <!--<h2 ><label><input id='draw-markers' type='checkbox' checked/>Draw Markers</label></h2>-->
 
                     <button type="submit" class='btn btn-lg btn-primary' id="save-config"><i class="fa fa-save fa-1x"></i> Save</button>
                     <button type="button" class='btn btn-lg btn-danger' value="Cancel" id="hide-config"><i class="fa fa-ban fa-1x"></i> Cancel</button>
-                            </form>
-                            </div>
-                            <div id="upload-div" class="popup-div">
-                            <h1> Upload Traveler GPX</h1>
-                            <div class="">
-                            <select class="form-control input-sm" id="users">
-                            <option>Select User</option>
-                            <option id='new-user-option' value='new'>New User ...</option>
-                        </select>
-                        </div>
+                </form>
+            </div>
+            <div id="upload-div" class="popup-div">
+                <h1> Upload Traveler GPX</h1>
+                <div class="">
+                    <select class="form-control input-sm" id="users">
+                        <option>Select User</option>
+                        <option id='new-user-option' value='new'>New User ...</option>
+                    </select>
+                </div>
 
-                        <div id="new-user" class="popup-div">
-                            <form id="new-user-form" class='form-group'>
-                                <input type="text" id="new-user-first-name" placeholder="First Name"/>
-                                <input type="text" id="new-user-last-name" placeholder="Last Name"/>
-                                <input type="text" id="new-user-twitter" placeholder="@Twitter"/>
-                                <input type="text" id="new-user-instagram" placeholder="Instagram"/>
-                                <input type="text" id="new-user-image-url" placeholder="Image Url"/>
-                                <h1><label> <input type="checkbox" id="new-user-use-bike" class="checkbox"/> Use Bike </label></h1>
-                                <button type="submit" id="new-user-submit" class='btn btn-lg btn-primary'><i class="fa fa-save fa-1x"></i> Submit</button>
-                                <button id="new-user-cancel" class='btn btn-lg btn-success btn-danger'><i class="fa fa-ban fa-1x"></i> Cancel</button>
-                            </form>
-                        </div>
-                        <input class="btn btn-lg btn-primary" type="file" id="files" name="files[]" multiple />
-                        <button class="btn btn-lg cancel-button btn-danger" type="button" id="cancel-upload-button"><i class="fa fa-ban fa-1x"></i> Cancel</button>
-                        </div>
+                <div id="new-user" class="popup-div">
+                    <form id="new-user-form" class='form-group'>
+                        <input type="text" id="new-user-first-name" placeholder="First Name"/>
+                        <input type="text" id="new-user-last-name" placeholder="Last Name"/>
+                        <input type="text" id="new-user-twitter" placeholder="@Twitter"/>
+                        <input type="text" id="new-user-instagram" placeholder="Instagram"/>
+                        <input type="text" id="new-user-image-url" placeholder="Image Url"/>
+                        <h1><label> <input type="checkbox" id="new-user-use-bike" class="checkbox"/> Use Bike </label></h1>
+                        <button type="submit" id="new-user-submit" class='btn btn-lg btn-primary'><i class="fa fa-save fa-1x"></i> Submit</button>
+                        <button id="new-user-cancel" class='btn btn-lg btn-success btn-danger'><i class="fa fa-ban fa-1x"></i> Cancel</button>
+                    </form>
+                </div>
+                <input class="btn btn-lg btn-primary" type="file" id="files" name="files[]" multiple />
+                <button class="btn btn-lg cancel-button btn-danger" type="button" id="cancel-upload-button"><i class="fa fa-ban fa-1x"></i> Cancel</button>
+            </div>
 
 
-                        <div id="map-area">
-                            <div id="map-canvas">
-                        </div>        
+            <div id="map-area">
+                <div id="map-canvas">
+                </div>        
 
-                        </div>
-                        <div id="dashboard">
-                            <div id="dashboard-summary">
-                                <label id="speed-title" class="dashboard-title">Average Speed:</label>
-                                <label id="speed-value" class="dashboard-value"></label>
-                                <br>
-                                <label id="distance-title" class="dashboard-title">Total Distance:</label>
-                                <label id="distance-value" class="dashboard-value"></label>
-                                <br>
-                                <label id="time-title" class="dashboard-title">Total Time:</label>
-                                <label id="time-value" class="dashboard-value"></label>
-                                <br>
-                                <label id="count-title" class="dashboard-title">Track Points:</label>
-                                <label id="count-value" class="dashboard-value"></label>
+            </div>
+            <div id="dashboard">
+                <div id="dashboard-summary">
+                    <label id="speed-title" class="dashboard-title">Average Speed:</label>
+                    <label id="speed-value" class="dashboard-value"></label>
+                    <br>
+                    <label id="distance-title" class="dashboard-title">Total Distance:</label>
+                    <label id="distance-value" class="dashboard-value"></label>
+                    <br>
+                    <label id="time-title" class="dashboard-title">Total Time:</label>
+                    <label id="time-value" class="dashboard-value"></label>
+                    <br>
+                    <label id="count-title" class="dashboard-title">Track Points:</label>
+                    <label id="count-value" class="dashboard-value"></label>
 
-                            </div>
-                            <div id="dashboard-table">
-                            </div>
+                </div>
+                <div id="dashboard-table">
+                </div>
 
-                            <div id="dashboard-trans-modes">
-                                <div id="donut-by-time" class="overall-donut"></div>
-                                <div id="donut-by-distance" class="overall-donut"></div>
+                <div id="dashboard-trans-modes">
+                    <div id="donut-by-time" class="overall-donut"></div>
+                    <div id="donut-by-distance" class="overall-donut"></div>
 
-                                <!--<svg id="trans-modes-viz" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>-->
-                            </div>
+                    <!--<svg id="trans-modes-viz" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>-->
+                </div>
 
-                        </div>
-                        <div id="image-canvas">
-                        </div>
-                        <!--         <a class='gallery' href='http://farm4.staticflickr.com/3727/11123312783_8a9fbd9519_z.jpg'>Photo_1</a>
-                                <a class='gallery' href='http://farm8.staticflickr.com/7356/11119087036_1e6e01aa7c_z.jpg'>Photo_2</a>
-                                <script>
-                                    // jQuery('a.gallery').colorbox();
-                                    $(".gallery").colorbox({rel:'gallery', slideshow:true});
-                        
-                                </script>
-                        -->   
+            </div>
+            <div id="image-canvas">
+            </div>
+            <!--         <a class='gallery' href='http://farm4.staticflickr.com/3727/11123312783_8a9fbd9519_z.jpg'>Photo_1</a>
+                    <a class='gallery' href='http://farm8.staticflickr.com/7356/11119087036_1e6e01aa7c_z.jpg'>Photo_2</a>
+                    <script>
+                        // jQuery('a.gallery').colorbox();
+                        $(".gallery").colorbox({rel:'gallery', slideshow:true});
+            
+                    </script>
+            -->   
 
-                        </section>
-                        </div>
-                        </body>
-                        </html>
+        </section>
+    </div>
+</body>
+</html>

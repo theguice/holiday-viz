@@ -23,7 +23,9 @@ var autoCenter = false;
 var increment = 5; //step increment in minutes
 var pointWindow = 60; ///in minutes
 var oldPointWindow = 10000;
-var drawPointMarkers = true;
+var drawPointMarkers = false;
+var drawMarkersToggle = false;
+var autoCenterToggle = false;
 var intervalDelay = 300;
 var distance_limit = 200;
 var startDate;
@@ -71,6 +73,7 @@ function initMap() {
 //    $('#play-button').on('click', takeSteps);
     $('#play-button').on('click', play);
     $('#auto-center-button').on('click', toggleAutoCenter);
+    $('#draw-markers-button').on('click', toggleDrawMarkers);
     $('#center-button').on('click', manageCenter);
     addConfigEvents();
     geocoder = new google.maps.Geocoder();
@@ -100,7 +103,11 @@ function addConfigEvents()
         increment = parseInt($('#step-duration').val());
         pointWindow = parseInt($('#active-window').val());
         oldPointWindow = parseInt($('#inactive-steps').val());
-        drawPointMarkers = Boolean($('#draw-markers').prop('checked'));
+//        drawPointMarkers = Boolean($('#draw-markers').prop('checked'));
+        drawPointMarkers = Boolean($('#draw-markers-button').hasClass('active'));
+        autoCenter = Boolean($('#auto-center-button').hasClass('active'));
+
+
         console.log("Config=" + increment + "\t" + pointWindow + "\t" + oldPointWindow + "\t" + drawPointMarkers)
         $('#config-div').hide();
         return false;
@@ -746,16 +753,29 @@ function drawUsersTimePoints(sliderMapVal, window, oldPathWindow)
 //    getSteps(timeStats.min, timeStats.max);
 
 }
-function toggleAutoCenter()
+function toggleDrawMarkers()
 {
-    autoCenter = !autoCenter;
-    if (autoCenter)
+    drawMarkersToggle = !drawMarkersToggle;
+    if (drawMarkersToggle)
     {
-        $('#auto-center-button').removeClass('btn-success').addClass('btn-info');
+        $('#draw-markers-button').addClass('btn-info');
     }
     else
     {
-        $('#auto-center-button').removeClass('btn-info').addClass('btn-success');
+        $('#draw-markers-button').removeClass('btn-info');
+    }
+}
+function toggleAutoCenter()
+{
+    autoCenterToggle = !autoCenterToggle;
+//    var active  autoCenter = !autoCenter;= $('#auto-center-button').hasClass('active');
+    if (autoCenterToggle)
+    {
+        $('#auto-center-button').addClass('btn-info');
+    }
+    else
+    {
+        $('#auto-center-button').removeClass('btn-info');
     }
 }
 function play()
