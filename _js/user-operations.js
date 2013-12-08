@@ -114,9 +114,9 @@ function getUser(id) {
  */
 function formatUserSelectHTML(user)
 {
-    var str = "<div class='user-pic' data-id='" + user.id + "' style='border-color:" + colorScale(user.id) + "'>"
+    var str = "<div class='user-pic' data-id='" + user.id + "'>"
 //    + "<img src='" + user['avatar'] + "' class='user-picture'><input type='checkbox' id = '" + user['id'] + "'>"
-            + "<img src='" + user['avatar'] + "' class='user-picture selected-user' alt='" + user.firstName + " " + user.lastName + "'/>"
+            + "<img src='" + user['avatar'] + "' class='user-picture selected-user' alt='" + user.firstName + " " + user.lastName + "'  style='border-color:" + colorScale(user.id) + "'/>"
             + "<div class='user-button-img' data-mode='remove'><img src='_images/remove-button.png'/>"
             + "</div></div>";
 

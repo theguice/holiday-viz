@@ -158,14 +158,32 @@ li {
     /*border-radius: 5px;*/
     display:inline-block;
 }
-
+.date-group{
+       width: 90%;
+    /*margin:5px;*/
+    /*padding:  5px;*/
+    /*border-radius: 5px;*/
+    display:inline-block; 
+}
+.date-group button, select, input{
+       width: 100%;
+    margin:5px;
+    padding:  5px;
+    /*border-radius: 5px;*/
+    display:inline-block; 
+}
 
 .popup-div h1{
     color:white;
-    font-size: 1.5em;
+    font-size: 1.25em;
     margin:10px;
 }
 
+.popup-div h2{
+    color:rgb(220,220,220);
+    font-size: 1em;
+    margin:10px;
+}
 .form-group {
 margin-bottom: 0px;
 }

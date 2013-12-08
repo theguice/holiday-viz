@@ -17,13 +17,16 @@ $(document).ready(function() {
     //google.maps.event.addDomListener(window, 'load', initializeMap);
 });
 var map;
+var geocoder;
 var playing = false;
 var autoCenter = false;
 var increment = 5; //step increment in minutes
 var pointWindow = 60; ///in minutes
 var oldPointWindow = 10000;
-var drawPointMarkers = true;
-var intervalDelay = 300;
+var drawPointMarkers = false;
+var drawMarkersToggle = false;
+var autoCenterToggle = false;
+var intervalDelay = 100;
 var distance_limit = 200;
 var startDate;
 var endDate;
@@ -70,8 +73,10 @@ function initMap() {
 //    $('#play-button').on('click', takeSteps);
     $('#play-button').on('click', play);
     $('#auto-center-button').on('click', toggleAutoCenter);
+    $('#draw-markers-button').on('click', toggleDrawMarkers);
     $('#center-button').on('click', manageCenter);
     addConfigEvents();
+    geocoder = new google.maps.Geocoder();
     mapCenter = new google.maps.LatLng(37.865159, -122.282138);
     google.maps.visualRefresh = true;
     google.maps.event.addDomListener(window, 'load', setCurrentLocation);
@@ -98,8 +103,12 @@ function addConfigEvents()
         increment = parseInt($('#step-duration').val());
         pointWindow = parseInt($('#active-window').val());
         oldPointWindow = parseInt($('#inactive-steps').val());
-        drawPointMarkers = Boolean($('#draw-markers').prop('checked'));
-        console.log("Config="+increment + "\t" + pointWindow + "\t" + oldPointWindow + "\t" + drawPointMarkers)
+//        drawPointMarkers = Boolean($('#draw-markers').prop('checked'));
+        drawPointMarkers = Boolean($('#draw-markers-button').hasClass('active'));
+        autoCenter = Boolean($('#auto-center-button').hasClass('active'));
+
+
+        console.log("Config=" + increment + "\t" + pointWindow + "\t" + oldPointWindow + "\t" + drawPointMarkers)
         $('#config-div').hide();
         return false;
 //        $('#map-refresh').trigger('click');
@@ -175,6 +184,8 @@ function showPosition(position) {
     var point = new Point(position);
 //    console.log(position);
 //    console.log(point);
+
+    getAddress(point.lat, point.lon);
 
     showMap(point);
 }
@@ -742,16 +753,29 @@ function drawUsersTimePoints(sliderMapVal, window, oldPathWindow)
 //    getSteps(timeStats.min, timeStats.max);
 
 }
-function toggleAutoCenter()
+function toggleDrawMarkers()
 {
-    autoCenter = !autoCenter;
-    if (autoCenter)
+    drawMarkersToggle = !drawMarkersToggle;
+    if (drawMarkersToggle)
     {
-        $('#auto-center-button').removeClass('btn-success').addClass('btn-info');
+        $('#draw-markers-button').addClass('btn-info');
     }
     else
     {
-        $('#auto-center-button').removeClass('btn-info').addClass('btn-success');
+        $('#draw-markers-button').removeClass('btn-info');
+    }
+}
+function toggleAutoCenter()
+{
+    autoCenterToggle = !autoCenterToggle;
+//    var active  autoCenter = !autoCenter;= $('#auto-center-button').hasClass('active');
+    if (autoCenterToggle)
+    {
+        $('#auto-center-button').addClass('btn-info');
+    }
+    else
+    {
+        $('#auto-center-button').removeClass('btn-info');
     }
 }
 function play()
