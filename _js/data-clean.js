@@ -73,7 +73,7 @@ function cleanUserData(user)
 //        console.log(points.length + " points retrieved");
     var skipped = 0;
     var len = points.length;
-    for (var k = 0; k < len && (k < CLEAN_LIMIT || CLEAN_MIMIT===-1); k++)
+    for (var k = 0; k < len && (k < CLEAN_LIMIT || CLEAN_LIMIT===-1); k++)
     {
         var changed = false;
         var point = new Point(points[k]);
