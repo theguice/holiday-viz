@@ -541,7 +541,6 @@ function processTrkpts()
     console.log('Animation');
     prepareData();
     reloadSlider();
-    console.log('before prepareUsersTimeP');
     prepareUsersTimePoints();
 //    drawUsersPoints();
 
