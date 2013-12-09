@@ -29,6 +29,7 @@ var currentLevel = 0;
 var points = [];
 var markers = [];
 var userMarkers = {};
+var userLocations = {};
 var paths = [];
 var mapCenter;
 var mapZoom = 14;
@@ -233,6 +234,8 @@ function createUserMarker(point, userId)
             strokeColor: colorScale(userId)}
     });
     userMarkers[userId] = marker;
+    console.log(point);
+//    userLocations[userId] = point.address;
 //    console.log(userMarkers);
 }
 
@@ -266,9 +269,11 @@ function createPath(pts, userId, oldPath) {
                 if (userMarkers[userId])
                 {
                     userMarkers[userId].setPosition(point.LatLng);
+                    userLocations[userId] = point.address;
                 } else
                 {
                     createUserMarker(point, userId);
+                    userLocations[userId] = point.address;
                 }
             }
             else
@@ -573,20 +578,30 @@ function addSliderEvent()
         var self = $(this);
         var val = self.val();
         $('#slider-value').text(sliderMap[val].toLocaleDateString() + " " + sliderMap[val].toLocaleTimeString());
-        updateUserLocations(val);
+        updateUserLocations();
         clearMap();
         drawUsersTimePoints(val, pointWindow, oldPointWindow);
         if (autoCenter && boundaryTimeStats[val])
             manageCenter(val, boundaryTimeStats[val]);
     });
 }
-function updateUserLocations(val)
+function updateUserLocations()
 {
     var activeUserIds = getActiveUserIds();
-    for(var i = 0, j = activeUserIds.length;i<j;i++ )
+//    console.log(userLocations);
+    for (var i = 0, j = activeUserIds.length; i < j; i++)
     {
         var uid = activeUserIds[i];
-        $('#user-location-'+uid).text('User Location '+ val);
+        if (userLocations[uid])
+        {
+            var txt = ((userLocations[uid].city) ? userLocations[uid].city + ", " :
+                    (userLocations[uid].street) ? userLocations[uid].street + ", "
+                    : (userLocations[uid].county) ? userLocations[uid].county + ", " : "")
+                    + ((userLocations[uid].state_code) ? userLocations[uid].state_code : "");
+
+            txt = txt.replace('undefined', "");
+            $('#user-location-' + uid).text(txt);
+        }
     }
 }
 function prepareUsersPoints(points)

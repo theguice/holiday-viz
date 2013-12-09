@@ -59,7 +59,7 @@ header h2 {
 }
 #control-buttons{
     margin: 0 auto;
-    
+
     display: inline-block;
 }
 #user-pic{
@@ -69,11 +69,17 @@ header h2 {
     left:5px;
 }
 .user-location{
-    font-size:1em;
-    background-color: rgba(255,255,255,.7);
+    font-size: 1em;
+    background-color: rgba(255,255,255,.5);
     width: 90%;
-    word-wrap: break-word;
+    /* overflow-wrap: break-word; */
+    margin: 5%;
+    /* word-wrap: break-word; */
     display: inline-block;
+    /* height: 20px; */
+     white-space: pre-wrap; 
+    text-overflow: clip;
+    overflow: hidden;
 }
 
 #map-area{
@@ -94,33 +100,37 @@ header h2 {
 .time-control {
 
     height: 100%;
-    
+
 
     margin: 0 auto;
 
     padding: 5px;
 
     width: calc(100% - 603px);
-    
+
 
     display: inline-block;
-    
+
 
     vertical-align: middle;
+
+    line-height: 3em;
 
 }
 #slider
 {
 
     display: inline-block;
-    
+
 
     height: 50%;
-    
+
 
     width: 100%;
 
-    -webkit-appearance: none;  -webkit-border-radius: 5px;  
+    -webkit-appearance: none;  
+
+    -webkit-border-radius: 10px;  
 
     -webkit-box-shadow: inset 0 0 5px #333;
 }
@@ -128,7 +138,7 @@ header h2 {
     /* z-index:200; */
     height: 100%;
     line-height: 3em;
-    width: 200px;
+    width: 195px;
     margin: 0 auto;
     display: inline-block;
     vertical-align: middle;
@@ -145,8 +155,10 @@ input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     background-color: rgb(0,120,200);
     opacity: 0.8;
-    width: 10px;
-    height: 26px;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    -webkit-box-shadow: inset 0 0 5px #333;
 }
 
 #container {
@@ -258,25 +270,28 @@ li {
     position: absolute;
     left: 200px;
     top: 0;
-    height: 120px;
+    /* height: 120px; */
     display: inline;
     padding: 0 10px 10px 10px;
     overflow-x: auto;
     overflow-y: hidden;
     /* overflow-wrap: initial; */
     z-index: 300;
-    /* float: left; */
+    float: left;
     white-space: nowrap;
     margin: 0 auto;
+    vertical-align: top;
 }
 .user-pic
 {
     display: inline-block;
     position: relative;
-    height: 100px;
+    top: 0;
+    /* height: 101px; */
     width: 100px;
     /* float: right; */
     z-index: inherit;
+    vertical-align: text-top;
 }
 .user-picture
 {
@@ -305,10 +320,10 @@ li {
     background-color: rgba(255,255,255,.5);
 }
 .user-button-img img{
-    width: 70%;
-    height: 70%;
-    left: 15%;
-    top: 15%;
+    width: 50%;
+    height: 50%;
+    left: 25%;
+    top: 25%;
     position: relative;
     z-index: 320;
 }

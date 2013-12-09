@@ -334,7 +334,7 @@ function syncLocations()
 {
     console.log('syncing locations');
     var sql = "update gpx_track a, gpx_locations loc"
-            + " set a.city = loc.city, a.street = loc.road, a.county = loc.county, a.state=loc.state, a.country=loc.country a.zipcode = loc.postcode "
+            + " set a.city = loc.city, a.street = loc.road, a.county = loc.county, a.state=loc.state, a.country=loc.country, a.zip = loc.postcode "
             + " where round(a.latitude,4)=round(loc.lat,4) and round(a.longitude,4)=round(loc.lon,4)";
     resp = runCustomQuery(sql);
 
