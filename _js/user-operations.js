@@ -11,14 +11,6 @@ var currentUser;
 var activeUserIds = [];
 var colorScale;
 
-$(document).ready(function() {
-    colorScale = d3.scale.category20();
-    loadUsers();
-    addUserEvents();
-
-});
-
-
 function loadUsers() {
 //    if(doLog) console.log("Step1:");
     var users = getAllUsers();

@@ -11,25 +11,6 @@ var TEMP_TABLE = 'gpx_track_raw';
 var CLEAN_LIMIT = -1;
 
 
-
-
-$(document).ready(function()
-{
-    $('#clean').click(function() {
-        cleanData();
-    });
-    $('#reload').click(function() {
-        reloadTable($('#reload-target').val());
-    });
-    $('#backup').click(function() {
-        backupTable($('#backup-target').val());
-    });
-
-    generateColors();
-//    console.log("Before cleaning data!")
-
-//    cleanData();
-});
 function generateColors()
 {
     var colorScale = d3.scale.category20();

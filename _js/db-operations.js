@@ -13,9 +13,6 @@ var doLog = false;
 var geocoder;
 
 _openWindow = null;
-$(document).ready(function() {
-    geocoder = new google.maps.Geocoder();
-});
 
 function initDb() {
     if (doLog)
