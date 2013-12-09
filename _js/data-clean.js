@@ -23,6 +23,10 @@ $(document).ready(function()
     $('#address-button').click(function() {
         updateLocations(parseInt($('#address-limit').val()));
     });
+    
+    $('#sync-button').click(function(){
+        syncLocations();
+    });
     generateColors();
 //    console.log("Before cleaning data!")
 
@@ -268,7 +272,7 @@ function checkActive(point) {
 function updateLocations(limit)
 {
     console.log('updating addresses');
-    var sql = 'select distinct latitude as lat, longitude as lon from gpx_track';
+    var sql = 'select distinct round(latitude,4) as lat, round(longitude,4) as lon from gpx_track';
     data = runCustomQuery(sql);
     for (var i = 0, j = data.length; i < j && (i < limit || limit === -1); i++)
     {
@@ -303,18 +307,29 @@ function updateLocation(lat, lon)
 
 
     var sql = "insert into gpx_locations (lat,lon,building, road, neighbourhood, city, county, state, postcode, country, country_code)"
-            + "values (" + lat + "," + lon + ",'" 
-            + address.building + "','" 
-            + address.road + "','" 
-            + address.neighbourhood + "','" 
-            + address.city+ "','" 
-            + address.county + "','" 
-            + address.state + "','" 
-            + address.postcode + "','" 
-            + address.country + "','" 
+            + "values (" + lat + "," + lon + ",'"
+            + address.building + "','"
+            + address.road + "','"
+            + address.neighbourhood + "','"
+            + address.city + "','"
+            + address.county + "','"
+            + address.state + "','"
+            + address.postcode + "','"
+            + address.country + "','"
             + address.country_code + "')";
     sql = sql.replace('undefined', '');
 //    console.log(sql);
+    resp = runCustomQuery(sql);
+
+}
+
+
+function syncLocations()
+{
+    console.log('syncing locations');
+    var sql = "update gpx_track a, gpx_locations loc"
+            + " set a.city = loc.city, a.street = loc.road, a.county = loc.county, a.state=loc.state, a.country=loc.country a.zipcode = loc.postcode "
+            + " where round(a.latitude,4)=round(loc.lat,4) and round(a.longitude,4)=round(loc.lon,4)";
     resp = runCustomQuery(sql);
 
 }
