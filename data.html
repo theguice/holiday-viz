@@ -25,16 +25,23 @@ and open the template in the editor.
     <body>
         <div>
             <input type="button" id="clean" value="Clean"/>
-            <input type="button" id="backup" value="Backup"/>
+             <label> Address Limit</label>
+             <input id="address-limit" type="text" value="-1"/>
+            <input type="button" id="address-button" value="Get Addresses"/>
             <label> Backup To </label> <input id="backup-target" type="text" value="gpx_track_raw"/>
-            <input type="button" id="reload" value="Reload"/>
+            <input type="button" id="backup" value="Backup"/>
             <label> Reload From </label> <input id="reload-target" type="text" value="gpx_track_raw"/>
+            <input type="button" id="reload" value="Reload"/>
+
             <ul id="colors">
 
             </ul>
 
             <ul id="users">
 
+            </ul>
+
+            <ul id="addresses">
             </ul>
         </div>
     </body>

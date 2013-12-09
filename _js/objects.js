@@ -253,6 +253,7 @@ function User(data)
 
 function Address(data)
 {
+    this.building = "";
     if (!data)
     {
         this.street = "";
@@ -261,8 +262,20 @@ function Address(data)
         this.state = "";
         this.state_short = "";
         this.country = "";
-        this.country_short = "";
+        this.country_code = "";
         this.zip = "";
+    }
+    else if(data.road)
+    {
+        this.building = data.building;
+         this.street = data.road;
+        this.city = data.city;
+        this.county = data.county;
+        this.state = data.state;
+        this.state_short = "";
+        this.country = data.country;
+        this.country_code = data.country_code;
+        this.zip = data.postcode;
     }
     else if (data.address_components)
     {
@@ -272,7 +285,7 @@ function Address(data)
         this.state = data.address_components[4].long_name;
         this.state_short = data.address_components[4].short_name;
         this.country = data.address_components[5].long_name;
-        this.country_short = data.address_components[5].short_name;
+        this.country_code= data.address_components[5].short_name;
         this.zip = data.address_components[6].long_name;
         ;
     }
@@ -285,7 +298,7 @@ function Address(data)
         this.state = data.state;
         this.state_short = data.state_short;
         this.country = data.country;
-        this.country_short = data.country_short;
+        this.country_code = data.country_code;
         this.zip = data.zip;
     }
 

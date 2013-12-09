@@ -696,3 +696,52 @@ function getAddress(lat, lon)
      */ return address;
 
 }
+
+
+function runCustomQuery(sql)
+{
+
+    var jqXHR = $.ajax({
+        'type': 'GET',
+        'url': DB_FILE,
+        'data': {
+            'q': sql
+        },
+        'async': false
+    }
+    );
+    var data = $.parseJSON(jqXHR.responseText);
+    if (doLog)
+        console.log(data);
+    return data;
+}
+
+
+function runCustomFetch(url)
+{
+    var enc_url = encodeURI(url);
+//    console.log(enc_url);
+    jqXHR = $.ajax({
+        'type': 'GET',
+        'url': PROXY_FILE,
+        'data': {'url': enc_url},
+        'async': false
+    }
+    );
+
+//    console.log(jqXHR);
+    var response;
+    if (jqXHR.responseJSON)
+        response = jqXHR.responseJSON;
+    else
+        response = $.parseJSON(jqXHR.responseText);
+//    console.log(response);
+    return response;
+
+//    var data = jqXHR.responseJSON.contents.results;
+//    var data = $.parseJSON(response.responseText);
+//    var address = new Address(data[0]);
+//    /*   if (doLog)
+//     console.log(address);
+//     */ return address;
+}

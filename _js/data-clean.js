@@ -6,13 +6,9 @@
 
 var TIME_TOLERANCE = 120; //in seconds
 var TIME_CEILING = 36000; //1 Hour
-var DISTANCE_TOLERANCE = 50;//in meters
+var DISTANCE_TOLERANCE = 50; //in meters
 var TEMP_TABLE = 'gpx_track_raw';
 var CLEAN_LIMIT = -1;
-
-
-
-
 $(document).ready(function()
 {
     $('#clean').click(function() {
@@ -24,7 +20,9 @@ $(document).ready(function()
     $('#backup').click(function() {
         backupTable($('#backup-target').val());
     });
-
+    $('#address-button').click(function() {
+        updateLocations(parseInt($('#address-limit').val()));
+    });
     generateColors();
 //    console.log("Before cleaning data!")
 
@@ -33,9 +31,7 @@ $(document).ready(function()
 function generateColors()
 {
     var colorScale = d3.scale.category20();
-
     console.log(colorScale);
-
     for (var i = 0; i < 40; i++)
     {
         var color = colorScale(i);
@@ -63,7 +59,6 @@ function cleanData() {
     }
 
     deleteUselessPoints();
-
 //    console.log(users);
 }
 
@@ -73,12 +68,12 @@ function cleanUserData(user)
 //        console.log(points.length + " points retrieved");
     var skipped = 0;
     var len = points.length;
-    for (var k = 0; k < len && (k < CLEAN_LIMIT || CLEAN_LIMIT===-1); k++)
+    for (var k = 0; k < len && (k < CLEAN_LIMIT || CLEAN_LIMIT === -1); k++)
     {
         var changed = false;
         var point = new Point(points[k]);
 //        if (!point.address || point.address.city === null || point.address.city === 0 || point.address.city === 1)
-            point.refreshAddress();
+        point.refreshAddress();
         /*   var x = 1;
          while (x <= k) {
          previousPoint = points[k - x];
@@ -98,7 +93,6 @@ function cleanUserData(user)
             point.active = 1;
             point.startTrip = 1;
             point.transMode = 'Stop';
-
         }
         else
         {
@@ -111,7 +105,6 @@ function cleanUserData(user)
                 point.startTrip = 1;
             else
                 point.startTrip = 0;
-
             point.refreshTransMode();
             if (point.transMode === 'Bike' && user.use_bike === 0)
             {//TODO: NEED TO TEST
@@ -138,7 +131,6 @@ function cleanUserData(user)
                 || (point.active !== points[k]['active'])
                 || (point.transMode !== points[k]['transMode'])
                 || (point.startPoint !== points[k]['startPoint']);
-
 //            point.distance = (k === 0) ? 0 : distanceBetween(point, previousPoint);
 //            point.deltaTime = (k === 0) ? -1 : timeBetween(point, previousPoint);
 //            point.speed = (point.deltaTime === -1) ? 0 : (k === 0) ? 0 : calculateSpeed(point, previousPoint);
@@ -160,8 +152,6 @@ function cleanUserData(user)
 //            address = getAddress(point.lat, point.lon);
             updatGpxInDb(user, point, ['distance', 'speed', 'deltaTime', 'active', 'transMode', 'startPoint'
                         , 'street', 'city', 'county', 'state', 'country', 'zip']);
-
-
         }
         else
         {
@@ -178,7 +168,6 @@ function cleanUserData(user)
 //                $('#user-' + user.id + " table").append(formatPointHTML(point));
         } else {
             skipped++;
-
         }
 
     }
@@ -196,7 +185,6 @@ function formatUserHTML(user) {
 function formatPointHTML(point) {
     var str = "<tr><td>" + point.lat + "</td><td>" + point.lon + "</td><td>" + point.elevation + "</td><td>" + point.time.toLocaleString() + "</td><td>" + point.active + "</td><td>" + point.speed + "</td><td>" + point.distance + "</td><td>" + point.deltaTime + "</td></tr>";
     return str;
-
 }
 
 /**
@@ -209,7 +197,6 @@ function calculateSpeed(point1, point2) {
 
     var speed = distanceBetween(point1, point2) / timeBetween(point1, point2);
     return Math.abs(speed);
-
 }
 /**
  * returns time in seconds
@@ -223,7 +210,6 @@ function timeBetween(point1, point2) {
         if (!delta)
             delta = 0;
         return delta;
-
     } else
         return 0;
 }
@@ -246,7 +232,6 @@ function distanceBetween(point1, point2) {
     //    dLon = (dLon === 0) ? 0 : dLon.toRad();
     var lat1 = toRad(lat1);
     var lat2 = toRad(lat2);
-
     var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
             Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
@@ -267,7 +252,6 @@ function toRad(Value) {
 function checkActive(point) {
 
     var active = 1;
-
     if (point.distance === 0)
         active = 0;
     /*
@@ -278,4 +262,59 @@ function checkActive(point) {
      */
 
     return active;
+}
+
+
+function updateLocations(limit)
+{
+    console.log('updating addresses');
+    var sql = 'select distinct latitude as lat, longitude as lon from gpx_track';
+    data = runCustomQuery(sql);
+    for (var i = 0, j = data.length; i < j && (i < limit || limit === -1); i++)
+    {
+        var p = data[i];
+        var sql2 = 'select * from gpx_locations where lat=' + p.lat + ' and lon=' + p.lon;
+//        console.log(sql2);
+        var exist = runCustomQuery(sql2);
+
+//        console.log(exist);
+        if (!exist || exist.length === 0)
+        {
+            console.log('updating location ' + (i + 1) + " of " + j);
+            updateLocation(p.lat, p.lon);
+        }
+        else
+        {
+            console.log('location already exists');
+        }
+    }
+
+}
+
+
+function updateLocation(lat, lon)
+{
+    var url = 'http://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lon + '&zoom=18&addressdetails=1';
+    var data = runCustomFetch(url);
+
+
+//    console.log(data.contents.address);
+    var address = data.contents.address;
+
+
+    var sql = "insert into gpx_locations (lat,lon,building, road, neighbourhood, city, county, state, postcode, country, country_code)"
+            + "values (" + lat + "," + lon + ",'" 
+            + address.building + "','" 
+            + address.road + "','" 
+            + address.neighbourhood + "','" 
+            + address.city+ "','" 
+            + address.county + "','" 
+            + address.state + "','" 
+            + address.postcode + "','" 
+            + address.country + "','" 
+            + address.country_code + "')";
+    sql = sql.replace('undefined', '');
+//    console.log(sql);
+    resp = runCustomQuery(sql);
+
 }
