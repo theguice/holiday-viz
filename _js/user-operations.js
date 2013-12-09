@@ -141,10 +141,10 @@ function formatUserSelectHTML(user)
 function formatUserColumnHTML(user)
 {
     var str = "<div class='user-column' data-id='" + user.id + "'>"
-            + "<img src='" + user['avatar'] + "' class='user-picture selected-user' alt='" + user.firstName + " " + user.lastName + "'  style='border-color:" + colorScale(user.id) + "'/>"
-            + "<div class='user-button-img' data-mode='remove'><img src='_images/remove-button.png'/>"
-            + "<ul class='top-cities'></ul>"
-            + "</div></div>";
+            + "<hr><img class='user-picture selected-user' src='" + user['avatar'] + "' alt='" + user.firstName + " " + user.lastName + "'  style='border-color:" + colorScale(user.id) + "'/>"
+            + "<hr><ul class='user-top-cities'><li>Populate this list</li><li>with user's top visited cities</li></ul>"
+            + "<hr><div class='user-data-viz'>DONUT DIV will show users choices of transport</div>"
+            + "</div>";
 
 //    console.log(summary);
 
