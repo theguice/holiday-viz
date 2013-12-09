@@ -11,25 +11,6 @@ var TEMP_TABLE = 'gpx_track_raw';
 var CLEAN_LIMIT = -1;
 
 
-
-
-$(document).ready(function()
-{
-    $('#clean').click(function() {
-        cleanData();
-    });
-    $('#reload').click(function() {
-        reloadTable($('#reload-target').val());
-    });
-    $('#backup').click(function() {
-        backupTable($('#backup-target').val());
-    });
-
-    generateColors();
-//    console.log("Before cleaning data!")
-
-//    cleanData();
-});
 function generateColors()
 {
     var colorScale = d3.scale.category20();
@@ -73,7 +54,7 @@ function cleanUserData(user)
 //        console.log(points.length + " points retrieved");
     var skipped = 0;
     var len = points.length;
-    for (var k = 0; k < len && (k < CLEAN_LIMIT || CLEAN_MIMIT===-1); k++)
+    for (var k = 0; k < len && (k < CLEAN_LIMIT || CLEAN_LIMIT===-1); k++)
     {
         var changed = false;
         var point = new Point(points[k]);

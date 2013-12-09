@@ -4,18 +4,6 @@
  * and open the template in the editor.
  */
 var draw_elevation = false;
-$(document).ready(function() {
-// Check for the various File API support.
-    if (window.File && window.FileReader && window.FileList && window.Blob) {
-//
-    } else {
-        alert('The File APIs are not fully supported in this browser.');
-    }
-
-    initMap();
-    //  _map = initializeMap();
-    //google.maps.event.addDomListener(window, 'load', initializeMap);
-});
 var map;
 var geocoder;
 var playing = false;
@@ -45,26 +33,13 @@ var paths = [];
 var mapCenter;
 var mapZoom = 14;
 var mapStyle = [{
-        "featureType": "landscape.natural.terrain"
+    "stylers": [{
+        "visibility": "on"
     }, {
-        "elementType": "geometry.fill",
-        "stylers": [{
-                "hue": "#11ff00"
-            }, {
-                "weight": 0.1
-            }, {
-                "saturation": -52
-            }, {
-                "lightness": 2
-            }, {
-                "gamma": 0.66
-            }]
-    }, {
-        "featureType": "road.local",
-        "stylers": [{
-                "visibility": "simplified"
-            }]
-    }];
+        "lightness": 1
+    }]
+}]
+
 function initMap() {
 
     loadDates();

@@ -345,6 +345,7 @@ svg .summary-icon{
     color: rgb(220,220,220);
     
 }
+<<<<<<< HEAD
 
 
 /* user selection overlay */
@@ -375,3 +376,16 @@ svg .summary-icon{
 #selected button {
     vertical-align: middle;
 }
+.thumbnail
+{
+width: 90px;height:90px;
+}
+.infowindow
+{
+width: 90px;height:90px;
+}
+.img-picture{
+    width: 400px;
+    height: 200px;
+}
+
