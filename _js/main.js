@@ -28,6 +28,8 @@ $(document).ready(function() {
     colorScale = d3.scale.category20();
     loadUsers();
     addUserEvents();
+    $('#goToMap').on('click', closeOverlay);
+
 
     /********************
     * From dashboard.js

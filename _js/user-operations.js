@@ -29,8 +29,6 @@ function loadUsers() {
 
             $('#user-columns').append(formatUserColumnHTML(user));
 
-            //$('#users').append("<option value='" + user['id'] + "'>" + user['name'] + "</option>");
-            //$('#user-pics').append(formatUserSelectHTML(user));
 //            if(doLog) console.log("Building images..");
 //            if(doLog) console.log(user['avatar']);
         }
@@ -173,6 +171,10 @@ function userSelectAction()
         }
         if(doLog) console.log(activeUserIds);
     });
+}
+
+function closeOverlay() {
+    $('#user-selection').slideUp();
 }
 
 
