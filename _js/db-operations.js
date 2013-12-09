@@ -273,7 +273,6 @@ function getImages(start, end, usersIds) {
     }
 
     sql += " order by user_id, image_timestamp";
-    console.log(sql);
     if (doLog)
         console.log(sql);
     var jqXHR = $.ajax({

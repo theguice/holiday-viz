@@ -608,7 +608,6 @@ function addSliderEvent()
         var val = self.val();
         $('#slider-value').text(sliderMap[val].toString());
         clearMap();
-        console.log(val, sliderMap[val], sliderMap[val-1]);
         processUsersPictures(sliderMap[val-1], sliderMap[val]);
         drawUsersTimePoints(val, pointWindow, oldPointWindow);
         if (autoCenter && boundaryTimeStats[val])
@@ -805,6 +804,10 @@ function addUsersPictures()
                 console.log("URL = ", pictures[i].url, pictures[i].pic_id, pictures[i].latitude, _openWindow, marker);
 
         }
+        if (($('#image-list li').size())>3) {
+            $('.jcarousel-control').css('visibility', 'visible');
+        }
+
         $('#image-canvas').css('visibility', 'visible');
         $(".gallery").colorbox({
             rel: 'gallery',
@@ -818,9 +821,7 @@ function addUsersPictures()
 function processUsersPictures(date1, date2)
 {
     var activeUsers = getActiveUserIds();
-    console.log(date1, date2, activeUsers);
     pictures = getImages(date1, date2, activeUsers);
-    console.log(pictures);
     addUsersPictures();
 }
 

@@ -299,6 +299,7 @@ margin-bottom: 0px;
 
 .jcarousel li {
     width: 200px;
+    height: 130px;
     float: left;
     border-left: 1px solid #fff;
     padding: 0;
@@ -309,7 +310,7 @@ margin-bottom: 0px;
 
 .jcarousel img {
     display: block;
-    /* max-width: 100%; */
+    max-width: 100%;
     height: auto !important;
 }
 
@@ -335,6 +336,7 @@ margin-bottom: 0px;
     -webkit-box-shadow: 0 0 4px #F0EFE7;
     -moz-box-shadow: 0 0 4px #F0EFE7;
     box-shadow: 0 0 4px #F0EFE7;
+    visibility: hidden;
 }
 
 .jcarousel-control-prev {
