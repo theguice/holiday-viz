@@ -48,7 +48,7 @@ function _newGoogleMapsMarker(param) {
     console.log("Made marker")
 
     if (param._data) {
-        console.log("In addListener", param._data)
+        console.log("In addListener", param._data);
         google.maps.event.addListener(r, 'click', function() {
             // this -> the marker on which the onclick event is being attached
             if (!this.getMap()._infoWindow) {
@@ -333,7 +333,7 @@ function getImages(start, end, usersIds) {
                 _head: '|' + new google.maps.LatLng(tmpLat, tmpLng),
                 _data: '<div class="infowindow" id ="' + data[a].pic_id + '"><a class="gallery" title="thumbnail" href ="' + data[a].url + '" ><img class="thumbnail" src = "' + data[a].url + '" id ="' + data[a].pic_id + '" ></div>'
             });
-            console.log("Marker", data[a].pic_id, marker._data, marker)
+            console.log("Marker", data[a].pic_id, marker._data, marker);
         }
 
     }

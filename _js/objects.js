@@ -20,7 +20,7 @@ var coordinateStats = {
         'range': 0
     }
 };
-
+var bounds;
 var numUsers = 3;
 var colors = [];
 function Point(data /*TRKPT or position*/)
@@ -158,6 +158,7 @@ function sortPoints(pts) {
 
 function generateStats(sorted)
 {
+    bounds = new google.maps.LatLngBounds();
     console.log('General Stats');
 //    timeStats['min'] = (sorted[0]['time'] < timeStats['min']) ? sorted[0]['time'] : timeStats['min'];
 //    timeStats['max'] = (sorted[sorted.length - 1]['time'] > timeStats['max']) ? sorted[sorted.length - 1]['time'] : timeStats['max'];
@@ -175,6 +176,8 @@ function generateStats(sorted)
         coordinateStats.lat.max = (point.lat > coordinateStats.lat.max) ? point.lat : coordinateStats.lat.max;
         coordinateStats.lon.min = (point.lon < coordinateStats.lon.min) ? point.lon : coordinateStats.lon.min;
         coordinateStats.lon.max = (point.lon > coordinateStats.lon.max) ? point.lon : coordinateStats.lon.max;
+        bounds.extend(point.LatLng);
+        
     }
 
     timeStats.range = timeStats.max - timeStats.min;
@@ -185,6 +188,7 @@ function generateStats(sorted)
     console.log(elevationStats);
     console.log(coordinateStats);
     console.log(timeStats);
+    console.log(bounds);
 
 }
 

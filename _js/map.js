@@ -7,13 +7,13 @@ var draw_elevation = false;
 var map;
 var geocoder;
 var playing = false;
-var autoCenter = false;
+var autoCenter = true;
 var increment = 5; //step increment in minutes
 var pointWindow = 60; ///in minutes
 var oldPointWindow = 10000;
 var drawPointMarkers = false;
 var drawMarkersToggle = false;
-var autoCenterToggle = false;
+var autoCenterToggle = true;
 var intervalDelay = 100;
 var distance_limit = 200;
 var startDate;
@@ -21,6 +21,7 @@ var endDate;
 var userPoints = [];
 var userTimePoints = {};
 var boundaryTimeStats = {};
+var boundsByTime = {};
 var sliderMap = {};
 var infowindow;
 var userSteps = [];
@@ -41,6 +42,14 @@ var mapStyle = [{
             }]
     }]
 
+var mapNightStyle = [{
+        "stylers": [{
+                "visibility": "on"
+            }, {
+                "lightness": 1
+            },
+            {"invert_lightness": true}]
+    }]
 function initMap() {
 
     loadDates();
@@ -409,77 +418,93 @@ function hidePaths()
         paths[i].setMap(null);
     }
 }
-
-function manageCenter(evt, statistics)
+function manageCenter(evt, val, statistics)
 {
 
-    console.log(statistics);
-//    console.log(coordinateStats);
-    var stat = (statistics) ? statistics : coordinateStats;
-    console.log(stat);
-    // using the active marker for each user
-    // if one of them gets close to an edge, zoom out
-
-    // if all are close to center, zoom in
-    console.log('Re-center');
-    var count = 0;
-    var center = new Point();
-    center.lat = stat.lat.min + (stat.lat.max - stat.lat.min) / 2;
-    center.lon = stat.lon.min + (stat.lon.max - stat.lon.min) / 2;
-    center.refreshLatLng();
-    centerMap(center);
-    var zoomout = false;
-    var zoomin = true;
-    while ((zoomout || zoomin) && count < 10)
+//    var sw = new google.maps.LatLng(statistics.lat.min, statistics.lon.min);
+//    var ne = new google.maps.LatLng(statistics.lat.max, statistics.lon.max);
+//    var bounds = new google.maps.LatLngBounds(sw, ne);
+//    console.log(val);
+//    console.log(bounds);
+    if (val)
+        map.fitBounds(boundsByTime[val]);
+    else
     {
-        var bounds = map.getBounds();
-        console.log(bounds);
-        var bounds2 = [];
-        counter = 0;
-        for (var key in bounds)
-        {
-            bounds2.push(bounds[key]);
-        }
-        console.log(bounds2);
-        console.log(stat.lat.min + "\t" + bounds2[0]['d']);
-        if (stat.lat.min < bounds2[0]['d'])
-        {
-//            console.log('zoom rule 1');
-            zoomout = true;
-        }
-        else if (stat.lat.max > bounds2[0]['b'])
-        {
-//            console.log('zoom rule 2');
-            zoomout = true;
-        }
-        else if (Math.abs(stat.lon.min) < Math.abs(bounds2[1]['d']))
-        {
-//            console.log('zoom rule 3\t' + stat.lon.min + "\t" + bounds.ga.d);
-            zoomout = true;
-        }
-        else if (Math.abs(stat.lon.max) > Math.abs(bounds2[0]['b']))
-        {
-//            console.log('zoom rule 4');
-            zoomout = true;
-        }
-        else
-        {
-//            console.log('zoom rule 5');
-            zoomout = false;
-        }
-        if (zoomout)
-        {
-            zoomin = false;
-            mapZoomOut();
-        }
-        else if (zoomin)
-        {
-            mapZoomIn();
-        }
-        count++;
+        map.fitBounds(bounds);
     }
 }
 
+/*
+ function manageCenter_OLD(val, statistics)
+ {
+ 
+ console.log(statistics);
+ //    console.log(coordinateStats);
+ var stat = (statistics) ? statistics : coordinateStats;
+ console.log(stat);
+ // using the active marker for each user
+ // if one of them gets close to an edge, zoom out
+ 
+ // if all are close to center, zoom in
+ console.log('Re-center');
+ var count = 0;
+ var center = new Point();
+ center.lat = stat.lat.min + (stat.lat.max - stat.lat.min) / 2;
+ center.lon = stat.lon.min + (stat.lon.max - stat.lon.min) / 2;
+ center.refreshLatLng();
+ centerMap(center);
+ var zoomout = false;
+ var zoomin = true;
+ while ((zoomout || zoomin) && count < 20)
+ {
+ var bounds = map.getBounds();
+ console.log(bounds);
+ var bounds2 = [];
+ counter = 0;
+ for (var key in bounds)
+ {
+ bounds2.push(bounds[key]);
+ }
+ console.log(bounds2);
+ console.log(stat.lat.min + "\t" + bounds2[0]['d']);
+ if (Math.abs(stat.lat.min) < Math.abs(bounds2[0]['d']))
+ {
+ console.log('zoom rule 1\t' + stat.lat.min + "\t" + bounds2[0]['d']);
+ zoomout = true;
+ }
+ else if (Math.abs(stat.lat.max) > Math.abs(bounds2[0]['b']))
+ {
+ console.log('zoom rule 2\t' + stat.lat.max + "\t" + bounds2[0]['b']);
+ zoomout = true;
+ }
+ else if (Math.abs(stat.lon.min) < Math.abs(bounds2[1]['d']))
+ {
+ console.log('zoom rule 3\t' + stat.lon.min + "\t" + bounds2[1]['d']);
+ zoomout = true;
+ }
+ else if (Math.abs(stat.lon.max) > Math.abs(bounds2[1]['b']))
+ {
+ console.log('zoom rule 4\t' + stat.lon.max + "\t" + bounds2[1]['b']);
+ zoomout = true;
+ }
+ else
+ {
+ console.log('zoom rule 5');
+ zoomout = false;
+ }
+ if (zoomout)
+ {
+ zoomin = false;
+ mapZoomOut();
+ }
+ else if (zoomin)
+ {
+ mapZoomIn();
+ }
+ count++;
+ }
+ }
+ */
 function generateUserColors()
 {
     usrs = getActiveUserIds();
@@ -564,6 +589,7 @@ function reloadSlider()
 //        console.log(newDate);
         sliderMap[i] = newDate;
         boundaryTimeStats[i] = {'lat': {'min': 180, 'max': -180}, 'lon': {'min': 180, 'max': -180}};
+        boundsByTime[i] = new google.maps.LatLngBounds();
     }
 //    console.log(sliderMap);
 //    console.log(boundaryTimeStats);
@@ -581,9 +607,27 @@ function addSliderEvent()
         updateUserLocations();
         clearMap();
         drawUsersTimePoints(val, pointWindow, oldPointWindow);
+        var evt;
+        updateMapStyle(val);
         if (autoCenter && boundaryTimeStats[val])
-            manageCenter(val, boundaryTimeStats[val]);
+            manageCenter(evt, val, boundaryTimeStats[val]);
     });
+}
+
+function updateMapStyle(val)
+{
+
+    var date = new Date();
+    date = sliderMap[val];
+    var date2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 18, 0, 0, 0);
+    var date3 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 6, 0, 0, 0);
+//    console.log(date + "\t" + date2);
+    if (date > date2 || date < date3)
+        map.setOptions({styles: mapNightStyle})
+    else
+    {
+        map.setOptions({styles: mapStyle})
+    }
 }
 function updateUserLocations()
 {
@@ -637,6 +681,7 @@ function prepareUsersTimePoints()
             if (point.time <= sliderMap[mapCount])
             {
                 userTimePoints[userId][mapCount].push(point);
+                boundsByTime[mapCount].extend(point.LatLng);
                 updateCoundaryStats(mapCount, point);
             }
             else
@@ -651,6 +696,7 @@ function prepareUsersTimePoints()
                 }
 //                console.log('skipped ' + skipped);
                 userTimePoints[userId][mapCount].push(point);
+                updateCoundaryStats(mapCount, point);
                 updateCoundaryStats(mapCount, point);
 //                  i--;
             }
@@ -732,19 +778,46 @@ function drawUsersTimePoints(sliderMapVal, window, oldPathWindow)
         {
             var sliderStep = sliderMapVal - k;
             if (sliderStep >= 0 && userTimePoints[id])
-                points = points.concat(userTimePoints[id][sliderStep]);
+            {
+                if (userTimePoints[id][sliderStep])
+                    points = points.concat(userTimePoints[id][sliderStep]);
+            }
         }
         for (var k = oldStepCount - stepCount; k >= 0; k--)
         {
             var sliderStep = sliderMapVal - k;
             if (sliderStep >= 0 && userTimePoints[id])
-                oldPoints = oldPoints.concat(userTimePoints[id][sliderStep]);
+            {
+                if (userTimePoints[id][sliderStep])
+                    oldPoints = oldPoints.concat(userTimePoints[id][sliderStep]);
+
+            }
         }
-//        console.log(oldPoints);
+        /*     for (var k = 0, l = points.length; k < l; k++)
+         if (points[k])
+         boundsByTime[sliderMapVal].extend(points[k].LatLng);
+         
+         for (var k = 0, l = oldPoints.length; k < l; k++)
+         if (oldPoints[k])
+         boundsByTime[sliderMapVal].extend(oldPoints[k].LatLng);
+         //        console.log(oldPoints);
+         */
         if (points.length > 0)
+        {
+//            console.log(points);
+            for (var k = 0, l = points.length; k < l; k++)
+//            if (points[k])
+                boundsByTime[sliderMapVal].extend(points[k].LatLng);
+
             createPath(points, id, false);
+        }
         if (oldPoints.length > 0)
+        {
+//            console.log(oldPoints);
+            for (var k = 0, l = oldPoints.length; k < l; k++)
+                boundsByTime[sliderMapVal].extend(oldPoints[k].LatLng);
             createPath(oldPoints, id, true);
+        }
     }
 //    manageCenter();
 //    getSteps(timeStats.min, timeStats.max);
