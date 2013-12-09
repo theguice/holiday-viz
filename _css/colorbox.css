@@ -20,47 +20,39 @@
     Change the following styles to modify the appearance of Colorbox.  They are
     ordered & tabbed in a way that represents the nesting of the generated HTML.
 */
-#cboxOverlay{background:#fff;}
+#cboxOverlay{background:#000;}
 #colorbox{outline:0;}
-    #cboxTopLeft{width:25px; height:25px; background:url(images/border1.png) no-repeat 0 0;}
-    #cboxTopCenter{height:25px; background:url(images/border1.png) repeat-x 0 -50px;}
-    #cboxTopRight{width:25px; height:25px; background:url(images/border1.png) no-repeat -25px 0;}
-    #cboxBottomLeft{width:25px; height:25px; background:url(images/border1.png) no-repeat 0 -25px;}
-    #cboxBottomCenter{height:25px; background:url(images/border1.png) repeat-x 0 -75px;}
-    #cboxBottomRight{width:25px; height:25px; background:url(images/border1.png) no-repeat -25px -25px;}
-    #cboxMiddleLeft{width:25px; background:url(images/border2.png) repeat-y 0 0;}
-    #cboxMiddleRight{width:25px; background:url(images/border2.png) repeat-y -25px 0;}
-    #cboxContent{background:#fff; overflow:hidden;}
+    #cboxTopLeft{width:14px; height:14px; background:url(images/controls.png) no-repeat 0 0;}
+    #cboxTopCenter{height:14px; background:url(images/border.png) repeat-x top left;}
+    #cboxTopRight{width:14px; height:14px; background:url(images/controls.png) no-repeat -36px 0;}
+    #cboxBottomLeft{width:14px; height:43px; background:url(images/controls.png) no-repeat 0 -32px;}
+    #cboxBottomCenter{height:43px; background:url(images/border.png) repeat-x bottom left;}
+    #cboxBottomRight{width:14px; height:43px; background:url(images/controls.png) no-repeat -36px -32px;}
+    #cboxMiddleLeft{width:14px; background:url(images/controls.png) repeat-y -175px 0;}
+    #cboxMiddleRight{width:14px; background:url(images/controls.png) repeat-y -211px 0;}
+    #cboxContent{background:#fff; overflow:visible;}
         .cboxIframe{background:#fff;}
         #cboxError{padding:50px; border:1px solid #ccc;}
-        #cboxLoadedContent{margin-bottom:20px;}
-        #cboxTitle{position:absolute; bottom:0px; left:0; text-align:center; width:100%; color:#999;}
-        #cboxCurrent{position:absolute; bottom:0px; left:100px; color:#999;}
-        #cboxLoadingOverlay{background:#fff url(images/loading.gif) no-repeat 5px 5px;}
+        #cboxLoadedContent{margin-bottom:5px;}
+        #cboxLoadingOverlay{background:url(images/loading_background.png) no-repeat center center;}
+        #cboxLoadingGraphic{background:url(images/loading.gif) no-repeat center center;}
+        #cboxTitle{position:absolute; bottom:-25px; left:0; text-align:center; width:100%; font-weight:bold; color:#7C7C7C;}
+        #cboxCurrent{position:absolute; bottom:-25px; left:58px; font-weight:bold; color:#7C7C7C;}
 
         /* these elements are buttons, and may need to have additional styles reset to avoid unwanted base styles */
-        #cboxPrevious, #cboxNext, #cboxSlideshow, #cboxClose {border:0; padding:0; margin:0; overflow:visible; width:auto; background:none; }
+        #cboxPrevious, #cboxNext, #cboxSlideshow, #cboxClose {border:0; padding:0; margin:0; overflow:visible;  position:absolute; bottom:-29px; background:url(images/controls.png) no-repeat 0px 0px; width:23px; height:23px; text-indent:-9999px;}
         
         /* avoid outlines on :active (mouseclick), but preserve outlines on :focus (tabbed navigating) */
         #cboxPrevious:active, #cboxNext:active, #cboxSlideshow:active, #cboxClose:active {outline:0;}
 
-        #cboxSlideshow{position:absolute; bottom:0px; right:42px; color:#444;}
-        #cboxPrevious{position:absolute; bottom:0px; left:0; color:#444;}
-        #cboxNext{position:absolute; bottom:0px; left:63px; color:#444;}
-        #cboxClose{position:absolute; bottom:0; right:0; display:block; color:#444;}
+        #cboxPrevious{left:0px; background-position: -51px -25px;}
+        #cboxPrevious:hover{background-position:-51px 0px;}
+        #cboxNext{left:27px; background-position:-75px -25px;}
+        #cboxNext:hover{background-position:-75px 0px;}
+        #cboxClose{right:0; background-position:-100px -25px;}
+        #cboxClose:hover{background-position:-100px 0px;}
 
-/*
-  The following fixes a problem where IE7 and IE8 replace a PNG's alpha transparency with a black fill
-  when an alpha filter (opacity change) is set on the element or ancestor element.  This style is not applied to or needed in IE9.
-  See: http://jacklmoore.com/notes/ie-transparency-problems/
-*/
-.cboxIE #cboxTopLeft,
-.cboxIE #cboxTopCenter,
-.cboxIE #cboxTopRight,
-.cboxIE #cboxBottomLeft,
-.cboxIE #cboxBottomCenter,
-.cboxIE #cboxBottomRight,
-.cboxIE #cboxMiddleLeft,
-.cboxIE #cboxMiddleRight {
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF);
-}
+        .cboxSlideshow_on #cboxSlideshow{background-position:-125px 0px; right:27px;}
+        .cboxSlideshow_on #cboxSlideshow:hover{background-position:-150px 0px;}
+        .cboxSlideshow_off #cboxSlideshow{background-position:-150px -25px; right:27px;}
+        .cboxSlideshow_off #cboxSlideshow:hover{background-position:-125px 0px;}

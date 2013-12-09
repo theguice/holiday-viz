@@ -40,6 +40,8 @@ var drawnUserIds = [];
 var currentLevel = 0;
 var points = [];
 var markers = [];
+var pictures = [];
+var iconBase = 'http://maps.google.com/mapfiles/kml/pal2/';
 var userMarkers = {};
 var paths = [];
 var mapCenter;
@@ -65,6 +67,7 @@ var mapStyle = [{
                 "visibility": "simplified"
             }]
     }];
+
 function initMap() {
 
     loadDates();
@@ -529,8 +532,10 @@ function generateUserColors()
 function processTrkpts()
 {
 
+    console.log('Animation');
     prepareData();
     reloadSlider();
+    console.log('before prepareUsersTimeP');
     prepareUsersTimePoints();
 //    drawUsersPoints();
 
@@ -541,8 +546,10 @@ function processTrkpts()
 
 function drawAll()
 {
+    console.log('Drawing');
     prepareData();
     drawUsersPoints();
+    addUsersPictures();
 }
 
 function prepareData()
@@ -554,7 +561,7 @@ function prepareData()
     var activeUsers = getActiveUserIds();
 //    console.log(activeUsers);
     var points = getActivePoints(startDate, endDate, activeUsers);
-    getImages(startDate, endDate, activeUsers);
+    pictures = getImages(startDate, endDate, activeUsers);
     generateStats(points);
     prepareUsersPoints(points);
 }
@@ -601,6 +608,8 @@ function addSliderEvent()
         var val = self.val();
         $('#slider-value').text(sliderMap[val].toString());
         clearMap();
+        console.log(val, sliderMap[val], sliderMap[val-1]);
+        processUsersPictures(sliderMap[val-1], sliderMap[val]);
         drawUsersTimePoints(val, pointWindow, oldPointWindow);
         if (autoCenter && boundaryTimeStats[val])
             manageCenter(val, boundaryTimeStats[val]);
@@ -631,6 +640,7 @@ function prepareUsersTimePoints()
     for (var userId in userPoints)
     {
         var pts = userPoints[userId];
+        console.log(pts);
         userTimePoints[userId] = {};
         var mapCount = 0;
         userTimePoints[userId][0] = [];
@@ -753,6 +763,67 @@ function drawUsersTimePoints(sliderMapVal, window, oldPathWindow)
 //    getSteps(timeStats.min, timeStats.max);
 
 }
+
+function addUsersPictures()
+{
+    if (pictures) {
+
+        for (var i = 0, j = pictures.length; i < j; i++) {
+            $('#image-list').append('<li><a class="gallery" title="' + pictures[i].title + '" href ="' + pictures[i].url + '" ><img src="' + pictures[i].url + '" alt="' + pictures[i].title + '"></a></li>');
+            //$('#image-canvas').append("<a class='gallery' title='" + pictures[i].title + "'' href ='" + pictures[i].url + "' ><img src='" + pictures[i].url + "' class='img-picture' id='" + pictures[i].pic_id + "''></a>");
+            LatLng = new google.maps.LatLng(pictures[i].latitude, pictures[i].longitude)
+            var marker = new google.maps.Marker({
+                position: LatLng,
+                map: map,
+                icon: iconBase + 'icon22.png',
+                _data: pictures[i].title
+            });
+            // var infowindow = new google.maps.InfoWindow({
+            //  content: '<div class="infocontent"><h4>' + pictures[i].pic_id + '</h4></div>;'
+            // });
+
+            google.maps.event.addListener(marker, 'click', function() {
+                if (doLog)
+                    console.log("In addListener", marker);
+                // if (_openWindow == null) {
+                if (!this.getMap()._infoWindow) {
+                    this.getMap()._infoWindow = new google.maps.InfoWindow();
+                }
+                this.getMap()._infoWindow.close();
+                this.getMap()._infoWindow.setContent(marker._data);
+                this.getMap()._infoWindow.open(this.getMap(), this);
+                // _openWindow.close();
+                if (doLog)
+                    console.log(pictures[i].pic_id, marker);
+                // }
+
+                // infowindow.open(map, marker);
+                // _openWindow = infowindow;
+            });
+
+            if (doLog)
+                console.log("URL = ", pictures[i].url, pictures[i].pic_id, pictures[i].latitude, _openWindow, marker);
+
+        }
+        $('#image-canvas').css('visibility', 'visible');
+        $(".gallery").colorbox({
+            rel: 'gallery',
+            slideshow: false
+        });
+        if (doLog)
+            console.log("Out of getImages!")
+    }
+}
+
+function processUsersPictures(date1, date2)
+{
+    var activeUsers = getActiveUserIds();
+    console.log(date1, date2, activeUsers);
+    pictures = getImages(date1, date2, activeUsers);
+    console.log(pictures);
+    addUsersPictures();
+}
+
 function toggleDrawMarkers()
 {
     drawMarkersToggle = !drawMarkersToggle;
