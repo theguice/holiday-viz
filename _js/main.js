@@ -37,6 +37,7 @@ $(document).ready(function() {
     /********************
     * From data-clean.js
     ********************/
+    /*
     $('#clean').click(function() {
         cleanData();
     });
@@ -47,6 +48,7 @@ $(document).ready(function() {
         backupTable($('#backup-target').val());
     });
     generateColors();
+    */
 
     /********************
     * From db-operations.js
