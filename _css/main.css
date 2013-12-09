@@ -4,7 +4,7 @@ html, body, address, blockquote, del, div, h1, h2, h3, h4, h5, h6, hr, ins, nosc
 ol, ul{list-style:none;}
 th{text-align:left;}
 table{border-collapse:collapse;}
-
+ @font-face { font-family:Symbola; src:url(http://users.teilar.gr/~g1951d/Symbola.ttf); }
 body {
     margin:0;
     padding:0;
@@ -68,7 +68,7 @@ header h2 {
     height:90%;
     left:5px;
 }
-.user-location{
+.user-location, .user-trans{
     font-size: 1em;
     background-color: rgba(255,255,255,.5);
     width: 90%;
@@ -80,6 +80,23 @@ header h2 {
      white-space: pre-wrap; 
     text-overflow: clip;
     overflow: hidden;
+}
+.user-trans{
+    font-family: Symbola;
+
+    margin: 0;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    font-size: 4.5em;
+    color: rgba(255,62,0,.5);
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: .7;
+    background-color: rgba(255,255,255,0);
+    border-radius: 50px;
+    z-index: 350;
 }
 
 #map-area{

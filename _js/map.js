@@ -652,8 +652,9 @@ function updateUserLocations()
 
         if (userTransModes[uid])
         {
-            var txt = '&#128690;'
-            $('#user-trans-' + uid).text(userTransModes[uid]);
+//            var txt = '&#128690;'
+            $('#user-trans-' + uid).html(transModeSymbols[userTransModes[uid]]);
+            
         }
     }
 }
@@ -780,6 +781,7 @@ function drawUsersTimePoints(sliderMapVal, window, oldPathWindow)
     {
 
         var id = activeUserIds[i];
+        userTransModes[id] = '';
 //        console.log('drawing user ' + id);
         var points = [];
         var oldPoints = [];
