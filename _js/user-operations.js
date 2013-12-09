@@ -132,6 +132,7 @@ function formatUserSelectHTML(user)
             + "<div class='user-button-img' data-mode='remove'><img src='_images/remove-button.png'/>"
             + "</div>"
             + "<div class='user-location' id='user-location-" + user.id + "' ></div>"
+            + "<div class='user-trans' id='user-trans-" + user.id + "' ></div>"
             + "</div>";
 
     return str;

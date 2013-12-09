@@ -31,6 +31,7 @@ var points = [];
 var markers = [];
 var userMarkers = {};
 var userLocations = {};
+var userTransModes = {};
 var paths = [];
 var mapCenter;
 var mapZoom = 14;
@@ -279,10 +280,12 @@ function createPath(pts, userId, oldPath) {
                 {
                     userMarkers[userId].setPosition(point.LatLng);
                     userLocations[userId] = point.address;
+                    userTransModes[userId] = point.transMode;
                 } else
                 {
                     createUserMarker(point, userId);
                     userLocations[userId] = point.address;
+                    userTransModes[userId] = point.transMode;
                 }
             }
             else
@@ -645,6 +648,12 @@ function updateUserLocations()
 
             txt = txt.replace('undefined', "");
             $('#user-location-' + uid).text(txt);
+        }
+
+        if (userTransModes[uid])
+        {
+            var txt = '&#128690;'
+            $('#user-trans-' + uid).text(userTransModes[uid]);
         }
     }
 }
