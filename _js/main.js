@@ -34,6 +34,21 @@ $(document).ready(function() {
     ********************/
     initDashboard();
 
+    /********************
+    * From data-clean.js
+    ********************/
+    /*
+    $('#clean').click(function() {
+        cleanData();
+    });
+    $('#reload').click(function() {
+        reloadTable($('#reload-target').val());
+    });
+    $('#backup').click(function() {
+        backupTable($('#backup-target').val());
+    });
+    generateColors();
+    */
 
     /********************
     * From db-operations.js
