@@ -30,8 +30,15 @@ function loadUsers() {
             currentUsers.push(user['id']);
             currentUserObjects[user['id']] = user;
             activeUserIds.push(user['id']);
+            // Upload User Dropdown
             $('#users').append("<option value='" + user['id'] + "'>" + user['name'] + "</option>");
-            $('#user-pics').append(formatUserSelectHTML(user));
+            // Main page header
+            $('#users-pics').append(formatUserSelectHTML(user));
+
+            $('#user-columns').append(formatUserColumnHTML(user));
+
+            //$('#users').append("<option value='" + user['id'] + "'>" + user['name'] + "</option>");
+            //$('#user-pics').append(formatUserSelectHTML(user));
 //            if(doLog) console.log("Building images..");
 //            if(doLog) console.log(user['avatar']);
         }
@@ -119,6 +126,19 @@ function formatUserSelectHTML(user)
             + "<img src='" + user['avatar'] + "' class='user-picture selected-user' alt='" + user.firstName + " " + user.lastName + "'  style='border-color:" + colorScale(user.id) + "'/>"
             + "<div class='user-button-img' data-mode='remove'><img src='_images/remove-button.png'/>"
             + "</div></div>";
+
+    return str;
+}
+
+function formatUserColumnHTML(user)
+{
+    var str = "<div class='user-column' data-id='" + user.id + "'>"
+            + "<img src='" + user['avatar'] + "' class='user-picture selected-user' alt='" + user.firstName + " " + user.lastName + "'  style='border-color:" + colorScale(user.id) + "'/>"
+            + "<div class='user-button-img' data-mode='remove'><img src='_images/remove-button.png'/>"
+            + "<ul class='top-cities'></ul>"
+            + "</div></div>";
+
+    console.log(summary);
 
     return str;
 }

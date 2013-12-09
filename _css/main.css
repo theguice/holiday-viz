@@ -21,7 +21,6 @@ header {
     padding-bottom: 3px;
     padding-left: 10px;
     padding-right: 10px;
-
     vertical-align: middle;
 }
 
@@ -104,6 +103,7 @@ input[type="range"]::-webkit-slider-thumb {
     width: 10px;
     height: 26px;
 }
+
 #container {
     padding-bottom: 10px;
     margin: auto;
@@ -207,7 +207,7 @@ margin-bottom: 0px;
     float: left;
 }
 
-#user-pics{
+#users-pics{
     /*width: 50%;*/
     height: 30px;
     display: inline-block;
@@ -351,13 +351,27 @@ svg .summary-icon{
 #user-selection {
     width: 100%;
     height: 100%;
-    background-color: rgb(220,220,220,.5);
+    background-color: rgba(0,0,0,.7);
     position: absolute;
     left: 0;
     top: 0;
     z-index: 500;
 }
-#selected {
+#overlay {
     width: 90%;
-    height: 50px;
+    height: 100%;
+    background-color: rgba(0,0,0,1);
+    margin:auto;
+}
+#selected {
+    background-color: rgba(200,200,200,1);
+    height: 10%;
+    position: relative;
+}
+#user-columns {
+    height: 10%;
+    position: relative;
+}
+#selected button {
+    vertical-align: middle;
 }
