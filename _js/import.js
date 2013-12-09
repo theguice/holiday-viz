@@ -1,5 +1,5 @@
 
-function setup()
+function setupImport()
 {
     $('#files').bind('change', handleFileSelect);
     $('#upload-button').on('click', function() {

@@ -9,7 +9,6 @@ function initDashboard(start, end, userIds)
     summaryChartData = {'time': [], 'distance': []};
     summary = getSummary(start, end, userIds, activeOnly, false);
     updateDashboardTable();
-
     drawDonutChart(summaryChartData['time'], '#donut-by-time', 'overall-trans-mode-by-time', 'donut');
     drawDonutChart(summaryChartData['distance'], '#donut-by-distance', 'overall-trans-mode-by-distance', 'donut');
     addIconEvents();

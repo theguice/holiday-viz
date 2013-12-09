@@ -23,8 +23,8 @@ $(document).ready(function()
     $('#address-button').click(function() {
         updateLocations(parseInt($('#address-limit').val()));
     });
-    
-    $('#sync-button').click(function(){
+
+    $('#sync-button').click(function() {
         syncLocations();
     });
     generateColors();
@@ -298,29 +298,35 @@ function updateLocations(limit)
 
 function updateLocation(lat, lon)
 {
-    var url = 'http://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lon + '&zoom=18&addressdetails=1';
-    var data = runCustomFetch(url);
+    var data;
+    try {
+        var url = 'http://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lon + '&zoom=18&addressdetails=1';
+        data = runCustomFetch(url);
 
 
 //    console.log(data.contents.address);
-    var address = data.contents.address;
+        var address = data.contents.address;
 
 
-    var sql = "insert into gpx_locations (lat,lon,building, road, neighbourhood, city, county, state, postcode, country, country_code)"
-            + "values (" + lat + "," + lon + ",'"
-            + address.building + "','"
-            + address.road + "','"
-            + address.neighbourhood + "','"
-            + address.city + "','"
-            + address.county + "','"
-            + address.state + "','"
-            + address.postcode + "','"
-            + address.country + "','"
-            + address.country_code + "')";
-    sql = sql.replace('undefined', '');
+        var sql = "insert into gpx_locations (lat,lon,building, road, neighbourhood, city, county, state, postcode, country, country_code)"
+                + "values (" + lat + "," + lon + ",'"
+                + address.building + "','"
+                + address.road + "','"
+                + address.neighbourhood + "','"
+                + address.city + "','"
+                + address.county + "','"
+                + address.state + "','"
+                + address.postcode + "','"
+                + address.country + "','"
+                + address.country_code + "')";
+        sql = sql.replace('undefined', '');
 //    console.log(sql);
-    resp = runCustomQuery(sql);
-
+        resp = runCustomQuery(sql);
+    } catch (e)
+    {
+        console.log(e);
+        console.log(data);
+    }
 }
 
 

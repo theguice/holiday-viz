@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+var doLog = false;
 var currentUser = "";
 var DB_FILE = 'db-operations.php';
 var MAP_FILE = 'map-api.php';
 var PROXY_FILE = 'ba-simple-proxy.php';
 var DELTA_TIME_DELETE_TOLERANCE = 15;
-var doLog = false;
+
 var geocoder;
 
 _openWindow = null;

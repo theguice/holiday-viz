@@ -33,23 +33,23 @@ var paths = [];
 var mapCenter;
 var mapZoom = 14;
 var mapStyle = [{
-    "stylers": [{
-        "visibility": "on"
-    }, {
-        "lightness": 1
+        "stylers": [{
+                "visibility": "on"
+            }, {
+                "lightness": 1
+            }]
     }]
-}]
 
 function initMap() {
 
     loadDates();
-    $('.map-refresh').on('click', processTrkpts);
-    $('#draw-button').on('click', drawAll);
+    $('.map-refresh').unbind('click').on('click', processTrkpts);
+    $('#draw-button').unbind('click').on('click', drawAll);
 //    $('#play-button').on('click', takeSteps);
-    $('#play-button').on('click', play);
-    $('#auto-center-button').on('click', toggleAutoCenter);
-    $('#draw-markers-button').on('click', toggleDrawMarkers);
-    $('#center-button').on('click', manageCenter);
+    $('#play-button').unbind('click').on('click', play);
+    $('#auto-center-button').unbind('click').on('click', toggleAutoCenter);
+    $('#draw-markers-button').unbind('click').on('click', toggleDrawMarkers);
+    $('#center-button').unbind('click').on('click', manageCenter);
     addConfigEvents();
     geocoder = new google.maps.Geocoder();
     mapCenter = new google.maps.LatLng(37.865159, -122.282138);
@@ -62,27 +62,25 @@ function initMap() {
 function addConfigEvents()
 {
 
-    ($('#step-duration').val(increment));
-    ($('#active-window').val(pointWindow));
-    ($('#inactive-steps').val(oldPointWindow));
-    $('#config-button').on('click', function()
+    $('#step-duration').val(increment);
+    $('#active-window').val(pointWindow);
+    $('#inactive-steps').val(oldPointWindow);
+    $('#config-button').unbind('click').on('click', function()
     {
         console.log('show config');
         $('#config-div').show();
     });
-    $('#hide-config').on('click', function() {
+    $('#hide-config').unbind('click').on('click', function() {
         $('#config-div').hide();
     });
 
-    $('#config-form').on('submit', function() {
+    $('#config-form').unbind('click').on('submit', function() {
         increment = parseInt($('#step-duration').val());
         pointWindow = parseInt($('#active-window').val());
         oldPointWindow = parseInt($('#inactive-steps').val());
 //        drawPointMarkers = Boolean($('#draw-markers').prop('checked'));
         drawPointMarkers = Boolean($('#draw-markers-button').hasClass('active'));
         autoCenter = Boolean($('#auto-center-button').hasClass('active'));
-
-
         console.log("Config=" + increment + "\t" + pointWindow + "\t" + oldPointWindow + "\t" + drawPointMarkers)
         $('#config-div').hide();
         return false;
@@ -574,14 +572,23 @@ function addSliderEvent()
     slider.on('change', function() {
         var self = $(this);
         var val = self.val();
-        $('#slider-value').text(sliderMap[val].toString());
+        $('#slider-value').text(sliderMap[val].toLocaleDateString() + " " + sliderMap[val].toLocaleTimeString());
+        updateUserLocations(val);
         clearMap();
         drawUsersTimePoints(val, pointWindow, oldPointWindow);
         if (autoCenter && boundaryTimeStats[val])
             manageCenter(val, boundaryTimeStats[val]);
     });
 }
-
+function updateUserLocations(val)
+{
+    var activeUserIds = getActiveUserIds();
+    for(var i = 0, j = activeUserIds.length;i<j;i++ )
+    {
+        var uid = activeUserIds[i];
+        $('#user-location-'+uid).text('User Location '+ val);
+    }
+}
 function prepareUsersPoints(points)
 {
     for (var i = 0, j = points.length; i < j; i++)
@@ -730,6 +737,7 @@ function drawUsersTimePoints(sliderMapVal, window, oldPathWindow)
 }
 function toggleDrawMarkers()
 {
+    console.log('toggeling draw markers');
     drawMarkersToggle = !drawMarkersToggle;
     if (drawMarkersToggle)
     {
