@@ -45,26 +45,13 @@ var paths = [];
 var mapCenter;
 var mapZoom = 14;
 var mapStyle = [{
-        "featureType": "landscape.natural.terrain"
+    "stylers": [{
+        "visibility": "on"
     }, {
-        "elementType": "geometry.fill",
-        "stylers": [{
-                "hue": "#11ff00"
-            }, {
-                "weight": 0.1
-            }, {
-                "saturation": -52
-            }, {
-                "lightness": 2
-            }, {
-                "gamma": 0.66
-            }]
-    }, {
-        "featureType": "road.local",
-        "stylers": [{
-                "visibility": "simplified"
-            }]
-    }];
+        "lightness": 1
+    }]
+}]
+
 function initMap() {
 
     loadDates();

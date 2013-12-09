@@ -39,6 +39,32 @@ function initDb() {
 
 }
 
+function _newGoogleMapsMarker(param) {
+    var iconBase = 'http://maps.google.com/mapfiles/kml/pal2/';
+    var r = new google.maps.Marker({
+        map: param._map,
+        position: new google.maps.LatLng(param._lat, param._lng),
+        title: param._head,
+        //icon: IconType[place.types[0]]
+        icon: iconBase + '/icon22.png'
+    });
+    console.log("Made marker")
+
+    if (param._data) {
+        console.log("In addListener", param._data)
+        google.maps.event.addListener(r, 'click', function() {
+            // this -> the marker on which the onclick event is being attached
+            if (!this.getMap()._infoWindow) {
+                this.getMap()._infoWindow = new google.maps.InfoWindow();
+            }
+            this.getMap()._infoWindow.close();
+            this.getMap()._infoWindow.setContent(param._data);
+            this.getMap()._infoWindow.open(this.getMap(), this);
+        });
+    }
+    return r;
+}
+
 
 var insertCount = 0;
 /**
@@ -297,46 +323,29 @@ function getImages(start, end, usersIds) {
         $('#image-canvas').children().remove();
         for (var i = 0, j = data.length; i < j; i++) {
             $('#image-canvas').append("<a class='gallery' title='" + data[i].title + "'' href ='" + data[i].url + "' ><img src='" + data[i].url + "' class='img-picture' id='" + data[i].pic_id + "''></a>");
-            LatLng = new google.maps.LatLng(data[i].latitude, data[i].longitude)
-            var marker = new google.maps.Marker({
-                position: LatLng,
-                map: map,
-                icon: iconBase + 'icon22.png',
-                _data: data[i].title
-            });
-            // var infowindow = new google.maps.InfoWindow({
-            // 	content: '<div class="infocontent"><h4>' + data[i].pic_id + '</h4></div>;'
-            // });
-
-            google.maps.event.addListener(marker, 'click', function() {
-                if (doLog)
-                    console.log("In addListener", marker);
-                // if (_openWindow == null) {
-                if (!this.getMap()._infoWindow) {
-                    this.getMap()._infoWindow = new google.maps.InfoWindow();
-                }
-                this.getMap()._infoWindow.close();
-                this.getMap()._infoWindow.setContent(marker._data);
-                this.getMap()._infoWindow.open(this.getMap(), this);
-                // _openWindow.close();
-                if (doLog)
-                    console.log(data[i].pic_id, marker);
-                // }
-
-                // infowindow.open(map, marker);
-                // _openWindow = infowindow;
-            });
-
-            if (doLog)
-                console.log("URL = ", data[i].url, data[i].pic_id, data[i].latitude, _openWindow, marker);
-
         }
-        $(".gallery").colorbox({
-            rel: 'gallery',
-            slideshow: true
-        });
-        if (doLog)
-            console.log("Out of getImages!")
+        // New marker code
+        map = new google.maps.Map(document.getElementById("map-canvas"), map);
+        for (var a = 0; a < data.length; a++) {
+            var tmpLat = data[a].latitude;
+            var tmpLng = data[a].longitude;
+            var marker = _newGoogleMapsMarker({
+                _map: map,
+                _lat: tmpLat,
+                _lng: tmpLng,
+                _head: '|' + new google.maps.LatLng(tmpLat, tmpLng),
+                _data: '<div class="infowindow" id ="' + data[a].pic_id + '"><a class="gallery" title="thumbnail" href ="' + data[a].url + '" ><img class="thumbnail" src = "' + data[a].url + '" id ="' + data[a].pic_id + '" ></div>'
+            });
+            console.log("Marker", data[a].pic_id, marker._data, marker)
+        }
+
+    }
+    $(".gallery").colorbox({
+        rel: 'gallery',
+        slideshow: true
+    });
+    if (doLog) {
+        console.log("Out of getImages!")
     }
     else
     {
