@@ -21,14 +21,6 @@ var coordinateStats = {
     }
 };
 
-
-$(document).ready(function() {
-
-    timeStats = {'min': new Date(), 'max': new Date(01, 01, 1970)};
-    // Check for the various File API support.
-//    generateUserColors();
-});
-
 var numUsers = 3;
 var colors = [];
 function Point(data /*TRKPT or position*/)
