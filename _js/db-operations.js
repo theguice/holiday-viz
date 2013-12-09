@@ -295,7 +295,6 @@ function getImages(start, end, usersIds) {
         }
     }
 
-
     sql += " order by user_id, image_timestamp";
     if (doLog)
         console.log(sql);
@@ -307,42 +306,13 @@ function getImages(start, end, usersIds) {
         },
         'async': false
     });
-
     var data = $.parseJSON(jqXHR.responseText);
     if (data) {
         if (doLog)
             console.log(data);
 
-        var iconBase = 'http://maps.google.com/mapfiles/kml/pal2/';
-
-        // $('#image-canvas').remove();
-        // $('body').append($('<div id="image-canvas"></div>'));
-        $('#image-canvas').children().remove();
-        for (var i = 0, j = data.length; i < j; i++) {
-            $('#image-canvas').append("<a class='gallery' title='" + data[i].title + "'' href ='" + data[i].url + "' ><img src='" + data[i].url + "' class='img-picture' id='" + data[i].pic_id + "''></a>");
-        }
-        // New marker code
-        map = new google.maps.Map(document.getElementById("map-canvas"), map);
-        for (var a = 0; a < data.length; a++) {
-            var tmpLat = data[a].latitude;
-            var tmpLng = data[a].longitude;
-            var marker = _newGoogleMapsMarker({
-                _map: map,
-                _lat: tmpLat,
-                _lng: tmpLng,
-                _head: '|' + new google.maps.LatLng(tmpLat, tmpLng),
-                _data: '<div class="infowindow" id ="' + data[a].pic_id + '"><a class="gallery" title="thumbnail" href ="' + data[a].url + '" ><img class="thumbnail" src = "' + data[a].url + '" id ="' + data[a].pic_id + '" ></div>'
-            });
-            console.log("Marker", data[a].pic_id, marker._data, marker);
-        }
-
-    }
-    $(".gallery").colorbox({
-        rel: 'gallery',
-        slideshow: true
-    });
-    if (doLog) {
-        console.log("Out of getImages!")
+        return(data);
+        $('#image-list').children().remove();
     }
     else
     {
