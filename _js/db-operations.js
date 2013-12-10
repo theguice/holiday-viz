@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var doLog = false;
+var doLog = true;
 var currentUser = "";
 var DB_FILE = 'db-operations.php';
 var MAP_FILE = 'map-api.php';
@@ -118,7 +118,7 @@ function updatGpxInDb(user, point, keys) {
     if (doLog)
         console.log("update sql:\n" + sql);
 
-    var address = getAddress(point.lat, point.lon);
+//    var address = getAddress(point.lat, point.lon);
     $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -721,3 +721,49 @@ function runCustomFetch(url)
 //     console.log(address);
 //     */ return address;
 }
+
+
+function rankUsersByTime() {
+
+    var sql = "select user_id, sum(delta_time) as total_time_s, sum(delta_time)*0.000277778 as total_time_hr from gpx_track group by user_id order by sum(delta_time)  desc";
+    var jqXHR = $.ajax({
+        'type': 'GET',
+        'url': DB_FILE,
+        'data': {
+            'q': sql
+        },
+        'async': false
+    });
+
+    var data = $.parseJSON(jqXHR.responseText);
+    if (doLog)
+        console.log('Top User By Time data');
+    if (doLog)
+        console.log(data);
+    return data;
+}
+
+
+function rankUsersByDistance() {
+
+    var sql = "select user_id, sum(distance) as total_distance_m, sum(distance)*0.000621371 as total_distance_mi from gpx_track group by user_id order by sum(distance)  desc";
+    var jqXHR = $.ajax({
+        'type': 'GET',
+        'url': DB_FILE,
+        'data': {
+            'q': sql
+        },
+        'async': false
+    });
+
+    var data = $.parseJSON(jqXHR.responseText);
+    if (doLog)
+        console.log('Top User By Distance data');
+    if (doLog)
+        console.log(data);
+    return data;
+}
+
+
+
+
