@@ -9,8 +9,8 @@ function initDashboard(start, end, userIds)
     summaryChartData = {'time': [], 'distance': []};
     summary = getSummary(start, end, userIds, activeOnly, false);
     updateDashboardTable();
-    drawDonutChart(summaryChartData['time'], '#donut-by-time', 'overall-trans-mode-by-time', 'donut');
-    drawDonutChart(summaryChartData['distance'], '#donut-by-distance', 'overall-trans-mode-by-distance', 'donut');
+    drawDonutChart(summaryChartData['time'], '#donut-by-time', 'overall-trans-mode-by-time', 'donut', 'Transportation by Time');
+    drawDonutChart(summaryChartData['distance'], '#donut-by-distance', 'overall-trans-mode-by-distance', 'donut','Transportation by Distance');
     addIconEvents();
     addStatsEvents();
 
@@ -25,13 +25,13 @@ function addStatsEvents()
         var id = parseInt($(this).attr('data-id'));
         console.log('showing user stats for ' + id);
     });
-    
-    $('.hide-button').click(function(){
-       $(this).parent().slideUp(500);
+
+    $('.hide-button').click(function() {
+        $(this).parent().slideUp(500);
     });
-    
-    $('#show-landing-button').click(function(){
-         $('#user-selection').slideDown();
+
+    $('#show-landing-button').click(function() {
+        $('#user-selection').slideDown();
     });
 }
 function updateDashboardTable()
@@ -122,7 +122,7 @@ function updateDashboardChart()
  * @param {type} classes
  * @returns {undefined}
  */
-function drawDonutChart(data, target, id, classes)
+function drawDonutChart(data, target, id, classes, title)
 {
     console.log(data);
     $(target).empty();
@@ -138,12 +138,21 @@ function drawDonutChart(data, target, id, classes)
 
     var vis = d3.select(target)
             .append("svg:svg")
+            .attr('xmlns', "http://www.w3.org/2000/svg")
             .data([data])
             .attr("width", w)
             .attr("height", h)
             .attr("id", id)
             .attr('class', classes);
-
+    /*
+     <defs>
+     <style type="text/css">
+     <![CDATA[@font-face {font-family: Symbola;src: url('http://zhm.github.io/symbola/fonts/Symbola.ttf');}]]>
+     </style>
+     */
+//    var defs = vis.append('defs');
+//    var style = defs.append('style').attr('type', 'text/css')
+//            .text(" <![CDATA[@font-face {font-family: Symbola;src: url('http://zhm.github.io/symbola/fonts/Symbola.ttf');}]]>");
     var arcs = vis.selectAll("g.arc")
             .data(donut.value(function(d) {
                 return d.value;
@@ -164,98 +173,86 @@ function drawDonutChart(data, target, id, classes)
             })
             .attr('d', arc)
             .attr('class', 'summary-path');
+    
+     vis.append('text')
+     .text(title)
+     .attr({width: w,
+     height: 50,
+     x: w/2,
+     y: h-50,
+     class: 'donut-title',
+     'text-anchor': 'middle'
+     
+     });
+     
+    var fo = vis.append('foreignObject')
+            .attr({width: r,
+                height: r,
+                x: w / 2 - r / 2,
+                y: h / 2 - r / 2,
+                class: 'donut-trans-icon'
+//                ,                requiredExtensions: "http://www.w3.org/1999/xhtml"
+            })
+//            .append('head')
+            .append('link').attr({rel: 'stylesheet', href: '_css/main.css'});
+    vis.select('.donut-trans-icon')
+//            .append('body').attr('xmlns', "http://www.w3.org/1999/xhtml")
+            .append('xhtml:div').attr({'class': 'donut-trans-icon-text'});
     /*
-     arcs.append("svg:text")
-     .attr("transform", function(d) {
-     var c = arc.centroid(d),
-     x = c[0],
-     y = c[1],
-     // pythagorean theorem for hypotenuse
-     h = Math.sqrt(x * x + y * y);
+     <foreignobject x="10" y="10" width="100" height="150">
+     <body xmlns="http://www.w3.org/1999/xhtml">
+     <div>Here is a <strong>paragraph</strong> that requires <em>word wrap</em></div>
+     </body>
      
-     console.log(c);
-     
-     return "translate(" + (x / w * labelr) + ',' +
-     (y / h * labelr) + ")";
-     })
-     .attr("dy", ".35em")
-     .attr("text-anchor", function(d) {
-     // are we past the center?
-     return (d.endAngle + d.startAngle) / 2 > Math.PI ?
-     "end" : "start";
-     })
-     .text(function(d, i) {
-     //                console.log(d);
-     //                console.log(i);
-     return d.data.name;
+     </foreignobject>
+     */
+    /*
+     vis.append('image').attr({
+     'xlink:href': '_images/svg/bike.png',
+     type: 'image/svg+xml',
+     width: r,
+     height: r,
+     x: w / 2 - r / 2,
+     y: h / 2 - r / 2,
+     'id': id + "-bike",
+     class: 'icon bike-icon summary-icon'
+     });
+     vis.append('image').attr({
+     'xlink:href': '_images/svg/walk.png',
+     type: 'image/svg+xml',
+     width: r,
+     height: r,
+     x: w / 2 - r / 2,
+     y: h / 2 - r / 2,
+     'id': id + "-walk",
+     class: 'icon walk-icon summary-icon'
+     });
+     vis.append('image').attr({
+     'xlink:href': '_images/svg/car.png',
+     type: 'image/svg+xml',
+     width: r,
+     height: r,
+     x: w / 2 - r / 2,
+     y: h / 2 - r / 2,
+     'id': id + "-drive",
+     class: 'icon drive-icon summary-icon'
      });
      
-     arcs.append('svg:circle')
-     .attr({'class': 'icon',
-     cx: 0,
-     cy: 0,
-     r: 30
-     });
-     
-     arcs.append('svg:line')
-     .attr({'class': 'icon',
-     x1: 0,
-     y1: 0,
-     x2:0,
-     y2:20
+     vis.append('image').attr({
+     'xlink:href': '_images/svg/plane.png',
+     type: 'image/svg+xml',
+     width: r,
+     height: r,
+     x: w / 2 - r / 2,
+     y: h / 2 - r / 2,
+     'id': id + "-fly",
+     class: 'icon fly-icon summary-icon'
      });
      */
-    vis.append('image').attr({
-        'xlink:href': '_images/svg/bike.png',
-        type: 'image/svg+xml',
-        width: r,
-        height: r,
-        x: w / 2 - r / 2,
-        y: h / 2 - r / 2,
-        'id': id + "-bike",
-        class: 'icon bike-icon summary-icon'
-    });
-    vis.append('image').attr({
-        'xlink:href': '_images/svg/walk.png',
-        type: 'image/svg+xml',
-        width: r,
-        height: r,
-        x: w / 2 - r / 2,
-        y: h / 2 - r / 2,
-        'id': id + "-walk",
-        class: 'icon walk-icon summary-icon'
-    });
-    vis.append('image').attr({
-        'xlink:href': '_images/svg/car.png',
-        type: 'image/svg+xml',
-        width: r,
-        height: r,
-        x: w / 2 - r / 2,
-        y: h / 2 - r / 2,
-        'id': id + "-drive",
-        class: 'icon drive-icon summary-icon'
-    });
-
-    vis.append('image').attr({
-        'xlink:href': '_images/svg/plane.png',
-        type: 'image/svg+xml',
-        width: r,
-        height: r,
-        x: w / 2 - r / 2,
-        y: h / 2 - r / 2,
-        'id': id + "-fly",
-        class: 'icon fly-icon summary-icon'
-    });
 
 //            var bike = "<img id='bike1' style='width:50px; height:50px' src='_images/svg/bike.svg' type='image/svg+xml' />";
 //            $(target).append(bike)
-    /*
-     < svg xmlns = "http://www.w3.org/2000/svg" xmlns:xlink = "http://www.w3.org/1999/xlink" version = "1.1" id = "Layer_1" x = "0px" y = "0px" width = "300px" height = "300px" viewBox = "0 0 300 300" enable - background = "new 0 0 300 300" xml:space = "preserve" xmlns:xml = "http://www.w3.org/XML/1998/namespace" >
-     < circle fill = "none" stroke = "#000000" stroke - width = "20" stroke - miterlimit = "10" cx = "150" cy = "149.749" r = "118.707" / >
-     < line fill = "none" stroke = "#000000" stroke - width = "11" stroke - linecap = "round" stroke - linejoin = "round" stroke - miterlimit = "10" x1 = "150" y1 = "150" x2 = "150" y2 = "72" / >
-     < line fill = "none" stroke = "#000000" stroke - width = "11" stroke - linecap = "round" stroke - linejoin = "round" stroke - miterlimit = "10" x1 = "150.423" y1 = "150.423" x2 = "188" y2 = "188" / >
-     < /svg>
-     */
+
 }
 
 function addIconEvents()
@@ -264,22 +261,35 @@ function addIconEvents()
     $('svg .summary-arc').on('mouseenter', function() {
         var self = $(this);
         var name = self.attr('data-name');
-        name = name.toLowerCase();
+        var fo = self.siblings('.donut-trans-icon');
+//        console.log(fo.children('.donut-trans-icon-text').attr('class'));
+        var donutIcon = fo.children('.donut-trans-icon-text');
+        donutIcon.empty().append(transModeSymbols[name]);
+
+        fo.css('display', 'block');
+        donutIcon.css('display', 'block');
+
+
+//        self.siblings('.donut-trans-icon').text(transModeSymbols[name]);
+//        name = name.toLowerCase();
         console.log(name);
         self.css('opacity', '.5');
-        var images = self.parent('image .' + name + '-icon');
+//        var images = self.parent('image .' + name + '-icon');
 
-        console.log(images);
-        self.siblings('.' + name + '-icon').css('display', 'block');
+//        console.log(images);
+//        self.siblings('.donut-trans-icon').attr('font-family', 'Symbola').css('display', 'block').css('font-family', 'Symbola');
 
 
     }).on('mouseleave', function() {
         var self = $(this);
         var name = self.attr('data-name');
-        name = name.toLowerCase();
+//        name = name.toLowerCase();
         console.log(name);
         self.css('opacity', '1');
-        self.siblings('.' + name + '-icon').css('display', 'none');
+         var fo = self.siblings('.donut-trans-icon');
+//        console.log(fo.children('.donut-trans-icon-text').attr('class'));
+        fo.children('.donut-trans-icon-text').css('display','none');
+//        self.siblings('.donut-trans-icon').css('display', 'none');
     });
 }
 function getCarSvg()
