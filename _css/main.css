@@ -647,7 +647,6 @@ svg .summary-icon{
 }
 
 .hide-button{
-<<<<<<< HEAD
 
 }
 
@@ -656,8 +655,13 @@ width:20px;
 background-color: red;
 margin-right: 1px;
 }
-=======
-    
+
+.rect{
+margin-right: 1px;
+}
+
+.label{
+fill:red;
 }
 
 span.name {
@@ -670,4 +674,3 @@ span.name {
     display: block;
 }
 }
->>>>>>> b22db6d56ded1609510836a7d000ceef66a41828
