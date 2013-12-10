@@ -44,26 +44,26 @@
 
                 <div id='control-buttons'>
                     <div class="form-group btn-group">
-                        <button id="draw-button" class=" btn btn-sm btn-success">Draw</button>
-                        <button type="button" id="center-button" class=" btn btn-sm btn-success"><i class="fa fa-bullseye"></i> Center</button>
+                        <button title="Draw All Paths On Map" id="draw-button" class=" btn btn-sm btn-success">Draw</button>
+                        <button title="Center Map To User Paths" type="button" id="center-button" class=" btn btn-sm btn-success"><i class="fa fa-bullseye"></i> Center</button>
                     </div> 
                     <div class="form-group btn-group" >
-                        <button type="submit" class="btn btn-sm btn-success map-refresh">Animate</button>
+                        <button title="Run Animation Of User Paths" type="submit" class="btn btn-sm btn-success map-refresh">Animate</button>
                     </div> 
 
                     <div class="form-group btn-group">
-                        <button type="button" id="show-landing-button" class="btn btn-sm btn-info"><i class="fa fa-home"></i></button>
-                        <button type="button" id="show-stats-button" class="btn btn-sm btn-info"><i class="fa fa-bar-chart-o"></i></button>
+                        <button title="Go Back To Home Page" type="button" id="show-landing-button" class="btn btn-sm btn-info"><i class="fa fa-home"></i></button>
+                        <button title="Show Overall Statistics" type="button" id="show-stats-button" class="btn btn-sm btn-info"><i class="fa fa-bar-chart-o"></i></button>
                     </div> 
                     <div class="form-group btn-group" >
-                        <button id="config-button" class="btn  btn-sm btn-warning" data-toggle="button"><i class="fa fa-cog"></i></button>
+                        <button title="Change Date Configuration for Paths" id="config-button" class="btn  btn-sm btn-warning" data-toggle="button"><i class="fa fa-cog"></i></button>
                     </div>
                 </div>
             </div>
         </section>
         <section id='range-section'>
             <div id="range-div">
-                <button  data-toggle="buttons" id="play-button" class="btn btn-sm btn-success" data-loading-text="Playing" data-toggle="button"><i class="fa fa-play"></i></button>
+                <button  title="Play/Pause" data-toggle="buttons" id="play-button" class="btn btn-sm btn-success" data-loading-text="Playing" data-toggle="button"><i class="fa fa-play"></i></button>
 
                 <div class="time-control">
                     <input type="range" id="slider" class="range"/>
@@ -81,7 +81,7 @@
             </header>
             <div id="overlay">
                 <div id="selected">
-                    <button class="btn btn-lg btn-success" id="goToMap">MAP</button>
+                    <button title="Go To Map" class="btn btn-lg btn-success" id="goToMap">MAP</button>
                 </div>
                 <div id="user-columns">
                     <h3>Choose users to follow:</h3>
@@ -92,19 +92,19 @@
             <div id="config-div" class="popup-div">
                 <form id="config-form" class="form-group btn-group-lg">
                     <div class='btn-group-lg'>
-                        <button id="upload-button" class="btn " value="Upload"><i class="fa fa-upload fa-1x"></i>Upload</button>
-                        <button id="auto-center-button" class="btn btn-info active" data-toggle="button">Auto Center (When Animating)</button>
+                        <button title="Upload Files To Show Path" id="upload-button" class="btn " value="Upload"><i class="fa fa-upload fa-1x"></i>Upload</button>
+                        <button title="Auto Center When Animating Paths" id="auto-center-button" class="btn btn-info active" data-toggle="button">Auto Center (When Animating)</button>
                     </div>
                     <h1>Filters</h1>
                     <div class="btn-group-lg btn-group-vertical date-group">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <button title="Select Start Date Of Path" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-calendar fa-1x"></i> Start Date <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu date-dropdown" role="menu" id='start-date-menu' >
                         </ul>
                     </div>
                     <div class="btn-group-lg  btn-group-vertical date-group">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <button title="Select End Date Of Path" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-calendar fa-1x"></i> End Date <span class="caret"></span>
                         </button>                      
 
@@ -119,11 +119,11 @@
                     <input type="text" id="active-window">
                     <h2>Inactive Interval</h2>
                     <input type="text" id="inactive-steps">
-                    <button type='button' id="draw-markers-button" class="btn btn-default" data-toggle="button">Draw Point Markers (Slow)</button>
+                    <button title="Draw Point Markers (Slow)" type='button' id="draw-markers-button" class="btn btn-default" data-toggle="button">Draw Point Markers (Slow)</button>
                     <!--<h2 ><label><input id='draw-markers' type='checkbox' checked/>Draw Markers</label></h2>-->
 
-                    <button type="submit" class='btn btn-sm btn-primary' id="save-config"><i class="fa fa-save fa-1x"></i> Save</button>
-                    <button type="button" class='btn btn-sm btn-danger' value="Cancel" id="hide-config"><i class="fa fa-ban fa-1x"></i> Cancel</button>
+                    <button title="Save New Date Range Configuration" type="submit" class='btn btn-sm btn-primary' id="save-config"><i class="fa fa-save fa-1x"></i> Save</button>
+                    <button title="Cancel" type="button" class='btn btn-sm btn-danger' value="Cancel" id="hide-config"><i class="fa fa-ban fa-1x"></i> Cancel</button>
                 </form>
             </div>
             <div id="upload-div" class="popup-div">
@@ -148,7 +148,7 @@
                     </form>
                 </div>
                 <input class="btn btn-sm btn-primary" type="file" id="files" name="files[]" multiple />
-                <button class="btn btn-sm cancel-button btn-danger" type="button" id="cancel-upload-button"><i class="fa fa-ban fa-1x"></i> Cancel</button>
+                <button title="Cancel" class="btn btn-sm cancel-button btn-danger" type="button" id="cancel-upload-button"><i class="fa fa-ban fa-1x"></i> Cancel</button>
             </div>
 
 
@@ -203,7 +203,7 @@
         </section>
         <section id="stats-section">
             <div id="overall-stats" class="stats-popup">
-                <button class="hide-button  btn btn-lg  btn-info" >Hide</button>
+                <button title="Hide Overall Statistics" class="hide-button  btn btn-lg  btn-info" >Hide</button>
                 <div id="general-stats"></div>
                 <div id="donut-by-distance"></div>
                 <div id="donut-by-time"></div>
@@ -215,7 +215,7 @@
                 <div id="users-by-time"></div>
             </div>
             <div id="user-stats" class="stats-popup">
-                <button class="hide-button btn btn-lg btn-info">Hide</button>
+                <button title="Hide User Statistics" class="hide-button btn btn-lg btn-info">Hide</button>
                 <div id="user-stat-pic"></div>
                 <div id="user-general-stats"></div>
                 <div id="user-donut-by-distance"></div>
