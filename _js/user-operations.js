@@ -7,12 +7,21 @@ var currentUsers = [];
 var currentUserObjects = {};
 var currentUserId;
 var currentUser;
+var usersByTime = [];
+var usersByDistance = [];
 
 var activeUserIds = [];
+var allUserIds = [];
 var colorScale;
 
 function loadUsers() {
 //    if(doLog) console.log("Step1:");
+
+    usersByTime = rankUsersByTime();
+    usersByDistance = rankUsersByDistance();
+    console.log('topUser-----');
+    console.log(usersByDistance);
+
     currentUsers = [];
     currentUserObjects = {};
     var users = getAllUsers();
@@ -25,11 +34,11 @@ function loadUsers() {
             var user = new User(users[i]);
             currentUsers.push(user['id']);
             currentUserObjects[user['id']] = user;
-            activeUserIds.push(user['id']);
+            //activeUserIds.push(user['id']);
             // Upload User Dropdown
+
             $('#users').append("<option value='" + user['id'] + "'>" + user['name'] + "</option>");
             // Main page header
-            $('#users-pics').append(formatUserSelectHTML(user));
             $('#user-columns').append(formatUserColumnHTML(user));
 
 //            if(doLog) console.log("Building images..");
@@ -41,7 +50,18 @@ function loadUsers() {
     }
 }
 
+function displayActiveUsers() {
+    var activeUsers = getActiveUserIds();
+
+    for (var i = 0; i < activeUsers.length; i++) {
+        $('#users-pics').append(formatUserSelectHTML(currentUserObjects[activeUsers[i]]));
+    }
+}
+
+
 function addUserEvents() {
+    $('#goToMap').on('click', displayActiveUsers);
+
     $('#new-user-cancel').on('click', function() {
         $('#new-user').hide();
     });
@@ -144,11 +164,23 @@ function formatUserSelectHTML(user)
 
 function formatUserColumnHTML(user)
 {
-    var str = "<div class='user-column' data-id='" + user.id + "'>"
-            + "<hr><img class='user-picture selected-user' src='" + user['avatar'] + "' alt='" + user.firstName + " " + user.lastName + "'  style='border-color:" + colorScale(user.id) + "'/>"
-            + "<hr><ul class='user-top-cities'><li>Populate this list</li><li>with user's top visited cities</li></ul>"
-            + "<hr><div class='user-data-viz'>DONUT DIV will show users choices of transport</div>"
-            + "</div>";
+    var str = "<div class='user-column' id='user-column-"+user.id+"' data-id='" + user.id + "'>"
+            + "<img src='" + user['avatar'] + "' class='user-picture unselected-user' alt='" + user.firstName + " " + user.lastName + "'  style='border-color:" + colorScale(user.id) + "'/>"
+            + "<div class='user-button-img' data-mode='add'  style='background-color:" + colorScale(user.id) + "' >"
+            + "<i class='fa fa-plus'></i>"
+            + "</div><div class='user-facts'>"
+            + "<span class='name'>" + user.firstName + "</span><hr>";
+    if (usersByTime[0].user_id == user.id) {
+        str += "<span>Most Time Traveled Award</span><hr>";
+    }
+    if (usersByDistance[0].user_id == user.id) {
+        str += "<span>Most Distance Traveled Award</span><hr>";
+    }
+
+    str +=  "<ul class='user-top-cities'>"
+            + "<li>Top City 1</li><li>Top City 2</li></ul><hr>"
+            + "<hr><div class='user-data-viz'>Transport Breakdown</div>"
+            + "</div></div>";
 
 //    console.log(summary);
 
@@ -165,6 +197,7 @@ function userSelectAction()
         var self = $(this);
         var mode = self.attr('data-mode');
         var id = parseInt(self.parent().attr('data-id'));
+
         if (doLog)
             console.log('mode=' + mode);
         if (mode === 'remove')
@@ -186,6 +219,14 @@ function userSelectAction()
                 }
             }
 
+            $(this).parent().css('display', 'none');
+            console.log($(this).parent());
+            $('#user-column-'+id).css('display', 'inline-block');
+            //$('#user-column-'+id).show();
+
+            //$('#user-columns').append('<div class="user-column" id="column-'+id+'"></div>');
+            //$('#user-columns').append($(this).prev());
+            //$('#user-columns').append($(this));
 
         }
         else
@@ -197,6 +238,17 @@ function userSelectAction()
 //            self.children('img').attr('src', '_images/remove-button.png');
             self.siblings('.user-picture').removeClass('unselected-user').addClass('selected-user');
             activeUserIds.push(id);
+
+            $('#user-column-'+id).clone(true).attr("id","user-column-"+id+"-clone").appendTo('#selected');
+            $('#user-column-'+id+'-clone').find(".user-facts").hide();
+            $('#user-column-'+id).css('display', 'none');
+            //$(this).parent().hide();
+            /*
+            $('#selected').append('<li id="selected-user-'+id+'"></li>');
+            $('#selected-user-'+id).clone().append($(this).prev());
+            $('#selected-user-'+id).clone().append($(this));
+            */
+
         }
         if (doLog)
             console.log(activeUserIds);

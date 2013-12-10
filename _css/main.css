@@ -24,7 +24,6 @@ header {
     vertical-align: middle;
 }
 
-
 header h1 {
     color:#fff;
     font-family:Bangers, sans-serif;
@@ -43,6 +42,14 @@ header h2 {
     line-height:0px;
     font-weight: 600;
     display: inline-block;
+}
+
+h3 {
+    padding: 20px;
+    letter-spacing:2px;
+    font-size:30px;
+    line-height:0px;
+    font-weight: 600;
 }
 
 #controls {
@@ -341,9 +348,7 @@ li {
     z-index: 400;
     width: 30px;
     height: 30px;
-    position: absolute;
-    top: 55px;
-    left: 50px;
+    position: relative;
     opacity: .5;
     float: left;
     border-radius: 40px;
@@ -550,11 +555,11 @@ svg .summary-icon{
 }
 #user-selection header {
     width: 100%;
-    height: 7%;
+    height: 6%;
 }
 #overlay {
     width: 90%;
-    height: 93%;
+    height: 94%;
     color: white;
     font-size: 1em;
     background-color: rgba(0,0,0,1);
@@ -563,7 +568,7 @@ svg .summary-icon{
 }
 #selected {
     background-color: rgba(200,200,200,.5);
-    height: 10%;
+    height: 20%;
     margin-top: 40px;
 }
 #selected * {
@@ -572,12 +577,15 @@ svg .summary-icon{
 #selected button {
     float: right;
     margin-right: 3em;
+    margin-top: 2em;
 }
 #user-columns {
     height: 90%;
-    width:250%;
+    margin: 20px;
+    width:200%;
     position: relative;
-    overflow-x: hidden;
+    overflow-y:hidden;
+    overflow-x:scroll;
 }
 .user-column {
     display: inline-block;
@@ -586,16 +594,16 @@ svg .summary-icon{
     text-align: center;
     background-color: rgba(200,200,200,.1);
     margin:5px;
+    padding: 20px;
 }
 .user-column img {
     margin: auto;
 }
+
 .user-top-cities li {
     display: block;
 }
-#selected button {
-    vertical-align: middle;
-}
+
 
 
 
@@ -635,4 +643,15 @@ svg .summary-icon{
 
 .hide-button{
     
+}
+
+span.name {
+    padding: 20px;
+    font-family:Bangers, sans-serif;
+    letter-spacing:2px;
+    font-size:30px;
+    line-height:0px;
+    font-weight: 600;
+    display: block;
+}
 }
