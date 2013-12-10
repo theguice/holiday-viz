@@ -18,11 +18,14 @@ var intervalDelay = 100;
 var distance_limit = 200;
 var startDate;
 var endDate;
+var doSkip = false;
 var userPoints = [];
 var userTimePoints = {};
 var boundaryTimeStats = {};
 var boundsByTime = {};
+var pointCountByTime = {};
 var sliderMap = {};
+var sliderCount = 0;
 var infowindow;
 var userSteps = [];
 var drawnUserIds = [];
@@ -43,7 +46,7 @@ var mapStyle = [{
             }, {
                 "lightness": 1
             }]
-    }]
+    }];
 
 var mapNightStyle = [{
         "stylers": [{
@@ -52,7 +55,7 @@ var mapNightStyle = [{
                 "lightness": 1
             },
             {"invert_lightness": true}]
-    }]
+    }];
 
 function initMap() {
 
@@ -95,11 +98,11 @@ function addConfigEvents()
 //        drawPointMarkers = Boolean($('#draw-markers').prop('checked'));
         drawPointMarkers = Boolean($('#draw-markers-button').hasClass('active'));
         autoCenter = Boolean($('#auto-center-button').hasClass('active'));
-        console.log("Config=" + increment + "\t" + pointWindow + "\t" + oldPointWindow + "\t" + drawPointMarkers)
+        console.log("Config=" + increment + "\t" + pointWindow + "\t" + oldPointWindow + "\t" + drawPointMarkers);
         $('#config-div').hide();
         return false;
 //        $('#map-refresh').trigger('click');
-    })
+    });
 }
 function loadDates()
 {
@@ -247,7 +250,7 @@ function createUserMarker(point, userId)
             strokeColor: colorScale(userId)}
     });
     userMarkers[userId] = marker;
-    console.log(point);
+//    console.log(point);
 //    userLocations[userId] = point.address;
 //    console.log(userMarkers);
 }
@@ -401,16 +404,27 @@ function hideMarkers()
     console.log(userMarkers);
     for (var i = 0, j = markers.length; i < j; i++)
     {
-//        markers[i].setMap(null);
+        markers[i].setMap(null);
     }
     for (var i = 0, j = userMarkers.length; i < j; i++)
     {
-        /*    if (userMarkers[i])
-         userMarkers[i].setMap(null);
-         */ }
+        if (userMarkers[i])
+            userMarkers[i].setMap(null);
+    }
 }
 
+function hideUserMarker(userId)
+{
+    if (userMarkers[userId])
+        userMarkers[userId].setMap(null);
 
+}
+function showUserMarker(userId)
+{
+    if (userMarkers[userId])
+        userMarkers[userId].setMap(map);
+
+}
 function deletePaths()
 {
     hidePaths();
@@ -542,6 +556,7 @@ function processTrkpts()
     prepareData();
     reloadSlider();
     prepareUsersTimePoints();
+    fillUserPoints();
     $('#range-div').show();
     $('#play-button').trigger('click');
 //    drawUsersPoints();
@@ -601,7 +616,9 @@ function reloadSlider()
         sliderMap[i] = newDate;
         boundaryTimeStats[i] = {'lat': {'min': 180, 'max': -180}, 'lon': {'min': 180, 'max': -180}};
         boundsByTime[i] = new google.maps.LatLngBounds();
+        pointCountByTime[i] = 0;
     }
+    sliderCount = max + 1;
 //    console.log(sliderMap);
 //    console.log(boundaryTimeStats);
     slider.prop('min', min).prop('max', max).prop('value', min);
@@ -617,7 +634,7 @@ function addSliderEvent()
         $('#slider-value').text(sliderMap[val].toLocaleDateString() + " " + sliderMap[val].toLocaleTimeString());
         updateUserLocations();
         clearMap();
-        processUsersPictures(sliderMap[val-1], sliderMap[val]);
+        processUsersPictures(sliderMap[val - 1], sliderMap[val]);
         drawUsersTimePoints(val, pointWindow, oldPointWindow);
         var evt;
         updateMapStyle(val);
@@ -663,7 +680,16 @@ function updateUserLocations()
         {
 //            var txt = '&#128690;'
             $('#user-trans-' + uid).html(transModeSymbols[userTransModes[uid]]);
-            
+            console.log(userTransModes[uid]);
+            if(!userTransModes[uid]==='Stop' && !userTransModes[uid]==='undefined')
+            $('#user-trans-' + uid).css('background-color', 'rgba(255,255,255,.6)');
+        else{
+            $('#user-trans-' + uid).css('background-color', 'rgba(255,255,255,0)');
+        }
+        }
+        else
+        {
+            $('#user-trans-' + uid).css('background-color', 'rgba(255,255,255,0)');
         }
     }
 }
@@ -702,6 +728,7 @@ function prepareUsersTimePoints()
             {
                 userTimePoints[userId][mapCount].push(point);
                 boundsByTime[mapCount].extend(point.LatLng);
+                pointCountByTime[mapCount] = pointCountByTime[mapCount] + 1;
                 updateCoundaryStats(mapCount, point);
             }
             else
@@ -716,12 +743,15 @@ function prepareUsersTimePoints()
                 }
 //                console.log('skipped ' + skipped);
                 userTimePoints[userId][mapCount].push(point);
+                boundsByTime[mapCount].extend(point.LatLng);
                 updateCoundaryStats(mapCount, point);
-                updateCoundaryStats(mapCount, point);
+                pointCountByTime[mapCount] = pointCountByTime[mapCount] + 1;
+//                updateCoundaryStats(mapCount, point);
 //                  i--;
             }
 
         }
+
     }
 
 
@@ -852,7 +882,7 @@ function addUsersPictures()
         for (var i = 0, j = pictures.length; i < j; i++) {
             $('#image-list').append('<li><a class="gallery" target="_blank" title="' + pictures[i].title + '" href ="' + pictures[i].url + '" ><img src="' + pictures[i].url + '" alt="' + pictures[i].title + '"></a></li>');
             //$('#image-canvas').append("<a class='gallery' title='" + pictures[i].title + "'' href ='" + pictures[i].url + "' ><img src='" + pictures[i].url + "' class='img-picture' id='" + pictures[i].pic_id + "''></a>");
-            LatLng = new google.maps.LatLng(pictures[i].latitude, pictures[i].longitude)
+            LatLng = new google.maps.LatLng(pictures[i].latitude, pictures[i].longitude);
             var marker = new google.maps.Marker({
                 position: LatLng,
                 map: map,
@@ -886,7 +916,7 @@ function addUsersPictures()
                 console.log("URL = ", pictures[i].url, pictures[i].pic_id, pictures[i].latitude, _openWindow, marker);
 
         }
-        if (($('#image-list li').size())>3) {
+        if (($('#image-list li').size()) > 3) {
             $('.jcarousel-control').css('visibility', 'visible');
         }
 
@@ -896,7 +926,7 @@ function addUsersPictures()
             slideshow: false
         });
         if (doLog)
-            console.log("Out of getImages!")
+            console.log("Out of getImages!");
     }
 }
 
@@ -949,29 +979,151 @@ function play()
     }
 //    console.log(sliderMap.length);
 //    console.log('playing ' + playing);
-    var val = parseInt($('#slider').val())
+    console.log(pointCountByTime);
+    var val = parseInt($('#slider').val());
+
     for (var key in sliderMap)
     {
         if (key >= val && playing)
         {
-
-            return playing = setInterval(doPlay, intervalDelay);
+            var doInterval = intervalDelay;
+            return playing = setInterval(doPlay, doInterval);
             doPlay(); //(*)
         }
     }
 
 }
-
+var extendCount = 0;
+var extendLimit = 3;
+var skipLimit = 3;
 function doPlay()
 {
 
 //    setInterval(function() {
     if (playing)
     {
-        var val = parseInt($('#slider').val()) + 1;
-        $('#slider').val(val).trigger('change');
+        var val = parseInt($('#slider').val());
+        val += (extendCount === 0) ? 1 : 0;
+        var skip = false;
+        var extend = false;
+        var skipCount = 0;
+        while (pointCountByTime[val] === 0 && skipCount < skipLimit && doSkip)
+        {
+//            console.log('skipping point ' + sliderMap[val]);
+            val++;
+            skipCount++;
+        }
+
+
+        if (!calculateMapChange(val))
+        {
+
+            extend = true;
+            extendCount++;
+//            console.log('map bounds will change. extending ' + extendCount);
+        }
+        if (extendCount > extendLimit || !extend)
+        {
+//            console.log('reset extendCount');
+//            val++;
+            extendCount = 0;
+        }
+//        console.log(val);
+        $('#slider').val(val);
+        if (extendCount <= 1)
+            $('#slider').trigger('change');
     }
 //    console.log('new value = ' + val);
 //    }, 10000);
 
+}
+
+function calculateMapChange(val)
+{
+    var bound = boundsByTime[val];
+    if (bound)
+    {
+//        console.log(bound);
+//        var minLat = bound[0][0], minLon = bound[1][0], maxLat = bound[0][1], maxLon = bound[1][1];
+//        console.log(minLat + "\t" + maxLat + "\t" + minLon + "\t" + maxLon);
+        var mapBounds = map.getBounds();
+        return mapBounds.equals(bound);
+    }
+    else
+        return true;
+}
+
+
+function fillUserPoints()
+{
+    console.log('filling data');
+    var filled = 0;
+    console.log(userTimePoints);
+
+    for (var uid in userTimePoints)
+    {
+        var lastPoint;
+        var firstPoint = false;
+        console.log('filling user ' + uid);
+        for (var i = 0; i < sliderCount; i++)
+        {
+            var points = userTimePoints[uid][i];
+            if (points && points.length > 0)
+            {
+                console.log('last point found');
+                lastPoint = points[points.length - 1];
+                firstPoint = true;
+            }
+            else
+            {
+
+                if (firstPoint)
+                {
+                    var skipped = 0;
+                    while (i < sliderCount && points && points.length === 0)
+                    {
+                        i++;
+                        points = userTimePoints[uid][i];
+                        skipped++;
+//                        console.log('skipping');
+
+                    }
+//                    console.log('skipped =' + skipped);
+                    if (i < sliderCount && userTimePoints[uid][i])
+                    {
+//                        console.log('skipped =' + skipped);
+                        var point = points[points.length - 1];
+                        var distance = distanceBetween(lastPoint, point);
+                        if (distance > 50)
+                        {
+                            var deltaLat = point.lat - lastPoint.lat;
+                            var deltaLon = point.lon - lastPoint.lon;
+
+                            for (var k = 0; k <= skipped; k++)
+                            {
+                                var fillPoint = new Point(lastPoint);
+                                fillPoint.lat += deltaLat * k / skipped;
+                                fillPoint.lon += deltaLon * k / skipped;
+                                fillPoint.refreshLatLng();
+                                var index = i - skipped + k;
+//                                console.log(index+"\t"+k);
+                                if (!userTimePoints[uid][index])
+                                {
+                                    userTimePoints[uid][index] = [];
+                                    userTimePoints[uid][index].push(fillPoint);
+                                    pointCountByTime[index] = pointCountByTime[i - skipped + k] + 1;
+                                    boundsByTime[index].extend(fillPoint.LatLng);
+                                    filled++;
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    console.log('filled points=' + filled);
+    console.log(userTimePoints);
 }

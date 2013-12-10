@@ -218,6 +218,8 @@ function userSelectAction()
                     activeUserIds.splice(i, 1);
                 }
             }
+            
+            //hideUserMarker(id);
 
             $(this).parent().css('display', 'none');
             console.log($(this).parent());
@@ -242,13 +244,8 @@ function userSelectAction()
             $('#user-column-'+id).clone(true).attr("id","user-column-"+id+"-clone").appendTo('#selected');
             $('#user-column-'+id+'-clone').find(".user-facts").hide();
             $('#user-column-'+id).css('display', 'none');
-            //$(this).parent().hide();
-            /*
-            $('#selected').append('<li id="selected-user-'+id+'"></li>');
-            $('#selected-user-'+id).clone().append($(this).prev());
-            $('#selected-user-'+id).clone().append($(this));
-            */
 
+            //showUserMarker(id);
         }
         if (doLog)
             console.log(activeUserIds);

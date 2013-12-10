@@ -5,6 +5,10 @@ ol, ul{list-style:none;}
 th{text-align:left;}
 table{border-collapse:collapse;}
  @font-face { font-family:Symbola; src:url(http://users.teilar.gr/~g1951d/Symbola.ttf); }
+ @font-face {
+     font-family: 'digi';
+     src: url('http://cssdeck.com/uploads/resources/fonts/digii/DS-DIGII.TTF');
+}
 body {
     margin:0;
     padding:0;
@@ -14,14 +18,18 @@ body {
 
 header {
     position: absolute;
+    text-align: right;
+    left: calc(100% - 200px);
+    top: calc(100% - 50px);
     width: 200px;
-    background-color:#000;
+    /* background-color:#000; */
     z-index: 200;
     padding-top: 3px;
     padding-bottom: 3px;
     padding-left: 10px;
     padding-right: 10px;
     vertical-align: middle;
+    color: rgba(255,255,255,.7);
 }
 
 header h1 {
@@ -108,9 +116,9 @@ h3 {
     height: 80px;
     text-align: center;
     font-size: 3.5em;
-    color: rgba(255,62,0,.5);
+    color: rgba(255,62,0,1);
     position: absolute;
-    top: 0;
+    top: 5px;
     left: 0;
     opacity: .7;
     background-color: rgba(255,255,255,0);
@@ -178,13 +186,14 @@ h3 {
     margin: 0 auto;
     display: inline-block;
     vertical-align: middle;
+    font-family: digi;
     /* margin-top: -40px; */
     /* position:relative; */
     /* display:block; */
     /* top: 20%; */
     /* top: 20%; */
     font-weight: bold;
-    background-color: rgba(220,220,220,.2);
+    background-color: rgba(220,220,220,.8);
     text-align: center;
 }
 
@@ -249,7 +258,7 @@ li {
     width:90%;
     margin:5px;
     padding:  5px;
-    /* border-radius: inherit; */
+    border-radius: 10px;
     display:inline-block;
 }
 .date-group{
@@ -303,10 +312,10 @@ li {
 }
 
 #users-pics{
-    width: 50%;
+    width: calc(100% - 400px);
     position: absolute;
-    left: 25%;
-    top: 10px;
+    left: 100px;
+    top: 5px;
     /* height: 120px; */
     display: inline;
     padding: 0 10px 10px 10px;
@@ -340,7 +349,7 @@ li {
     border-radius: 50%;
     border: 4px solid;
     position: relative;
-    top:0;
+    top: 5px;
     left:0;
 }
 .user-button-img
@@ -350,12 +359,13 @@ li {
     height: 30px;
     position: relative;
     opacity: .5;
-    float: left;
+    float: right;
+    /* float: left; */
     border-radius: 40px;
     background-color: rgba(255,255,255,.7);
     font-size: 1.3em;
     line-height: 35px;
-    border: 3px solid;
+    /* border: 3px solid; */
     text-align: center;
     /* font-weight: bold; */
     color: white;
@@ -370,7 +380,7 @@ li {
     /* z-index: 600; */
 }
 .user-button-img:hover, .user-stat-button:hover{
-    opacity:1;
+    opacity:.5;
     /*background-color: rgba(255,255,255,.5);*/
 }
 .user-stat-button{
@@ -379,8 +389,8 @@ li {
     height: 30px;
     position: absolute;
     z-index: 400;
-    opacity: .5;
-    top: 55px;
+    opacity: 1;
+    top: 0;
     border-radius: 50%;
     left: 0;
     font-size: 1.1em;
@@ -568,8 +578,7 @@ svg .summary-icon{
 }
 #selected {
     background-color: rgba(200,200,200,.5);
-    height: 20%;
-    margin-top: 40px;
+    height: auto;
 }
 #selected * {
     display: inline-block;
