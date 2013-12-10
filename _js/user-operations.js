@@ -52,7 +52,8 @@ function loadUsers() {
 
 function displayActiveUsers() {
     var activeUsers = getActiveUserIds();
-
+    
+    $('#users-pics').html('');
     for (var i = 0; i < activeUsers.length; i++) {
         $('#users-pics').append(formatUserSelectHTML(currentUserObjects[activeUsers[i]]));
     }
@@ -149,10 +150,6 @@ function formatUserSelectHTML(user)
     var str = "<div class='user-pic' data-id='" + user.id + "'>"
 //    + "<img src='" + user['avatar'] + "' class='user-picture'><input type='checkbox' id = '" + user['id'] + "'>"
             + "<img src='" + user['avatar'] + "' class='user-picture selected-user' alt='" + user.firstName + " " + user.lastName + "'  style='border-color:" + colorScale(user.id) + "'/>"
-            + "<div class='user-button-img' data-mode='remove'  style='background-color:" + colorScale(user.id) + "' >"
-            + "<i class='fa fa-minus'></i>"
-//            +"<img src='_images/remove-button.png'/>"
-            + "</div>"
             + "<div class='user-stat-button' style='background-color:" + colorScale(user.id) + "' data-id='"+user.id+"' ><i class='fa fa-bar-chart-o'></i>"
             + "</div>"
             + "<div class='user-location' id='user-location-" + user.id + "' ></div>"
@@ -169,7 +166,11 @@ function formatUserColumnHTML(user)
             + "<div class='user-button-img' data-mode='add'  style='background-color:" + colorScale(user.id) + "' >"
             + "<i class='fa fa-plus'></i>"
             + "</div><div class='user-facts'>"
-            + "<span class='name'>" + user.firstName + "</span><hr>";
+            + "<span class='name'>" + user.firstName + "</span><hr>"
+            + "<ul class='user-top-cities'>"
+            + "<li>Top City 1</li><li>Top City 2</li></ul><hr>"
+            + "<div class='user-data-viz'>Transport Breakdown</div>";
+
     if (usersByTime[0].user_id == user.id) {
         str += "<span>Most Time Traveled Award</span><hr>";
     }
@@ -177,10 +178,7 @@ function formatUserColumnHTML(user)
         str += "<span>Most Distance Traveled Award</span><hr>";
     }
 
-    str +=  "<ul class='user-top-cities'>"
-            + "<li>Top City 1</li><li>Top City 2</li></ul><hr>"
-            + "<hr><div class='user-data-viz'>Transport Breakdown</div>"
-            + "</div></div>";
+    str += "</div></div>";
 
 //    console.log(summary);
 
