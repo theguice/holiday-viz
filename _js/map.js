@@ -850,7 +850,7 @@ function addUsersPictures()
     if (pictures) {
 
         for (var i = 0, j = pictures.length; i < j; i++) {
-            $('#image-list').append('<li><a class="gallery" title="' + pictures[i].title + '" href ="' + pictures[i].url + '" ><img src="' + pictures[i].url + '" alt="' + pictures[i].title + '"></a></li>');
+            $('#image-list').append('<li><a class="gallery" target="_blank" title="' + pictures[i].title + '" href ="' + pictures[i].url + '" ><img src="' + pictures[i].url + '" alt="' + pictures[i].title + '"></a></li>');
             //$('#image-canvas').append("<a class='gallery' title='" + pictures[i].title + "'' href ='" + pictures[i].url + "' ><img src='" + pictures[i].url + "' class='img-picture' id='" + pictures[i].pic_id + "''></a>");
             LatLng = new google.maps.LatLng(pictures[i].latitude, pictures[i].longitude)
             var marker = new google.maps.Marker({
