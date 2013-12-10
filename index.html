@@ -41,28 +41,36 @@
         </header>
         <section id="controls-section">
             <div id="controls">
-                <div class="time-control">
-                    <input type="range" id="slider" class="range"/>
-                </div>
-                <div id='slider-value'></div>
+
                 <div id='control-buttons'>
                     <div class="form-group btn-group">
+                        <button id="draw-button" class=" btn btn-sm btn-success">Draw</button>
+                        <button type="button" id="center-button" class=" btn btn-sm btn-success"><i class="fa fa-bullseye"></i> Center</button>
+                    </div> 
+                    <div class="form-group btn-group" >
+                        <button type="submit" class="btn btn-sm btn-success map-refresh">Animate</button>
+                    </div> 
 
-                        <button id="draw-button" class=" btn btn-lg btn-success">Draw</button>
-                        <button type="button" id="center-button" class=" btn btn-lg btn-success">Center</button>
+                    <div class="form-group btn-group">
+                           <button type="button" id="show-landing-button" class="btn btn-sm btn-info"><i class="fa fa-home"></i></button>
+                        <button type="button" id="show-stats-button" class="btn btn-sm btn-info"><i class="fa fa-bar-chart-o"></i></button>
                     </div> 
                     <div class="form-group btn-group" >
-                        <button type="submit" class="btn btn-lg btn-success map-refresh">Animate</button>
-                        <button  data-toggle="buttons" id="play-button" class="btn btn-lg btn-success" data-loading-text="Playing" data-toggle="button"><i class="fa fa-play"></i></button>
-                    </div> 
-                    <div class="form-group btn-group" >
-                        <button id="config-button" class="btn  btn-lg btn-warning" data-toggle="button"><i class="fa fa-cog"></i></button>
+                        <button id="config-button" class="btn  btn-sm btn-warning" data-toggle="button"><i class="fa fa-cog"></i></button>
                     </div>
                 </div>
             </div>
         </section>
         <section id='range-section'>
+            <div id="range-div">
+                <button  data-toggle="buttons" id="play-button" class="btn btn-sm btn-success" data-loading-text="Playing" data-toggle="button"><i class="fa fa-play"></i></button>
 
+                <div class="time-control">
+                    <input type="range" id="slider" class="range"/>
+                </div>
+
+                <div id='slider-value'></div>
+            </div>
         </section>
         <section id="users-section">
             <div id="users-pics"></div>
@@ -78,8 +86,8 @@
                 </div>
                 <div id="user-columns">
                     <h4>Select user will disappear or move to end of list.<br/>
-                    This list will slideLeft as users are selected.<br/>
-                    The list will be sorted with currently unselected users always towards the left</h4>
+                        This list will slide Left as users are selected.<br/>
+                        The list will be sorted with currently unselected users always towards the left</h4>
                 </div>
             </div>
         </section>
@@ -117,8 +125,8 @@
                     <button type='button' id="draw-markers-button" class="btn btn-default" data-toggle="button">Draw Point Markers (Slow)</button>
                     <!--<h2 ><label><input id='draw-markers' type='checkbox' checked/>Draw Markers</label></h2>-->
 
-                    <button type="submit" class='btn btn-lg btn-primary' id="save-config"><i class="fa fa-save fa-1x"></i> Save</button>
-                    <button type="button" class='btn btn-lg btn-danger' value="Cancel" id="hide-config"><i class="fa fa-ban fa-1x"></i> Cancel</button>
+                    <button type="submit" class='btn btn-sm btn-primary' id="save-config"><i class="fa fa-save fa-1x"></i> Save</button>
+                    <button type="button" class='btn btn-sm btn-danger' value="Cancel" id="hide-config"><i class="fa fa-ban fa-1x"></i> Cancel</button>
                 </form>
             </div>
             <div id="upload-div" class="popup-div">
@@ -138,12 +146,12 @@
                         <input type="text" id="new-user-instagram" placeholder="Instagram"/>
                         <input type="text" id="new-user-image-url" placeholder="Image Url"/>
                         <h1><label> <input type="checkbox" id="new-user-use-bike" class="checkbox"/> Use Bike </label></h1>
-                        <button type="submit" id="new-user-submit" class='btn btn-lg btn-primary'><i class="fa fa-save fa-1x"></i> Submit</button>
-                        <button id="new-user-cancel" class='btn btn-lg btn-success btn-danger'><i class="fa fa-ban fa-1x"></i> Cancel</button>
+                        <button type="submit" id="new-user-submit" class='btn btn-sm btn-primary'><i class="fa fa-save fa-1x"></i> Submit</button>
+                        <button id="new-user-cancel" class='btn btn-sm btn-success btn-danger'><i class="fa fa-ban fa-1x"></i> Cancel</button>
                     </form>
                 </div>
-                <input class="btn btn-lg btn-primary" type="file" id="files" name="files[]" multiple />
-                <button class="btn btn-lg cancel-button btn-danger" type="button" id="cancel-upload-button"><i class="fa fa-ban fa-1x"></i> Cancel</button>
+                <input class="btn btn-sm btn-primary" type="file" id="files" name="files[]" multiple />
+                <button class="btn btn-sm cancel-button btn-danger" type="button" id="cancel-upload-button"><i class="fa fa-ban fa-1x"></i> Cancel</button>
             </div>
 
 
@@ -186,15 +194,23 @@
                 <a href="#" class="jcarousel-control-prev jcarousel-control">&lsaquo;</a>
                 <a href="#" class="jcarousel-control-next jcarousel-control">&rsaquo;</a>    
             </div>
-                    <!--<a class='gallery' href='http://farm4.staticflickr.com/3727/11123312783_8a9fbd9519_z.jpg'>Photo_1</a>
-                    <a class='gallery' href='http://farm8.staticflickr.com/7356/11119087036_1e6e01aa7c_z.jpg'>Photo_2</a>
-                    <script>
-                        // jQuery('a.gallery').colorbox();
-                        $(".gallery").colorbox({rel:'gallery', slideshow:true});
-            
-                    </script>-->
-              
+            <!--<a class='gallery' href='http://farm4.staticflickr.com/3727/11123312783_8a9fbd9519_z.jpg'>Photo_1</a>
+            <a class='gallery' href='http://farm8.staticflickr.com/7356/11119087036_1e6e01aa7c_z.jpg'>Photo_2</a>
+            <script>
+                // jQuery('a.gallery').colorbox();
+                $(".gallery").colorbox({rel:'gallery', slideshow:true});
+    
+            </script>-->
 
+
+        </section>
+        <section id="stats-section">
+            <div id="overall-stats" class="stats-popup">
+                <button class="hide-button  btn btn-lg  btn-info" >Hide</button>
+            </div>
+            <div id="user-stats" class="stats-popup">
+                <button class="hide-button btn btn-lg btn-info">Hide</button>
+            </div>   
         </section>
     </div>
 </body>

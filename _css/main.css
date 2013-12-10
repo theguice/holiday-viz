@@ -46,16 +46,28 @@ header h2 {
 }
 
 #controls {
-    height: 50px;
+    height: 40px;
     padding: 0;
     margin: 10px;
     position:absolute;
     vertical-align: middle;
     /* top:0; */
-    width: calc(100% - 20px);
+    left: calc(100% - 350px);
+    width: 340px;
     /* display: inline-block; */
     z-index: 500;
     background: rgba(255,255,255,.3);
+}
+#range-div{
+    position: absolute;
+    display: none;
+    height: 40px;
+    z-index:500;
+    width: calc(100% - 20px);
+    margin: 10px;
+    padding: 5px;
+    top: calc(100% - 60px);
+     background: rgba(255,255,255,.3);
 }
 #control-buttons{
     margin: 0 auto;
@@ -71,9 +83,9 @@ header h2 {
 .user-location, .user-trans{
     font-size: 1em;
     background-color: rgba(255,255,255,.5);
-    width: 90%;
+    width: 95%;
     /* overflow-wrap: break-word; */
-    margin: 5%;
+    margin: 2.5%;
     /* word-wrap: break-word; */
     display: inline-block;
     /* height: 20px; */
@@ -85,10 +97,10 @@ header h2 {
     font-family: Symbola;
 
     margin: 0;
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     text-align: center;
-    font-size: 4.5em;
+    font-size: 3.5em;
     color: rgba(255,62,0,.5);
     position: absolute;
     top: 0;
@@ -121,9 +133,9 @@ header h2 {
 
     margin: 0 auto;
 
-    padding: 5px;
+    /* padding: 5px; */
 
-    width: calc(100% - 603px);
+    width: calc(100% - 235px);
 
 
     display: inline-block;
@@ -131,7 +143,7 @@ header h2 {
 
     vertical-align: middle;
 
-    line-height: 3em;
+    line-height: 2em;
 
 }
 #slider
@@ -140,7 +152,7 @@ header h2 {
     display: inline-block;
 
 
-    height: 50%;
+    height: 40%;
 
 
     width: 100%;
@@ -153,8 +165,8 @@ header h2 {
 }
 #slider-value{
     /* z-index:200; */
-    height: 100%;
-    line-height: 3em;
+    height: 90%;
+    line-height: 2em;
     width: 195px;
     margin: 0 auto;
     display: inline-block;
@@ -165,16 +177,17 @@ header h2 {
     /* top: 20%; */
     /* top: 20%; */
     font-weight: bold;
-    background-color: rgba(220,220,220,.8);
+    background-color: rgba(220,220,220,.2);
+    text-align: center;
 }
 
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     background-color: rgb(0,120,200);
     opacity: 0.8;
-    width: 30px;
-    height: 30px;
-    border-radius: 15px;
+    width: 25px;
+    height: 25px;
+    border-radius: 12.5px;
     -webkit-box-shadow: inset 0 0 5px #333;
 }
 
@@ -283,10 +296,10 @@ li {
 }
 
 #users-pics{
-    width: calc(100% - 500px);
+    width: 50%;
     position: absolute;
-    left: 200px;
-    top: 0;
+    left: 25%;
+    top: 10px;
     /* height: 120px; */
     display: inline;
     padding: 0 10px 10px 10px;
@@ -305,49 +318,73 @@ li {
     position: relative;
     top: 0;
     /* height: 101px; */
-    width: 100px;
+    width: 80px;
     /* float: right; */
     z-index: inherit;
     vertical-align: text-top;
 }
 .user-picture
 {
-    width: 100px;
-    height: 100px;
-    z-index: inherit;
+    width: 80px;
+    height: 80px;
+    /* z-index: inherit; */
     display: block;
     /*border-radius: inherit; */
     border-radius: 50%;
-    border: 5px solid;
+    border: 4px solid;
     position: relative;
     top:0;
     left:0;
 }
 .user-button-img
 {
-    z-index: 310;
-    width: 100px;
-    height: 100px;
+    z-index: 400;
+    width: 30px;
+    height: 30px;
     position: absolute;
-    top:0;
-    left:0;
-    opacity: 0;
+    top: 55px;
+    left: 50px;
+    opacity: .5;
     float: left;
-    border-radius: 50%;
-    background-color: rgba(255,255,255,.5);
+    border-radius: 40px;
+    background-color: rgba(255,255,255,.7);
+    font-size: 1.3em;
+    line-height: 35px;
+    border: 3px solid;
+    text-align: center;
+    /* font-weight: bold; */
+    color: white;
+    vertical-align: middle;
 }
 .user-button-img img{
-    width: 50%;
-    height: 50%;
-    left: 25%;
-    top: 25%;
+    width: 80%;
+    height: 80%;
+    left: 10%;
+    top: 10%;
     position: relative;
-    z-index: 320;
+    /* z-index: 600; */
 }
-.user-button-img:hover{
+.user-button-img:hover, .user-stat-button:hover{
     opacity:1;
     /*background-color: rgba(255,255,255,.5);*/
 }
+.user-stat-button{
+    width: 30px;
+    
+    height: 30px;
+    position: absolute;
+    z-index: 400;
+    opacity: .5;
+    top: 55px;
+    border-radius: 50%;
+    left: 0;
+    font-size: 1.1em;
+    line-height: 30px;
+    text-align: center;
+    color: white;
+    background-color: rgba(255,255,255,.5);
+}
+
 .selected-user{
     opacity:1;
 }
@@ -449,7 +486,7 @@ li {
     overflow-y: auto;
     height: 30%;
     top: 70%;
-    /*display: none;*/
+    display: none;
 }
 
 #dashboard-trans-modes{
@@ -576,4 +613,26 @@ svg .summary-icon{
     width: 400px;
     height: 200px;
 }
+.stats-popup{
+    width: 90%;
+    
+    height: 90%;
+    position: absolute;
+    background: rgba(255,255,255,.6);
+    left: 5%;
+    top: 5%;
+    overflow-y: auto;
+    border: 1px solid rgba(100,100,100,1);
+    z-index: 1000;
+    display: none;
+}
+#overall-stats{
+    
+}
+#user-stats{
+    
+}
 
+.hide-button{
+    
+}

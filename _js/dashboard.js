@@ -5,16 +5,35 @@ var summaryChartData = {'time': [], 'distance': []};
 
 function initDashboard(start, end, userIds)
 {
-    var  activeOnly = 1;
+    var activeOnly = 1;
     summaryChartData = {'time': [], 'distance': []};
     summary = getSummary(start, end, userIds, activeOnly, false);
     updateDashboardTable();
     drawDonutChart(summaryChartData['time'], '#donut-by-time', 'overall-trans-mode-by-time', 'donut');
     drawDonutChart(summaryChartData['distance'], '#donut-by-distance', 'overall-trans-mode-by-distance', 'donut');
     addIconEvents();
+    addStatsEvents();
 
 }
-
+function addStatsEvents()
+{
+    $('#show-stats-button').click(function() {
+        $('#overall-stats').css('display', 'block').hide().slideDown(500);
+    });
+    $('.user-stat-button').click(function() {
+        $('#user-stats').css('display', 'block').hide().slideDown(500);
+        var id = parseInt($(this).attr('data-id'));
+        console.log('showing user stats for ' + id);
+    });
+    
+    $('.hide-button').click(function(){
+       $(this).parent().slideUp(500);
+    });
+    
+    $('#show-landing-button').click(function(){
+         $('#user-selection').slideDown();
+    });
+}
 function updateDashboardTable()
 {
 
@@ -37,7 +56,7 @@ function updateDashboardTable()
             totalTime += time;
         totalDistance += distance;
         var temp = parseInt(line['track_count']);
-        totalPoints += (temp)? temp:0;
+        totalPoints += (temp) ? temp : 0;
 
         summaryChartData['time'].push({'name': mode, 'value': time});
         summaryChartData['distance'].push({'name': mode, 'value': distance});
@@ -216,8 +235,8 @@ function drawDonutChart(data, target, id, classes)
         'id': id + "-drive",
         class: 'icon drive-icon summary-icon'
     });
-    
-        vis.append('image').attr({
+
+    vis.append('image').attr({
         'xlink:href': '_images/svg/plane.png',
         type: 'image/svg+xml',
         width: r,
@@ -248,19 +267,19 @@ function addIconEvents()
         name = name.toLowerCase();
         console.log(name);
         self.css('opacity', '.5');
-        var images = self.parent('image .'+name+'-icon');
-        
+        var images = self.parent('image .' + name + '-icon');
+
         console.log(images);
-        self.siblings('.'+name+'-icon').css('display','block');
+        self.siblings('.' + name + '-icon').css('display', 'block');
 
 
     }).on('mouseleave', function() {
         var self = $(this);
         var name = self.attr('data-name');
- name = name.toLowerCase();
+        name = name.toLowerCase();
         console.log(name);
         self.css('opacity', '1');
-       self.siblings('.'+name+'-icon').css('display','none');
+        self.siblings('.' + name + '-icon').css('display', 'none');
     });
 }
 function getCarSvg()

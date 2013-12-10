@@ -129,10 +129,14 @@ function formatUserSelectHTML(user)
     var str = "<div class='user-pic' data-id='" + user.id + "'>"
 //    + "<img src='" + user['avatar'] + "' class='user-picture'><input type='checkbox' id = '" + user['id'] + "'>"
             + "<img src='" + user['avatar'] + "' class='user-picture selected-user' alt='" + user.firstName + " " + user.lastName + "'  style='border-color:" + colorScale(user.id) + "'/>"
-            + "<div class='user-button-img' data-mode='remove'><img src='_images/remove-button.png'/>"
+            + "<div class='user-button-img' data-mode='remove'  style='background-color:" + colorScale(user.id) + "' >"
+            + "<i class='fa fa-minus'></i>"
+//            +"<img src='_images/remove-button.png'/>"
+            + "</div>"
+            + "<div class='user-stat-button' style='background-color:" + colorScale(user.id) + "' data-id='"+user.id+"' ><i class='fa fa-bar-chart-o'></i>"
             + "</div>"
             + "<div class='user-location' id='user-location-" + user.id + "' ></div>"
-            + "<div class='user-trans' id='user-trans-" + user.id + "'style='color:" + colorScale(user.id) + "' ></div>"
+            + "<div class='user-trans' id='user-trans-" + user.id + "' style='color:" + colorScale(user.id) + "' ></div>"
             + "</div>";
 
     return str;
@@ -153,9 +157,11 @@ function formatUserColumnHTML(user)
 
 function userSelectAction()
 {
-    $('user-button-img').unbind('click');
+    console.log('adding user select actions');
+    $('.user-button-img').unbind('click');
     $('.user-button-img').on('click', function()
     {
+        console.log('user image clicked');
         var self = $(this);
         var mode = self.attr('data-mode');
         var id = parseInt(self.parent().attr('data-id'));
@@ -166,7 +172,8 @@ function userSelectAction()
             if (doLog)
                 console.log('removing user ' + id);
             self.attr("data-mode", 'add');
-            self.children('img').attr('src', '_images/add-button.png');
+//            self.children('img').attr('src', '_images/add-button.png');
+            self.empty().append('<i class="fa fa-plus"></i>');
             self.siblings('.user-picture').removeClass('selected-user').addClass('unselected-user');
             for (var i = 0, j = activeUserIds.length; i < j; i++)
             {
@@ -186,14 +193,25 @@ function userSelectAction()
 
             if (doLog)
                 console.log('adding user ' + id);
-            self.attr('data-mode', 'remove');
-            self.children('img').attr('src', '_images/remove-button.png');
+            self.attr('data-mode', 'remove').empty().append('<i class="fa fa-minus"></i>');
+//            self.children('img').attr('src', '_images/remove-button.png');
             self.siblings('.user-picture').removeClass('unselected-user').addClass('selected-user');
             activeUserIds.push(id);
         }
         if (doLog)
             console.log(activeUserIds);
     });
+
+    $('.user-button-img').on('hover', function() {
+        console.log('hovering');
+    });
+
+
+    $('.user-stat-button').unbind('click')
+            .on('click', function()
+            {
+                //TODO 
+            });
 }
 
 function closeOverlay() {

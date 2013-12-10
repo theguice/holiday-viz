@@ -542,6 +542,8 @@ function processTrkpts()
     prepareData();
     reloadSlider();
     prepareUsersTimePoints();
+    $('#range-div').show();
+    $('#play-button').trigger('click');
 //    drawUsersPoints();
 
 
