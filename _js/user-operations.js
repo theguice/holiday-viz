@@ -185,6 +185,8 @@ function userSelectAction()
                     activeUserIds.splice(i, 1);
                 }
             }
+            
+            hideUserMarker(id);
 
 
         }
@@ -197,6 +199,7 @@ function userSelectAction()
 //            self.children('img').attr('src', '_images/remove-button.png');
             self.siblings('.user-picture').removeClass('unselected-user').addClass('selected-user');
             activeUserIds.push(id);
+              showUserMarker(id);
         }
         if (doLog)
             console.log(activeUserIds);

@@ -118,7 +118,7 @@ function updatGpxInDb(user, point, keys) {
     if (doLog)
         console.log("update sql:\n" + sql);
 
-    var address = getAddress(point.lat, point.lon);
+//    var address = getAddress(point.lat, point.lon);
     $.ajax({
         'type': 'GET',
         'url': DB_FILE,

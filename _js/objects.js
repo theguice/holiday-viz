@@ -39,6 +39,7 @@ function Point(data /*TRKPT or position*/)
             this.time = data.timestamp;
             this.accuracy = (data.coords.accuracy) ? data.coords.accuracy : 0;
             this.address = getAddress(this.lat, this.lon);
+            this.type = 1;
         }
         else if (data.transMode)
         {//CLONE Point
@@ -47,8 +48,8 @@ function Point(data /*TRKPT or position*/)
             this.elevation = (data['elevation']);
             this.lat = (data['lat']);
             this.lon = (data['lon']);
-            this.time = (data['time']);
-            this.userId = data['user_id'];
+            this.time = new Date((data['time']));
+            this.userId = data['userId'];
             this.distance = parseFloat(data['distance']);
             this.speed = (data['speed']);
             this.deltaTime = (data['deltaTime']);
@@ -57,6 +58,7 @@ function Point(data /*TRKPT or position*/)
             this.LatLng = data['LatLng'];
             this.startPoint = data['startPoint'];
             this.address = data['address'];
+            this.type = 2;
         }
         else if (data._lat)
         {
@@ -68,18 +70,7 @@ function Point(data /*TRKPT or position*/)
             this.address = getAddress(this.lat, this.lon);
 
             this.accuracy = 0;
-        }
-        else if (data.lat)
-        {
-//            console.log('Object Type 3');
-            this.elevation = (data['ele'] && data['ele'][0]) ? parseFloat(data.ele[0].text) : 0;
-            this.lat = (data.lat) ? parseFloat(data.lat) : 0;
-            this.lon = (data.lon) ? parseFloat(data.lon) : 0;
-            this.time = (data['time'] && data['time'][0]) ? new Date(data.time[0].text) : 0;
-            this.startPoint = 0;
-            this.address = getAddress(this.lat, this.lon);
-
-            this.accuracy = 0;
+            this.type = 3;
         }
         else if (data.user_id)
         {
@@ -99,6 +90,21 @@ function Point(data /*TRKPT or position*/)
             this.LatLng = new google.maps.LatLng(this.lat, this.lon);
             this.startPoint = parseInt(data['start_point']);
             this.address = new Address(data);
+            this.type = 4;
+        }
+        else if (data.lat)
+        {
+//            console.log('Object Type 3');
+            this.elevation = (data['ele'] && data['ele'][0]) ? parseFloat(data.ele[0].text) : 0;
+            this.lat = (data.lat) ? parseFloat(data.lat) : 0;
+            this.lon = (data.lon) ? parseFloat(data.lon) : 0;
+            this.time = (data['time'] && data['time'][0]) ? new Date(data.time[0].text) : 0;
+            this.startPoint = 0;
+            this.address = (data['address']) ? data['address'] : new Address();
+//            this.address = getAddress(this.lat, this.lon);
+
+            this.accuracy = 0;
+            this.type = 5;
         }
 //        else if(data.)
         else
@@ -113,6 +119,7 @@ function Point(data /*TRKPT or position*/)
             this.distance = 0;
             this.startPoint = 0;
             this.address = new Address();
+            this.type = 6;
         }
 
     }
@@ -136,7 +143,37 @@ Point.prototype.refreshAddress = function()
     this.address = getAddress(this.lat, this.lon);
 //    console.log(this.address);
 };
+/**
+ * Returns distanct in Meters
+ * @param {Point} point1
+ * @param {Point} point2
+ * @returns {Number}
+ */
+function distanceBetween(point1, point2) {
+    var lat1 = point1.lat,
+            lat2 = point2.lat,
+            lon1 = point1.lon,
+            lon2 = point2.lon;
+    //    console.log(lat1 + "\t" + lat2 + "\t" + lon1 + "\t" + lon2);
+    var R = 6371; // km
+    var dLat = toRad(lat2 - lat1);
+    var dLon = toRad(lon2 - lon1);
+    //    dLat = (dLat === 0) ? 0 : dLat.toRad();
+    //    dLon = (dLon === 0) ? 0 : dLon.toRad();
+    var lat1 = toRad(lat1);
+    var lat2 = toRad(lat2);
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    return d * 1000;
+}
 
+
+function toRad(Value) {
+    /** Converts numeric degrees to radians */
+    return Value * Math.PI / 180;
+}
 function sortPoints(pts) {
 //    console.log(pts);
     var sorted = pts;
@@ -177,7 +214,7 @@ function generateStats(sorted)
         coordinateStats.lon.min = (point.lon < coordinateStats.lon.min) ? point.lon : coordinateStats.lon.min;
         coordinateStats.lon.max = (point.lon > coordinateStats.lon.max) ? point.lon : coordinateStats.lon.max;
         bounds.extend(point.LatLng);
-        
+
     }
 
     timeStats.range = timeStats.max - timeStats.min;
@@ -328,7 +365,7 @@ function getTransMode(speed)
 
 
 var modes = {0: "Stop", 2: "Walk", 6: "Bike", 45: "Drive", 400: "Fly"};
-var transModeSymbols = {'Stop': '', 'Walk':'&#x1F6B6', 'Bike':'&#x1F6B4;','Drive':'&#x1F698','Fly':'&#x1F6E7;','undefined':''};
+var transModeSymbols = {'Stop': '', 'Walk': '&#x1F6B6', 'Bike': '&#x1F6B4;', 'Drive': '&#x1F698', 'Fly': '&#x1F6E7;', 'undefined': ''};
 var states = {AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California', CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', DC: 'District of Columbia', FL: 'Florida', GA: 'Georgia', HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa', KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', ME: 'Maine', MD: 'Maryland', MA: 'Massachusetts', MI: 'Michigan', MN: 'Minnesota', MO: 'Missouri', MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey', NM: 'New Mexico', NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio', OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina', SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont', VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming'};
 var state_codes = {
     'Alabama': 'AL',
