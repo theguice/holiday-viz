@@ -528,16 +528,23 @@ svg .donut-trans-icon{
 }
 .donut-trans-icon-text{
     font-family: Symbola;
-    font-size: 5em;
+    line-height: 3em;
+    /* font-size: 5em; */
     text-align: center;
 }
+.donut-trans-icon-value{
+    font-family: digi;
+    font-size: 4em;
+}
+.donut-trans-icon-symbol{
+    font-size: 3em;}
 .donut-title{
     font-size: 1.2em;
     text-align: center;
     display: block;
-    display: bloc;
-    display: bl;
-    margin: 10px 0;
+    background-color: rgba(200,200,200,.1);
+    padding: 5px;
+    margin: 0 0 5px 0;
     margin: 1;
 }
 .overall-donut
@@ -572,11 +579,16 @@ svg .summary-icon{
     strokeOpacity: .4;
     strokeWeight: 2;
 }
-
+.dashboard-legend{
+    font-family: Symbola;
+    font-size: 2em;
+    text-align:center;
+}
 .dashboard-title{
     font-size: 1em;
 
-    font-family: Arial;
+    /* color: rgba(64,64,64,.8); */
+    /* font-family: Arial; */
 }
 
 .dashboard-value{
@@ -587,8 +599,8 @@ svg .summary-icon{
 
 }
 .dashboard-unit{
-    font-size: .75em;
-    color:rgb(64,64,64);
+    font-size: 1em;
+    color: rgb(64,64,64,.8);
 }
 .dashboard-entry{
     /* float: left; */
@@ -682,17 +694,19 @@ svg .summary-icon{
     height: 200px;
 }
 .stats-popup{
-    width: 90%;
+    width: 95%;
 
-    height: 90%;
+    height: 95%;
     position: absolute;
-    background: rgba(255,255,255,.9);
-    left: 5%;
-    top: 5%;
+    background: rgba(0,0,0,1);
+    left: 2.5%;
+    top: 2.5%;
     overflow-y: auto;
     border: 1px solid rgba(100,100,100,1);
     z-index: 1000;
     display: none;
+    font-family: Bangers, sans-serif;
+    color: white;
 }
 #overall-stats{
 
@@ -736,13 +750,13 @@ span.name {
 
 .general-stat-div{
     display: inline-block;
-    width: 26%;
+    width: 31%;
     height: 300px;
     float: left;
     margin: 1%;
-    border: 1px solid rgba(220,220,220,.4);
-    background-color: rgba(255,255,255,.7);
-    padding: 5px;
+    /* border: 0px solid rgba(220,220,220,.4); */
+    background-color: rgba(200,200,200,.1);
+    padding: 0px;
     border: 1aliceblue;
 }
 .stat-title{

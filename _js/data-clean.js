@@ -34,7 +34,7 @@ $(document).ready(function()
 });
 function generateColors()
 {
-    var colorScale = d3.scale.category20();
+    var colorScale = d3.scale.category20c();
     console.log(colorScale);
     for (var i = 0; i < 40; i++)
     {
