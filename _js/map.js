@@ -907,7 +907,6 @@ function addUsersPictures()
         }
 
         $('#image-canvas').css('visibility', 'visible');
-        console.log($(".gallery"));
         $(".gallery").colorbox({
             rel: 'gallery',
             slideshow: false
