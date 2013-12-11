@@ -4,8 +4,8 @@ html, body, address, blockquote, del, div, h1, h2, h3, h4, h5, h6, hr, ins, nosc
 /*ol, ul{list-style:none;}*/
 th{text-align:left;}
 table{border-collapse:collapse;}
-  @font-face { font-family:Symbola2; src:url(http://users.teilar.gr/~g1951d/Symbola.ttf); }
-  @font-face { font-family:Symbola; src:url(http://zhm.github.io/symbola/fonts/Symbola.ttf); }
+@font-face { font-family:Symbola2; src:url(http://users.teilar.gr/~g1951d/Symbola.ttf); }
+@font-face { font-family:Symbola; src:url(http://zhm.github.io/symbola/fonts/Symbola.ttf); }
 
 @font-face {
     font-family: 'digi';
@@ -100,8 +100,9 @@ h3 {
 }
 .user-location, .user-trans{
     font-size: 1em;
-    background-color: rgba(255,255,255,.5);
+    background-color: rgba(255,255,255,.7);
     width: 95%;
+    text-align: center;
     /* overflow-wrap: break-word; */
     margin: 2.5%;
     /* word-wrap: break-word; */
@@ -122,7 +123,7 @@ h3 {
     position: absolute;
     top: 5px;
     left: 0;
-    opacity: .7;
+    opacity: 1;
     background-color: rgba(255,255,255,0);
     border-radius: 50px;
     z-index: 350;
@@ -140,10 +141,11 @@ h3 {
     border-radius: 50px;
     padding: 5px;
     font-size: 2em;
+    color: #ffd700;
 }
 img.award {
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 27px;
 }
 
 #map-area{
@@ -170,7 +172,7 @@ img.award {
 
     /* padding: 5px; */
 
-    width: calc(100% - 235px);
+    width: calc(100% - 370px);
 
 
     display: inline-block;
@@ -193,8 +195,9 @@ img.award {
 #slider-value{
     /* z-index:200; */
     height: 90%;
-    line-height: 2em;
-    width: 195px;
+    font-size: 2em;
+    line-height: .9em;
+    width: 330px;
     margin: 0 auto;
     display: inline-block;
     vertical-align: middle;
@@ -416,14 +419,14 @@ li {
     background-color: rgba(255,255,255,.5);
 }
 .user-stat-badge{
-    
+
 }
 .user-column-stat{
-    
+
 }
 .user-column-stat img{
     height: 150px;
-    
+
     width: 150px;
     float: left;
     float: left;
@@ -433,11 +436,11 @@ li {
 }
 .user-column-stat ol{
     text-align: center;
-    
+
 }
 .user-facts-stat{
     display: inline-block;
-    
+
     width: calc(100% - 170px);
     text-align: center;
     font-size: 1.2em;
@@ -727,7 +730,10 @@ svg .summary-icon{
     padding-top: 10px;
 }
 
-
+.user-awards li img{
+    width:36px;
+    height:28px;
+}
 .thumbnail
 {
     width: 90px;height:90px;
@@ -828,9 +834,18 @@ span.name {
     font-family: Bangers, sans-serif;
 }
 .bar-data{
-        fill: white;
-    
-        font-family: digi;
-        font-size: 1.5em;
-        font-weight: bold;
+    fill: white;
+
+    font-family: digi;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+.award-user-name{
+
+}
+.award-value{
+    font-family: digi;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #6baed6;
 }

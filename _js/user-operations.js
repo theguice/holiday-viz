@@ -23,7 +23,7 @@ function loadUsers() {
     usersByDistance = rankUsersByDistance();
     usersTransModes = runCustomQuery("select distinct user_id, trans_mode from gpx_track where active=1 and trans_mode not in ('undefined','Stop') order by user_id");
     userTopCities   = runCustomQuery("select  user_id, city, state, round((sum(delta_time))) as total_time_s, round((sum(delta_time)*0.000277778)) as total_time_hr, round(sum(distance)) as total_distance_m, round( sum(distance)*0.000621371) as total_distance_mi from gpx_track  where city<> 'undefined' and state<>'undefined' group by user_id, city, state order by user_id, round((sum(delta_time)))  desc");
-    usersByAvgSpeed = runCustomQuery("SELECT user_id, AVG( average_speed_mi_hrs ) AS avg FROM  `gpx_active_stats` GROUP BY user_id ORDER BY avg ASC");
+    usersByAvgSpeed = runCustomQuery("SELECT user_id, round(sum(distance)/sum(delta_time)*2.23694,1) AS avg FROM  gpx_track where active=1 GROUP BY user_id ORDER BY avg ASC");
 
     // find who spent the most time in berkeley  // go bears award
     var count = 0;
@@ -224,6 +224,10 @@ function formatUserColumnHTML(user)
     if (usersByAvgSpeed[0].user_id == user.id) {
         str += "<li><span class='symbola award-symbol'>" + transModeSymbols['slow'] + "</span></li>";
         str += "<li>Slowest Traveler</li>";
+    }
+        if (usersByAvgSpeed[usersByAvgSpeed.length-1].user_id == user.id) {
+        str += "<li><span class='symbola award-symbol'>" + transModeSymbols['fast'] + "</span></li>";
+        str += "<li>Fastest Traveler</li>";
     }
     str += "</ul></div></div>";
 

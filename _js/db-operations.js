@@ -522,7 +522,7 @@ function getSummary(start, end, usersIds, activeOnly, byDate, byTransMode)
         sql = sql.substr(0, sql.length - 1);
     }
 
-//    if (doLog)
+    if (doLog)
     console.log(sql);
     var jqXHR = $.ajax({
         'type': 'GET',
@@ -730,7 +730,7 @@ function runCustomFetch(url)
 
 function rankUsersByTime() {
 
-    var sql = "select user_id, sum(delta_time) as total_time_s, sum(delta_time)*0.000277778 as total_time_hr from gpx_track group by user_id order by sum(delta_time)  desc";
+    var sql = "select user_id, sum(delta_time) as total_time_s, round(sum(delta_time)*0.000277778) as total_time_hr from gpx_track group by user_id order by sum(delta_time)  desc";
     var jqXHR = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -751,7 +751,7 @@ function rankUsersByTime() {
 
 function rankUsersByDistance() {
 
-    var sql = "select user_id, sum(distance) as total_distance_m, sum(distance)*0.000621371 as total_distance_mi from gpx_track group by user_id order by sum(distance)  desc";
+    var sql = "select user_id, sum(distance) as total_distance_m, round(sum(distance)*0.000621371) as total_distance_mi from gpx_track group by user_id order by sum(distance)  desc";
     var jqXHR = $.ajax({
         'type': 'GET',
         'url': DB_FILE,

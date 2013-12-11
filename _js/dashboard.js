@@ -46,7 +46,7 @@ function initDashboard(start, end, userIds) {
     transColor['Fly'] = colors[12];
     transColor['undefined'] = colors[4];
     transColor['Stop'] = colors[16];
-    console.log(transColor);
+    //console.log(transColor);
     var summary = getSummary(start, end, userIds, activeOnly, false, true);
     var summaryChartData = prepareSummaryData(summary);
     drawDonutChart(summaryChartData['time'], '#donut-by-distance', 'overall-trans-mode-by-time', 'donut', 'Transportation by Time');
@@ -60,19 +60,21 @@ function initDashboard(start, end, userIds) {
 
     // overall-user-city-by-distance
     summary = runCustomQuery("select substr(city,1,9) as name, ROUND(sum(distance)*0.000621371) as value from gpx_track where city is not null  and city <>'' group by city order by sum(distance) desc LIMIT " + LIMIT)
-    //    console.log("overall-user-city-by-distance", summary)
+    //    //console.log("overall-user-city-by-distance", summary)
     drawBarChart(summary, '#city-by-distance', 'overall-user-city-by-distance', 'bar', 'Most Trevled City (Miles)');
     // overall-user-city-by-time
     summary = runCustomQuery("select substr(city,1,9) as name, ROUND(sum(delta_time)*0.000277778) as value from gpx_track where city is not null and city <>'' group by city order by sum(delta_time) desc LIMIT " + LIMIT)
-    //    console.log("overall-user-city-by-time", summary)
+    //    //console.log("overall-user-city-by-time", summary)
     drawBarChart(summary, '#city-by-time', 'overall-user-city-by-time', 'bar', 'Longest Traveled City (Hours)');
-    //    console.log(summary)
+    //    //console.log(summary)
     summary = runCustomQuery("SELECT b.user_id, b.first_name as name,  count(distinct a.city) as value from gpx_track a, gpx_users b  where a.user_id = b.user_id group by b.user_id, b.first_name order by count(distinct city) desc LIMIT " + LIMIT)
     drawBarChart(summary, '#users-by-city-count', 'overall-user-users-by-city-count', 'bar', 'Top City Hoppers');
     summary = runCustomQuery("SELECT b.user_id, b.first_name as name,  round(sum(a.distance) * 0.000621371)  as value from gpx_track a, gpx_users b  where a.user_id = b.user_id group by b.user_id, b.first_name order by sum(a.distance) desc LIMIT " + LIMIT)
     drawBarChart(summary, '#users-by-distance', 'overall-user-users-by-distance', 'bar', 'Furthest Travelers (Miles)');
     summary = runCustomQuery("SELECT b.user_id,  b.first_name as name, ROUND(sum(delta_time)*0.000277778)  as value from gpx_track a, gpx_users b where a.user_id = b.user_id group by b.user_id, b.first_name order by sum(delta_time) desc LIMIT " + LIMIT)
     drawBarChart(summary, '#users-by-time', 'overall-user-users-by-time', 'bar', 'Longest Travelers (Hours)');
+    addFunStats('#fun-stats', 'Awards!');
+
     addIconEvents();
     addStatsEvents();
 }
@@ -82,9 +84,9 @@ function initUserDashboard(userId)
     var id = [userId];
     addUserBadge("#user-stat-badge", userId)
     var summary = getSummary(false, false, id, true, false, true);
-    console.log(summary);
+    //console.log(summary);
     var summaryChartData = prepareSummaryData(summary);
-    console.log(summaryChartData);
+    //console.log(summaryChartData);
     drawDonutChart(summaryChartData['time'], '#user-donut-by-distance', 'user-trans-mode-by-time', 'donut', 'Transportation by Time');
     drawDonutChart(summaryChartData['distance'], '#user-donut-by-time', 'user-trans-mode-by-distance', 'donut', 'Transportation by Distance');
     summary = getSummary(false, false, id, true, false, false);
@@ -118,7 +120,7 @@ function addStatsEvents() {
 //        alert('user stats');
         $('#user-stats').css('display', 'block').hide().slideDown(500);
         var id = parseInt($(this).attr('data-id'));
-        console.log('showing user stats for ' + id);
+        //console.log('showing user stats for ' + id);
         initUserDashboard(id);
     });
     $('.hide-button').unbind().click(function() {
@@ -163,6 +165,42 @@ function drawSummaryData(data, target, title, user_id) {
      */
 }
 
+function addFunStats(target, title)
+{
+    var userColors = []
+            , tempCol = colorScale;
+    for (var i = 0; i < 20; i++)
+        userColors.push(tempCol(i));
+    //console.log(userColors);
+    $(target).empty().append("<div class='donut-title'>" + title + "</div><br>");
+    var topTime = getUserById(usersByTime[0].user_id),
+            topDistance = getUserById(usersByDistance[0].user_id),
+            bear = getUserById(go_bears_user),
+            slowest = getUserById(usersByAvgSpeed[0].user_id),
+            fastest = getUserById(usersByAvgSpeed[usersByAvgSpeed.length - 1].user_id);
+    var str = "<span class='symbola award-symbol'>" + transModeSymbols['time'] + " </span>"
+            + "<span class='award-user-name' style='color:" + userColors[topTime['id']] + "'> &#09;" + topTime.firstName + " </span> traveled the longest with "
+            + "<span class='award-value'>" + usersByTime[0]['total_time_hr'] + " </span> hours<br>";
+
+    str += "<span class='symbola award-symbol'>" + transModeSymbols['distance'] + " </span>"
+            + "<span class='award-user-name' style='color:" + userColors[topDistance['id']] + "'>&#09;" + topDistance.firstName + " </span> traveled the furthest with "
+            + "<span class='award-value'>" + usersByDistance[0]['total_distance_mi'] + " </span> miles<br>";
+
+    str += "<span class='symbola award-symbol'>" + transModeSymbols['slow'] + " </span>"
+            + "<span class='award-user-name' style='color:" + userColors[slowest['id']] + "'> &#09;" + slowest.firstName + " </span> was the slowest with an average "
+            + "<span class='award-value'>" + usersByAvgSpeed[0]['avg'] + " </span> mph<br>";
+    str += "<span class='symbola award-symbol'>" + transModeSymbols['fast'] + " </span>"
+            + "<span class='award-user-name' style='color:" + userColors[fastest['id']] + "'> &#09;" + fastest.firstName + " </span> was the fastest with an average "
+            + "<span class='award-value'>" + usersByAvgSpeed[usersByAvgSpeed.length - 1]['avg'] + " </span> mph<br>";
+
+    str += "<span class='symbola award-symbol'><img class='award' src='_images/cal_bear.png'/></span>"
+            + "<span class='award-user-name' style='color:" + userColors[bear['id']] + "'> &#09;" + bear.firstName + " </span> spent the most time in Berkeley. Go Bears!"
+            + "";
+    $(target).append(str);
+
+
+}
+
 function prepareSummaryData(summary) {
     var summaryChartData = {
         'time': [],
@@ -198,17 +236,17 @@ function prepareSummaryData(summary) {
  * @returns {undefined}
  */
 function drawDonutChart(data, target, id, classes, title) {
-    console.log(data);
+    //console.log(data);
     var total = 0;
     for (var i in data)
     {
         if (data[i])
         {
-            console.log(data[i]['value']);
+            //console.log(data[i]['value']);
             total += data[i]['value'];
         }
     }
-    console.log('total=' + total);
+    //console.log('total=' + total);
     $(target).empty().css('display', 'inline-block');
     $(target).append("<div class='donut-title'>" + title + "</div>");
     //    alert($(target).children('.donut-title').height());
@@ -236,19 +274,19 @@ function drawDonutChart(data, target, id, classes, title) {
             }))
             .enter().append("svg:g")
             .attr("class", function(d, i) {
-                //                console.log(d);
+                //                //console.log(d);
                 return "arc summary-arc summary-arc-" + d.data.name;
             })
             .attr('data-name', function(d) {
                 return d.data.name;
             })
             .attr('data-percentage', function(d, i) {
-//                console.log(d);
+//                //console.log(d);
 //                return (d.endAngle - d.startAngle) / 360;
                 return d.value / total;
             })
             .attr('data-value', function(d, i) {
-//                console.log(d);
+//                //console.log(d);
                 return d.value;
             })
             .attr("transform", "translate(" + (r + deltaX) + "," + (r + deltaY) + ")");
@@ -297,8 +335,8 @@ function drawDonutChart(data, target, id, classes, title) {
  */
 function drawBarChart(data, target, id, classes, title)
 {
-
-    var w = parseInt($(target).width()) * parseInt($(target).parent().width()) / 100,
+    var divW = parseInt($(target).width());
+    var w = (divW < 100) ? divW * parseInt($(target).parent().width()) / 100 : divW,
             h = parseInt($(target).height()) - 50,
             hW = 100, gap = 10, pad = 10;
 
@@ -306,7 +344,7 @@ function drawBarChart(data, target, id, classes, title)
     barwidth = 1;
     $(target).empty().css('display', 'inline block');
     $(target).append("<div class='donut-title'>" + title + "</div>");
-//    console.log(h + "\t" + w);
+//    //console.log(h + "\t" + w);
     //((h - 40 ) /data.length);
     var height = h - 2 * gap;
     var barWidth = (height - gap * data.length) / data.length;
@@ -321,7 +359,7 @@ function drawBarChart(data, target, id, classes, title)
             attr("width", w).
             attr("height", height)
             .attr("id", id);
-    
+
     barDemo.selectAll("rect").
             data(data).
             enter().
@@ -343,7 +381,7 @@ function drawBarChart(data, target, id, classes, title)
                     else
                     {
                         var blue = 255 - Math.ceil(datum.value / data[0].value * 175);
-                        console.log(blue);
+                        //console.log(blue);
                         return 'rgb(0,0,' + blue + ')'
 //                        return 'rgb(0,0,' + (100+ (index / data.length) * 155) + ')';
 //                        return color(datum.value);
@@ -355,7 +393,7 @@ function drawBarChart(data, target, id, classes, title)
             append("svg:text")
             .attr({
                 y: function(datum, index) {
-                    return (barWidth + gap) * index + 2*pad + barWidth / 2 - 2;
+                    return (barWidth + gap) * index + 2 * pad + barWidth / 2 - 2;
                 },
 //                "transform": "translate(" + hW + ", " + (2 * gap) + " )",
                 x: function(datum, index) {
@@ -378,7 +416,7 @@ function drawBarChart(data, target, id, classes, title)
             .attr({
                 x: pad,
                 y: function(datum, index) {
-                    return (barWidth + gap) * index + 2*pad + barWidth / 2 - 2;
+                    return (barWidth + gap) * index + 2 * pad + barWidth / 2 - 2;
                 },
 //                "transform": "translate(" + pad + ", " + (2 * gap) + " )",
                 "class": "yAxis bar-header"
@@ -395,7 +433,7 @@ function addIconEvents()
         var self = $(this);
         var name = self.attr('data-name');
         var fo = self.siblings('.donut-trans-icon');
-//        console.log(fo.children('.donut-trans-icon-text').attr('class'));
+//        //console.log(fo.children('.donut-trans-icon-text').attr('class'));
         var donutIcon = fo.children('.donut-trans-icon-text');
         var perc = Math.round(parseFloat(self.attr('data-percentage')) * 100);
 //        donutIcon.empty().append(transModeSymbola[name] + " "+perc);
@@ -404,16 +442,16 @@ function addIconEvents()
         donutIcon.empty().append(txt);
         fo.css('display', 'block');
         donutIcon.css('display', 'block');
-        console.log(name);
+        //console.log(name);
         self.css('opacity', '.5');
     }).on('mouseleave', function() {
         var self = $(this);
         var name = self.attr('data-name');
 //        name = name.toLowerCase();
-        console.log(name);
+        //console.log(name);
         self.css('opacity', '1');
         var fo = self.siblings('.donut-trans-icon');
-//        console.log(fo.children('.donut-trans-icon-text').attr('class'));
+//        //console.log(fo.children('.donut-trans-icon-text').attr('class'));
         fo.children('.donut-trans-icon-text').css('display', 'none');
 //        self.siblings('.donut-trans-icon').css('display', 'none');
     });
