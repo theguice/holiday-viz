@@ -4,6 +4,7 @@ var summaryChartData = {
     'time': [],
     'distance': []
 };
+var LIMIT = 5;
 
 function initDashboard(start, end, userIds) {
     var activeOnly = 1;
@@ -13,24 +14,34 @@ function initDashboard(start, end, userIds) {
     };
     summary = getSummary(start, end, userIds, activeOnly, false);
     updateDashboardTable();
-    drawDonutChart(summaryChartData['time'], '#donut-by-time', 'overall-trans-mode-by-time', 'donut', 'Transportation by Time');
-    drawDonutChart(summaryChartData['distance'], '#donut-by-distance', 'overall-trans-mode-by-distance', 'donut', 'Transportation by Distance');
+    drawDonutChart(summaryChartData['time'], '#donut-by-distance', 'overall-trans-mode-by-time', 'donut', 'Transportation by Time');
+    drawDonutChart(summaryChartData['distance'], '#donut-by-time', 'overall-trans-mode-by-distance', 'donut', 'Transportation by Distance');
 
     //Graph code starts here!
     //overall stats
 
     // overall-user-city-by-distance
-    summary = runCustomQuery("select city as name, ROUND(sum(distance)*0.000621371) as value from gpx_track where city is not null group by city order by sum(distance) desc LIMIT 5")
-    console.log("overall-user-city-by-distance", summary)
+    summary = runCustomQuery("select city as name, ROUND(sum(distance)*0.000621371) as value from gpx_track where city is not null group by city order by sum(distance) desc LIMIT "+LIMIT)
+//    console.log("overall-user-city-by-distance", summary)
     drawBarChart(summary, '#city-by-distance', 'overall-user-city-by-distance', 'bar');
-
     // overall-user-city-by-time
-    summary = runCustomQuery("select city as name, ROUND(sum(delta_time)*0.000277778) as value from gpx_track where city is not null group by city order by sum(delta_time) desc LIMIT 5")
-    console.log("overall-user-city-by-time", summary)
+    summary = runCustomQuery("select city as name, ROUND(sum(delta_time)*0.000277778) as value from gpx_track where city is not null group by city order by sum(delta_time) desc LIMIT "+LIMIT)
+//    console.log("overall-user-city-by-time", summary)
     drawBarChart(summary, '#city-by-time', 'overall-user-city-by-time', 'bar');
+    //    console.log(summary)
+    summary = runCustomQuery("SELECT b.first_name as name,  count(distinct a.city) as value from gpx_track a, gpx_users b  where a.user_id = b.user_id group by b.first_name order by count(distinct city) desc LIMIT "+LIMIT)
+    drawBarChart(summary, '#users-by-city-count', 'overall-user-users-by-city-count', 'bar');
 
-    summary = runCustomQuery("select city as name, ROUND(sum(delta_time)*0.000277778) as value from gpx_track where city is not null group by city order by sum(delta_time) desc LIMIT 5")
-    console.log(summary)
+    summary = runCustomQuery("SELECT b.first_name as name,  round(sum(a.distance) * 0.000621371)  as value from gpx_track a, gpx_users b  where a.user_id = b.user_id group by b.first_name order by sum(a.distance) desc LIMIT "+LIMIT)
+    drawBarChart(summary, '#users-by-distance', 'overall-user-users-by-distance', 'bar');
+
+    summary = runCustomQuery("SELECT b.first_name as name, ROUND(sum(a.delta_time)*0.000277778)  as value from gpx_track a, gpx_users b  where a.user_id = b.user_id group by b.first_name order by sum(a.delta_time) desc LIMIT "+LIMIT)
+    drawBarChart(summary, '#users-by-time', 'overall-user-users-by-time', 'bar');
+
+
+
+
+
 
 
     addIconEvents();
@@ -165,15 +176,7 @@ function drawDonutChart(data, target, id, classes, title)
             .attr("height", h)
             .attr("id", id)
             .attr('class', classes);
-    /*
-     <defs>
-     <style type="text/css">
-     <![CDATA[@font-face {font-family: Symbola;src: url('http://zhm.github.io/symbola/fonts/Symbola.ttf');}]]>
-     </style>
-     */
-//    var defs = vis.append('defs');
-//    var style = defs.append('style').attr('type', 'text/css')
-//            .text(" <![CDATA[@font-face {font-family: Symbola;src: url('http://zhm.github.io/symbola/fonts/Symbola.ttf');}]]>");
+
     var arcs = vis.selectAll("g.arc")
             .data(donut.value(function(d) {
                 return d.value;
@@ -212,67 +215,11 @@ function drawDonutChart(data, target, id, classes, title)
                 x: w / 2 - r / 2,
                 y: h / 2 - r / 2,
                 class: 'donut-trans-icon'
-//                ,                requiredExtensions: "http://www.w3.org/1999/xhtml"
             })
-//            .append('head')
+
             .append('link').attr({rel: 'stylesheet', href: '_css/main.css'});
     vis.select('.donut-trans-icon')
-//            .append('body').attr('xmlns', "http://www.w3.org/1999/xhtml")
             .append('xhtml:div').attr({'class': 'donut-trans-icon-text'});
-    /*
-     <foreignobject x="10" y="10" width="100" height="150">
-     <body xmlns="http://www.w3.org/1999/xhtml">
-     <div>Here is a <strong>paragraph</strong> that requires <em>word wrap</em></div>
-     </body>
-     
-     </foreignobject>
-     */
-    /*
-     vis.append('image').attr({
-     'xlink:href': '_images/svg/bike.png',
-     type: 'image/svg+xml',
-     width: r,
-     height: r,
-     x: w / 2 - r / 2,
-     y: h / 2 - r / 2,
-     'id': id + "-bike",
-     class: 'icon bike-icon summary-icon'
-     });
-     vis.append('image').attr({
-     'xlink:href': '_images/svg/walk.png',
-     type: 'image/svg+xml',
-     width: r,
-     height: r,
-     x: w / 2 - r / 2,
-     y: h / 2 - r / 2,
-     'id': id + "-walk",
-     class: 'icon walk-icon summary-icon'
-     });
-     vis.append('image').attr({
-     'xlink:href': '_images/svg/car.png',
-     type: 'image/svg+xml',
-     width: r,
-     height: r,
-     x: w / 2 - r / 2,
-     y: h / 2 - r / 2,
-     'id': id + "-drive",
-     class: 'icon drive-icon summary-icon'
-     });
-     
-     vis.append('image').attr({
-     'xlink:href': '_images/svg/plane.png',
-     type: 'image/svg+xml',
-     width: r,
-     height: r,
-     x: w / 2 - r / 2,
-     y: h / 2 - r / 2,
-     'id': id + "-fly",
-     class: 'icon fly-icon summary-icon'
-     });
-     */
-
-//            var bike = "<img id='bike1' style='width:50px; height:50px' src='_images/svg/bike.svg' type='image/svg+xml' />";
-//            $(target).append(bike)
 
 }
 /**
