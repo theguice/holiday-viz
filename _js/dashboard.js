@@ -270,113 +270,111 @@ function drawDonutChart(data, target, id, classes, title) {
  * @returns {undefined}
  */
 function drawBarChart(data, target, id, classes, title) {
-    // console.log("In bar chart!")
-    // title = "Bar Chart"
-    //console.log(data);
-    console.log("Target height:", $('' + target).height());
-    console.log($(target));
-    var w = parseInt($(target).width()) * parseInt($(target).parent().width()) / 100,
-            h = parseInt($(target).height()) - 50,
-            r = Math.min(w, h) / 2,
-            deltaX = (w - 2 * r) / 2,
-            deltaY = (h - 2 * r) / 2,
-            labelr = r + 30, // radius for label anchor
-            color = d3.scale.category20c()
-    barwidth = 1;
-    $(target).empty().css('display', 'inline block');
+	// console.log("In bar chart!")
+	// title = "Bar Chart"
+	//console.log(data);
+	var w = parseInt($(target).width()) * parseInt($(target).parent().width()) / 100,
+		h = parseInt($(target).height()) - 50,
+		r = Math.min(w, h) / 2,
+		deltaX = (w - 2 * r) / 2,
+		deltaY = (h - 2 * r) / 2,
+		labelr = r + 30, // radius for label anchor
+		color = d3.scale.category20c()
+		barwidth = 1;
+	$(target).empty().css('display', 'inline block');
 
-    $(target).append("<div class='donut-title'>" + title + "</div>");
+	$(target).append("<div class='donut-title'>" + title + "</div>");
 
 
-    // w = 1000;
-    // h = 1000;
-    // var vis = d3.select(target)
-    //  .append("svg:svg")
-    //  .data([data])
-    //  .attr("width", w)
-    //  .attr("height", h);
-    var barWidth = 20;
-    var height = (barWidth + 10) * data.length;
-    var width = 200;
+	// w = 1000;
+	// h = 1000;
+	// var vis = d3.select(target)
+	//  .append("svg:svg")
+	//  .data([data])
+	//  .attr("width", w)
+	//  .attr("height", h);
+	var barWidth = 30; //((h - 40 ) /data.length);
+	var height = (barWidth + 10) * data.length;
+	var width = 200;
 
 
-    t = h;
-    var y = d3.scale.linear().domain([0, data.length]).range([0, height]);
-    var x = d3.scale.linear().domain([0, data[0].value]).
-            range([0, width]);
-    var color = d3.scale.linear().domain([0, data[0].value]).range(["Red", "Blue"]);
+	t = h;
+	var y = d3.scale.linear().domain([0, data.length]).range([0, height]);
+	var x = d3.scale.linear().domain([0, data[0].value]).
+	range([0, width]);
+	var color = d3.scale.linear().domain([0, data[0].value]).range(["Red", "Blue"]);
 
-    // console.log("XY=", x, y)
+	// console.log("XY=", x, y)
 
-    // add the canvas to the DOM
-    var barDemo = d3.select(target).
-            append("svg:svg").
-            attr("width", 100 + width).
-            attr("height", height)
-            .attr("id", id);
+	// add the canvas to the DOM
+	var barDemo = d3.select(target).
+	append("svg:svg").
+	attr("width", 100 + width).
+	attr("height", height)
+		.attr("id", id);
 
-    barDemo.selectAll("rect").
-            data(data).
-            enter().
-            append("svg:rect")
-            .attr("transform", "translate(50, 0)").
-            attr("y", function(datum, index) {
-                // console.log(y(datum.value));
-                return (barWidth + 10) * index;
-            }).
-            attr("x", function(datum) {
-                // return width - x(datum.value);
-                return 0;
-            }).
-            attr("width", function(datum) {
-                // console.log(x(datum.value));
-                return x(datum.value);
-            }).
-            attr("height", barWidth).
-            attr("fill", function(datum) {
-                if (datum.user_id)
-                    return colorScale(datum.user_id);
-                else
-                    return color(datum.value);
-            });
+	barDemo.selectAll("rect").
+	data(data).
+	enter().
+	append("svg:rect")
+		.attr("transform", "translate(60, 0)").
+	attr("y", function(datum, index) {
+		// console.log(y(datum.value));
+		return (barWidth + 10) * index;
+	}).
+	attr("x", function(datum) {
+		// return width - x(datum.value);
+		return 0;
+	}).
+	attr("width", function(datum) {
+		// console.log(x(datum.value));
+		return x(datum.value);
+	}).
+	attr("height", barWidth).
+	attr("fill", function(datum) {
+		if (datum.user_id)
+			return colorScale(datum.user_id);
+		else
+			return color(datum.value);
+	});
 
-    barDemo.selectAll("text").
-            data(data).
-            enter().
-            append("svg:text").
-            attr("y", function(datum, index) {
-                return (barWidth + 10) * index;
-            }).
-            attr("transform", "translate(45, 0)").
-            attr("x", function(datum) {
-                // return width - x(datum.value);
-                return x(datum.value) - 20;
-            }).
-            // attr("dx", -barWidth / 2).
-            attr("dy", "1.2em").
-            // attr("text-anchor", "middle").
-            text(function(datum) {
-                return datum.value;
-            }).
-            attr("fill", "white").
-            attr("style", "font-size: 11; font-family: Helvetica, sans-serif");
+	barDemo.selectAll("text").
+	data(data).
+	enter().
+	append("svg:text").
+	attr("y", function(datum, index) {
+		return (barWidth + 10) * index;
+	}).
+	attr("transform", "translate(55, 0)").
+	attr("x", function(datum) {
+		// return width - x(datum.value);
+		return x(datum.value) - 20;
+	}).
+	// attr("dx", -barWidth / 2).
+	attr("dy", "1.5em").
+	// attr("text-anchor", "middle").
+	text(function(datum) {
+		return datum.value;
+	}).
+	attr("fill", "white").
+	attr("style", "font-size: 11; font-family: Helvetica, sans-serif");
 
-    barDemo.selectAll("text.yAxis").
-            data(data).
-            enter().append("svg:text").
-            attr("x", 2).
-            attr("y", function(datum, index) {
-                return (barWidth + 10) * index;
-            }).
-            // attr("dx", -barWidth / 2).
-            // attr("text-anchor", "middle").
-            attr("style", "font-size: 11; font-family: Helvetica, sans-serif").
-            text(function(datum) {
-                return datum.name;
-            }).
-            attr("transform", "translate(0, 18)").
-            attr("class", "yAxis").
-            attr("fill", "black");
+	barDemo.selectAll("text.yAxis").
+	data(data).
+	enter().append("svg:text").
+	attr("x", 2).
+	attr("y", function(datum, index) {
+		return (barWidth + 12) * index;
+	}).
+	// attr("dx", -barWidth / 2).
+	// attr("text-anchor", "middle").
+	attr("style", "font-size: 11; font-family: Helvetica, sans-serif").
+	text(function(datum) {
+		return datum.name;
+	}).
+	attr("transform", "translate(0, 18)").
+	attr("class", "yAxis").
+	attr("fill", "black");
 }
 
 function addIconEvents()
