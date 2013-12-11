@@ -680,7 +680,7 @@ function updateUserLocations()
         if (userTransModes[uid])
         {
 //            var txt = '&#128690;'
-            $('#user-trans-' + uid).html(transModeSymbols[userTransModes[uid]]);
+            $('#user-trans-' + uid).html(transModeSymbola[userTransModes[uid]]);
             console.log(userTransModes[uid]);
             if (!userTransModes[uid] === 'Stop' && !userTransModes[uid] === 'undefined')
                 $('#user-trans-' + uid).css('background-color', 'rgba(255,255,255,.6)');

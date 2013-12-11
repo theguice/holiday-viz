@@ -380,7 +380,7 @@ function addIconEvents()
         var fo = self.siblings('.donut-trans-icon');
 //        console.log(fo.children('.donut-trans-icon-text').attr('class'));
         var donutIcon = fo.children('.donut-trans-icon-text');
-        donutIcon.empty().append(transModeSymbols[name]);
+        donutIcon.empty().append(transModeSymbola[name]);
 
         fo.css('display', 'block');
         donutIcon.css('display', 'block');
