@@ -4,7 +4,10 @@ html, body, address, blockquote, del, div, h1, h2, h3, h4, h5, h6, hr, ins, nosc
 ol, ul{list-style:none;}
 th{text-align:left;}
 table{border-collapse:collapse;}
- @font-face { font-family:Symbola; src:url(http://users.teilar.gr/~g1951d/Symbola.ttf); }
+ /*@font-face { font-family:Symbola; src:url(http://users.teilar.gr/~g1951d/Symbola.ttf); }*/
+  @font-face { font-family:Symbola; src:url(http://zhm.github.io/symbola/fonts/Symbola.ttf); }
+
+ 
  @font-face {
      font-family: 'digi';
      src: url('http://cssdeck.com/uploads/resources/fonts/digii/DS-DIGII.TTF');
@@ -501,14 +504,25 @@ li {
     overflow-y: auto;
     height: 30%;
     top: 70%;
-    display: none;
+    /*display: none;*/
 }
 
 #dashboard-trans-modes{
     height: 300px;
     /* width:33%; */
 }
-
+svg .donut-trans-icon{
+    font-family: Symbola;
+    font-face:Symbola;
+}
+.donut-trans-icon-text{
+    font-family: Symbola;
+    font-size: 6em;
+    text-align: center;
+}
+.donut-title{
+    font-size: 1.5em;
+}
 .overall-donut
 {
     width: 300px;
@@ -647,7 +661,6 @@ svg .summary-icon{
 }
 
 .hide-button{
-<<<<<<< HEAD
 
 }
 
@@ -656,8 +669,13 @@ width:20px;
 background-color: red;
 margin-right: 1px;
 }
-=======
-    
+
+.rect{
+margin-right: 1px;
+}
+
+.label{
+fill:red;
 }
 
 span.name {
@@ -670,4 +688,3 @@ span.name {
     display: block;
 }
 }
->>>>>>> b22db6d56ded1609510836a7d000ceef66a41828

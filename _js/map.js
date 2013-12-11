@@ -682,11 +682,11 @@ function updateUserLocations()
 //            var txt = '&#128690;'
             $('#user-trans-' + uid).html(transModeSymbols[userTransModes[uid]]);
             console.log(userTransModes[uid]);
-            if(!userTransModes[uid]==='Stop' && !userTransModes[uid]==='undefined')
-            $('#user-trans-' + uid).css('background-color', 'rgba(255,255,255,.6)');
-        else{
-            $('#user-trans-' + uid).css('background-color', 'rgba(255,255,255,0)');
-        }
+            if (!userTransModes[uid] === 'Stop' && !userTransModes[uid] === 'undefined')
+                $('#user-trans-' + uid).css('background-color', 'rgba(255,255,255,.6)');
+            else {
+                $('#user-trans-' + uid).css('background-color', 'rgba(255,255,255,0)');
+            }
         }
         else
         {
@@ -1091,8 +1091,8 @@ function fillUserPoints()
 
                 if (firstPoint)
                 {
-                    var skipped = 0;
-                    while (i < sliderCount && points && points.length === 0)
+                    var skipped = 1;
+                    while (i < sliderCount && (!points || points.length === 0))
                     {
                         i++;
                         points = userTimePoints[uid][i];
@@ -1100,37 +1100,46 @@ function fillUserPoints()
 //                        console.log('skipping');
 
                     }
-//                    console.log('skipped =' + skipped);
-                    if (i < sliderCount && userTimePoints[uid][i])
+                    console.log('skipped =' + skipped);
+                    if (i < sliderCount && points)
                     {
 //                        console.log('skipped =' + skipped);
-                        var point = points[points.length - 1];
+                        var point = points[0];
                         var distance = distanceBetween(lastPoint, point);
-                        if (distance > 50)
+                        if (distance > 0 && point.transMode==='Fly')
                         {
                             var deltaLat = point.lat - lastPoint.lat;
                             var deltaLon = point.lon - lastPoint.lon;
-
-                            for (var k = 0; k <= skipped; k++)
+                            var userFilled = 0;
+                            for (var k = 1; k < skipped; k++)
                             {
+
                                 var fillPoint = new Point(lastPoint);
                                 fillPoint.lat += deltaLat * k / skipped;
                                 fillPoint.lon += deltaLon * k / skipped;
                                 fillPoint.refreshLatLng();
                                 var index = i - skipped + k;
 //                                console.log(index+"\t"+k);
-                                if (!userTimePoints[uid][index])
+                                if (userTimePoints[uid][index] && userTimePoints[uid][index].length === 0)
                                 {
-                                    userTimePoints[uid][index] = [];
+//                                    userTimePoints[uid][index] = [];
                                     userTimePoints[uid][index].push(fillPoint);
                                     pointCountByTime[index] = pointCountByTime[i - skipped + k] + 1;
                                     boundsByTime[index].extend(fillPoint.LatLng);
                                     filled++;
+                                    userFilled++;
                                 }
                             }
-
+//                            console.log('user filled = ' + userFilled);
                         }
+                        else
+                        {
+//                            console.log('distance too small');
+                        }
+
+                        lastPoint = points[points.length - 1];
                     }
+
                 }
             }
         }
