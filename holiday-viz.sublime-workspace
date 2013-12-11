@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"tra",
+				"translate"
+			],
+			[
 				"draw",
 				"drawBarChart"
 			],
@@ -368,10 +372,6 @@
 				"brown_tagged_sents	(global, instance)"
 			],
 			[
-				"tra",
-				"train	None"
-			],
-			[
 				"Tr",
 				"TrigramTagger	import"
 			],
@@ -523,7 +523,7 @@
 			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 12408,
+				"buffer_size": 13114,
 				"line_ending": "Windows"
 			}
 		},
@@ -531,7 +531,7 @@
 			"file": "_js/dashboard.js",
 			"settings":
 			{
-				"buffer_size": 19897,
+				"buffer_size": 19926,
 				"line_ending": "Windows"
 			}
 		},
@@ -544,10 +544,13 @@
 			}
 		},
 		{
+			"contents": "{\n	// The tab key will cycle through the settings when first created\n	// Visit http://wbond.net/sublime_packages/sftp/settings for help\n\n	// sftp, ftp or ftps\n	\"type\": \"sftp\",\n\n	\"save_before_upload\": true,\n	\"upload_on_save\": true,\n	\"sync_down_on_open\": false,\n	\"sync_skip_deletes\": false,\n	\"sync_same_age\": true,\n	\"confirm_downloads\": false,\n	\"confirm_sync\": true,\n	\"confirm_overwrite_newer\": false,\n\n	\"host\": \"ischool.berkeley.edu\",\n	\"user\": \"dmenghani\",\n	//\"password\": \"password\",\n	//\"port\": \"22\",\n\n	\"remote_path\": \"/home//public_html/holiday-viz/\",\n	\"ignore_regexes\": [\n		\"\\\\.sublime-(project|workspace)\", \"sftp-config(-alt\\\\d?)?\\\\.json\",\n		\"sftp-settings\\\\.json\", \"/venv/\", \"\\\\.svn\", \"\\\\.hg\", \"\\\\.git\",\n		\"\\\\.bzr\", \"_darcs\", \"CVS\", \"\\\\.DS_Store\", \"Thumbs\\\\.db\", \"desktop\\\\.ini\"\n	],\n	//\"file_permissions\": \"664\",\n	//\"dir_permissions\": \"775\",\n\n	//\"extra_list_connections\": 0,\n\n	\"connect_timeout\": 30,\n	//\"keepalive\": 120,\n	//\"ftp_passive_mode\": true,\n	//\"ssh_key_file\": \"~/.ssh/id_rsa\",\n	//\"sftp_flags\": [\"-F\", \"/path/to/ssh_config\"],\n\n	//\"preserve_modification_times\": false,\n	//\"remote_time_offset_in_hours\": 0,\n	//\"remote_encoding\": \"utf-8\",\n	//\"remote_locale\": \"C\",\n}\n",
 			"file": "sftp-config.json",
+			"file_size": 1225,
+			"file_write_time": 130312047878272636,
 			"settings":
 			{
-				"buffer_size": 1269,
+				"buffer_size": 1174,
 				"line_ending": "Windows"
 			}
 		},
@@ -834,6 +837,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"barchart",
+			"+ 50",
+			"+50",
 			"fill",
 			"custom",
 			"drawBa",
@@ -958,10 +964,7 @@
 			".2",
 			".1",
 			",",
-			"1-",
-			"    ",
-			"version",
-			"	"
+			"1-"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1022,7 +1025,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 3,
 			"sheets":
 			[
 				{
@@ -1031,7 +1034,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 12408,
+						"buffer_size": 13114,
 						"regions":
 						{
 						},
@@ -1167,15 +1170,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 19897,
+						"buffer_size": 19926,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7707,
-								7707
+								8011,
+								8011
 							]
 						],
 						"settings":
@@ -1293,7 +1296,7 @@
 							"wrap_width": 0
 						},
 						"translation.x": 0.0,
-						"translation.y": 3835.0,
+						"translation.y": 3978.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1440,15 +1443,26 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1269,
+						"buffer_size": 1174,
 						"regions":
 						{
+							"bookmark_e":
+							{
+								"flags": 144,
+								"regions":
+								[
+									[
+										524,
+										524
+									]
+								]
+							}
 						},
 						"selection":
 						[
 							[
-								702,
-								702
+								524,
+								524
 							]
 						],
 						"settings":

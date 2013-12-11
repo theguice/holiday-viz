@@ -271,8 +271,8 @@ function drawBarChart(data, target, id, classes, title) {
 	append("svg:svg").
 	attr("width", width).
 	attr("height", height)
-		.attr("id", id);
-
+		.attr("id", id)
+		.attr("transform", "translate('50', '0')");
 	barDemo.selectAll("rect").
 	data(data).
 	enter().
