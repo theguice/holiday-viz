@@ -415,7 +415,33 @@ li {
     color: white;
     background-color: rgba(255,255,255,.5);
 }
-
+.user-stat-badge{
+    
+}
+.user-column-stat{
+    
+}
+.user-column-stat img{
+    height: 150px;
+    
+    width: 150px;
+    float: left;
+    float: left;
+    margin: 10px;
+    /* z-index: 10000; */
+    opacity: 1;
+}
+.user-column-stat ol{
+    text-align: center;
+    
+}
+.user-facts-stat{
+    display: inline-block;
+    
+    width: calc(100% - 170px);
+    text-align: center;
+    font-size: 1.2em;
+}
 .selected-user{
     opacity:1;
 }

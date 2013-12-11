@@ -88,6 +88,7 @@ function initDashboard(start, end, userIds) {
 function initUserDashboard(userId)
 {
     var id = [userId];
+    addUserBadge("#user-stat-badge", userId)
     var summary = getSummary(false, false, id, true, false, true);
     console.log(summary);
     var summaryChartData = prepareSummaryData(summary);
@@ -108,6 +109,16 @@ function initUserDashboard(userId)
     drawBarChart(summary, '#user-city-by-time', 'user-city-by-time', 'bar', 'Longest Traveled City (Hrs)');
     addIconEvents();
 
+}
+function addUserBadge(target, userId)
+{
+    var user = getUserById(userId);
+    $(target).empty();
+    $(target).append("<div class='donut-title'>" + user.firstName + " " + user.lastName + "</div><br>")
+            .append(formatUserColumnHTML(user));
+    $(target).children('.user-column').addClass('user-column-stat').children('.user-button-img').remove();
+    $(target).children('.user-column').children('.user-facts').addClass('user-facts-stat').removeClass('user-facts').children('.name').remove();
+    $(target).children('.user-column').removeClass('user-column')
 }
 function addStatsEvents() {
     $('#show-stats-button').unbind().click(function() {
@@ -131,7 +142,7 @@ function addStatsEvents() {
 }
 
 function drawSummaryData(data, target, title, user_id) {
-    $(target).append("<div class='donut-title'>" + title + "</div><br>");
+    $(target).empty().append("<div class='donut-title'>" + title + "</div><br>");
     if (user_id) {
 //        drawUserBadge(target, user_id)
     }
