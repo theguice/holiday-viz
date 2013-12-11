@@ -21,21 +21,21 @@ function initDashboard(start, end, userIds) {
     //overall stats
 
     // overall-user-city-by-distance
-    summary = runCustomQuery("select city as name, ROUND(sum(distance)*0.000621371) as value from gpx_track where city is not null group by city order by sum(distance) desc LIMIT "+LIMIT)
+    summary = runCustomQuery("select city as name, ROUND(sum(distance)*0.000621371) as value from gpx_track where city is not null group by city order by sum(distance) desc LIMIT " + LIMIT)
 //    console.log("overall-user-city-by-distance", summary)
     drawBarChart(summary, '#city-by-distance', 'overall-user-city-by-distance', 'bar');
     // overall-user-city-by-time
-    summary = runCustomQuery("select city as name, ROUND(sum(delta_time)*0.000277778) as value from gpx_track where city is not null group by city order by sum(delta_time) desc LIMIT "+LIMIT)
+    summary = runCustomQuery("select city as name, ROUND(sum(delta_time)*0.000277778) as value from gpx_track where city is not null group by city order by sum(delta_time) desc LIMIT " + LIMIT)
 //    console.log("overall-user-city-by-time", summary)
     drawBarChart(summary, '#city-by-time', 'overall-user-city-by-time', 'bar');
     //    console.log(summary)
-    summary = runCustomQuery("SELECT b.first_name as name,  count(distinct a.city) as value from gpx_track a, gpx_users b  where a.user_id = b.user_id group by b.first_name order by count(distinct city) desc LIMIT "+LIMIT)
+    summary = runCustomQuery("SELECT b.first_name as name,  count(distinct a.city) as value from gpx_track a, gpx_users b  where a.user_id = b.user_id group by b.first_name order by count(distinct city) desc LIMIT " + LIMIT)
     drawBarChart(summary, '#users-by-city-count', 'overall-user-users-by-city-count', 'bar');
 
-    summary = runCustomQuery("SELECT b.first_name as name,  round(sum(a.distance) * 0.000621371)  as value from gpx_track a, gpx_users b  where a.user_id = b.user_id group by b.first_name order by sum(a.distance) desc LIMIT "+LIMIT)
+    summary = runCustomQuery("SELECT b.first_name as name,  round(sum(a.distance) * 0.000621371)  as value from gpx_track a, gpx_users b  where a.user_id = b.user_id group by b.first_name order by sum(a.distance) desc LIMIT " + LIMIT)
     drawBarChart(summary, '#users-by-distance', 'overall-user-users-by-distance', 'bar');
 
-    summary = runCustomQuery("SELECT b.first_name as name, ROUND(sum(a.delta_time)*0.000277778)  as value from gpx_track a, gpx_users b  where a.user_id = b.user_id group by b.first_name order by sum(a.delta_time) desc LIMIT "+LIMIT)
+    summary = runCustomQuery("SELECT b.user_id,  b.first_name as name, ROUND(sum(delta_time)*0.000277778)  as value from gpx_track a, gpx_users b where a.user_id = b.user_id group by b.user_id, b.first_name order by sum(delta_time) desc LIMIT " + LIMIT)
     drawBarChart(summary, '#users-by-time', 'overall-user-users-by-time', 'bar');
 
 
@@ -281,7 +281,12 @@ function drawBarChart(data, target, id, classes) {
                 return y(datum.value);
             }).
             attr("width", barWidth).
-            attr("fill", "#2d578b");
+            attr("fill", function(datum) {
+                if (datum.user_id)
+                    return colorScale(datum.user_id);
+                else
+                    return '#F00000';
+            });
 
     barDemo.selectAll("text").
             data(data).
