@@ -4,7 +4,7 @@ html, body, address, blockquote, del, div, h1, h2, h3, h4, h5, h6, hr, ins, nosc
 /*ol, ul{list-style:none;}*/
 th{text-align:left;}
 table{border-collapse:collapse;}
- /*@font-face { font-family:Symbola; src:url(http://users.teilar.gr/~g1951d/Symbola.ttf); }*/
+  @font-face { font-family:Symbola2; src:url(http://users.teilar.gr/~g1951d/Symbola.ttf); }
   @font-face { font-family:Symbola; src:url(http://zhm.github.io/symbola/fonts/Symbola.ttf); }
 
  
@@ -133,7 +133,7 @@ h3 {
     padding: 5px;
 }
 .symbola {
-    font-family: Symbola;
+    font-family: Symbola2;
 }
 .award-symbol {
     border-radius: 50px;
@@ -370,7 +370,7 @@ li {
     height: 30px;
     position: relative;
     opacity: .5;
-    float: right;
+    /*float: right;*/
     /* float: left; */
     border-radius: 40px;
     background-color: rgba(255,255,255,.7);
@@ -381,6 +381,10 @@ li {
     /* font-weight: bold; */
     color: white;
     vertical-align: middle;
+}
+#selected #user-button-img {
+    left: 0px;
+    top: -15px;
 }
 .user-button-img img{
     width: 80%;
@@ -613,7 +617,7 @@ svg .summary-icon{
 #user-columns {
     height: 90%;
     margin: 20px;
-    width:200%;
+    width:  200%;
     position: relative;
     overflow-y:hidden;
     overflow-x:scroll;
