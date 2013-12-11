@@ -283,7 +283,7 @@ function drawBarChart(data, target, id, classes, title) {
 	//  .data([data])
 	//  .attr("width", w)
 	//  .attr("height", h);
-	var barWidth = 30; ((h - 40 ) /data.length);
+	var barWidth = 30; //((h - 40 ) /data.length);
 	var height = (barWidth + 10) * data.length;
 	var width = 200;
 
