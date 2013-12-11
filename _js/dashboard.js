@@ -50,7 +50,7 @@ function initDashboard(start, end, userIds) {
 	// overall-user-city-by-distance
 	summary = runCustomQuery("select substr(city,1,9) as name, ROUND(sum(distance)*0.000621371) as value from gpx_track where city is not null group by city order by sum(distance) desc LIMIT " + LIMIT)
 	//    console.log("overall-user-city-by-distance", summary)
-	drawBarChart(summary, '#city-by-distance', 'overall-user-city-by-distance', 'bar', 'Most Trevled City (Mi)');
+	drawBarChart(summary, '#city-by-distance', 'overall-user-city-by-distance', 'bar', 'Most Traveled City (Mi)');
 	// overall-user-city-by-time
 	summary = runCustomQuery("select substr(city,1,9) as name, ROUND(sum(delta_time)*0.000277778) as value from gpx_track where city is not null group by city order by sum(delta_time) desc LIMIT " + LIMIT)
 	//    console.log("overall-user-city-by-time", summary)
@@ -178,7 +178,6 @@ function prepareSummaryData() {
  * @returns {undefined}
  */
 function drawDonutChart(data, target, id, classes, title) {
-	console.log(data);
 	$(target).empty().css('display', 'inline-block');
 	$(target).append("<div class='donut-title'>" + title + "</div>");
 	//    alert($(target).children('.donut-title').height());
@@ -264,8 +263,6 @@ function drawBarChart(data, target, id, classes, title) {
 	// console.log("In bar chart!")
 	// title = "Bar Chart"
 	//console.log(data);
-	console.log("Target height:", $('' + target).height());
-	console.log($(target));
 	var w = parseInt($(target).width()) * parseInt($(target).parent().width()) / 100,
 		h = parseInt($(target).height()) - 50,
 		r = Math.min(w, h) / 2,
@@ -286,7 +283,7 @@ function drawBarChart(data, target, id, classes, title) {
 	//  .data([data])
 	//  .attr("width", w)
 	//  .attr("height", h);
-	var barWidth = 20;
+	var barWidth = 30; ((h - 40 ) /data.length);
 	var height = (barWidth + 10) * data.length;
 	var width = 200;
 
@@ -310,7 +307,7 @@ function drawBarChart(data, target, id, classes, title) {
 	data(data).
 	enter().
 	append("svg:rect")
-		.attr("transform", "translate(50, 0)").
+		.attr("transform", "translate(60, 0)").
 	attr("y", function(datum, index) {
 		// console.log(y(datum.value));
 		return (barWidth + 10) * index;
@@ -338,13 +335,13 @@ function drawBarChart(data, target, id, classes, title) {
 	attr("y", function(datum, index) {
 		return (barWidth + 10) * index;
 	}).
-	attr("transform", "translate(45, 0)").
+	attr("transform", "translate(55, 0)").
 	attr("x", function(datum) {
 		// return width - x(datum.value);
 		return x(datum.value) - 20;
 	}).
 	// attr("dx", -barWidth / 2).
-	attr("dy", "1.2em").
+	attr("dy", "1.5em").
 	// attr("text-anchor", "middle").
 	text(function(datum) {
 		return datum.value;
@@ -357,7 +354,7 @@ function drawBarChart(data, target, id, classes, title) {
 	enter().append("svg:text").
 	attr("x", 2).
 	attr("y", function(datum, index) {
-		return (barWidth + 10) * index;
+		return (barWidth + 12) * index;
 	}).
 	// attr("dx", -barWidth / 2).
 	// attr("text-anchor", "middle").
