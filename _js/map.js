@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var doLog = false;
+var doLog = true;
 var draw_elevation = false;
 var map;
 var geocoder;
@@ -268,7 +268,7 @@ function createUserMarker(point, userId)
 
 function createPath(pts, userId, oldPath) {
 
-//    if(doLog)console.log('Creating path');
+    if(doLog)console.log('Creating path');
     userId = (userId) ? userId : 0;
 //    userId = (userId) ? userId : userId;
 //    createMarkers = (createMarkers) ? createMarkers : true;
@@ -315,7 +315,7 @@ function createPath(pts, userId, oldPath) {
                     createPointMarker(point, title, userId);
                 }
             }
-            if (point.startPoint === 1)
+            if (point.deltaTime === -1)
             {
                 drawPath(polyPoints, userId, oldPath);
                 polyPoints = [];
@@ -373,7 +373,7 @@ function drawPath(polyPoints, userId, oldPath)
     else
     {
 //        console.log('new points');
-//        console.log(polyPoints);
+        console.log(polyPoints);
         path = new google.maps.Polyline({
             path: polyPoints,
             geodesic: true,
@@ -457,10 +457,12 @@ function deletePaths()
 
 function hidePaths()
 {
+    
     for (var i = 0, j = paths.length; i < j; i++)
     {
         paths[i].setMap(null);
     }
+    console.log('hiding path count='+paths.length);
 }
 function manageCenter(evt, val, statistics)
 {
@@ -833,12 +835,12 @@ function drawUsersPoints()
 {
     for (var userId in userPoints)
     {
-        if (typeof (userPoints[userId]) !== 'undefined')
+//        if (typeof (userPoints[userId]) !== 'undefined')
         {
             if (doLog)
                 console.log('Drawing user:' + userId);
 //            userPoints[user] = sortPoints(userPoints[user]);
-            createPath(userPoints[userId], userId);
+            createPath(userPoints[userId], userId, false);
         }
     }
 //    manageCenter();

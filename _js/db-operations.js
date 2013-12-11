@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var doLog = false;
+var doLog = true;
 var currentUser = "";
 var DB_FILE = 'db-operations.php';
 var MAP_FILE = 'map-api.php';
