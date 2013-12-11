@@ -10,8 +10,8 @@ var geocoder;
 var playing = false;
 var autoCenter = true;
 var increment = 5; //step increment in minutes
-var pointWindow = 60; ///in minutes
-var oldPointWindow = 720;
+var pointWindow = 120; ///in minutes
+var oldPointWindow = 1440;
 var drawPointMarkers = false;
 var drawMarkersToggle = false;
 var autoCenterToggle = true;
@@ -244,6 +244,7 @@ function createMarker(point, title) {
 
 function createUserMarker(point, userId)
 {
+    console.log('creating marker for ' + userId);
     var user = getUserObjectById(userId);
     if (typeof (userMarkers[userId]) !== 'undefined')
     {
@@ -296,7 +297,7 @@ function createPath(pts, userId, oldPath) {
                 {
                     userMarkers[userId].setPosition(point.LatLng);
 //                    if (userMarkers[userId].getMap === null)
-                        userMarkers[userId].setVisible(true);
+                    showUserMarker(userId);
                     userLocations[userId] = point.address;
                     userTransModes[userId] = point.transMode;
                 } else
@@ -321,22 +322,22 @@ function createPath(pts, userId, oldPath) {
                 polyPoints.push(point.LatLng);
             }
             polyPoints.push(point.LatLng);
-   /*         if (draw_elevation)
-            {
-                if (point.elevation !== ele)
-                {
-                    drawPath(polyPoints, userId, oldPath);
-                    ele = point.elevation;
-                    polyPoints = [];
-                    polyPoints.push(point.LatLng);
-                }
-            }*/
+            /*         if (draw_elevation)
+             {
+             if (point.elevation !== ele)
+             {
+             drawPath(polyPoints, userId, oldPath);
+             ele = point.elevation;
+             polyPoints = [];
+             polyPoints.push(point.LatLng);
+             }
+             }*/
         }
     }
 
 
 //    if (!draw_elevation)
-        drawPath(polyPoints, userId, oldPath);
+    drawPath(polyPoints, userId, oldPath);
 }
 
 function drawPath(polyPoints, userId, oldPath)
@@ -352,31 +353,32 @@ function drawPath(polyPoints, userId, oldPath)
             console.log('oldPath');
         var lineSymbol = {
             path: 'M 0,-1 0,1',
-            strokeOpacity: 0,
-            strokeWeight: 2,
-             strokeColor: colorScale(userId)
+            strokeOpacity: .8,
+            strokeWeight: 3,
+            strokeColor: colorScale(userId)
         };
         var icon = [{icon: lineSymbol,
                 offset: '0',
-                repeat: '30px'
+                repeat: '20px'
             }];
 
-console.log(polyPoints);
+//        console.log(polyPoints);
         path = new google.maps.Polyline({
             path: polyPoints,
-            strokOpacity:0,
+            strokeOpacity: 0,
             geodesic: true,
             icons: icon
         });
     }
     else
-    {console.log('new points');
-        console.log(polyPoints);
+    {
+//        console.log('new points');
+//        console.log(polyPoints);
         path = new google.maps.Polyline({
             path: polyPoints,
             geodesic: true,
             strokeColor: colorScale(userId),
-            strokeWeight: 2,
+            strokeWeight: 3,
             strokeOpacity: 1});
 
     }
@@ -436,13 +438,15 @@ function hideMarkers()
 function hideUserMarker(userId)
 {
     if (userMarkers[userId])
-        userMarkers[userId].setMap(null);
+        userMarkers[userId].setVisible(false);
 
 }
 function showUserMarker(userId)
 {
     if (userMarkers[userId])
-        userMarkers[userId].setMap(map);
+    {
+        userMarkers[userId].setVisible(true);
+    }
 
 }
 function deletePaths()
