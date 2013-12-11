@@ -548,6 +548,7 @@ svg .donut-trans-icon{
     padding: 5px;
     margin: 0 0 5px 0;
     margin: 1;
+    letter-spacing:2px;
 }
 .overall-donut
 {
@@ -777,6 +778,7 @@ span.name {
     background-color: rgba(200,200,200,.1);
     padding: 0px;
     border: 1aliceblue;
+    letter-spacing:2px;
 }
 .stat-title{
 
