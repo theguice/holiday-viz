@@ -61,11 +61,11 @@ function initDashboard(start, end, userIds) {
     // overall-user-city-by-distance
     summary = runCustomQuery("select substr(city,1,9) as name, ROUND(sum(distance)*0.000621371) as value from gpx_track where city is not null  and city <>'' group by city order by sum(distance) desc LIMIT " + LIMIT)
     //    //console.log("overall-user-city-by-distance", summary)
-    drawBarChart(summary, '#city-by-distance', 'overall-user-city-by-distance', 'bar', 'Most Trevled City (Miles)');
+    drawBarChart(summary, '#city-by-distance', 'overall-user-city-by-distance', 'bar', 'Most Traveled City (Miles)');
     // overall-user-city-by-time
     summary = runCustomQuery("select substr(city,1,9) as name, ROUND(sum(delta_time)*0.000277778) as value from gpx_track where city is not null and city <>'' group by city order by sum(delta_time) desc LIMIT " + LIMIT)
     //    //console.log("overall-user-city-by-time", summary)
-    drawBarChart(summary, '#city-by-time', 'overall-user-city-by-time', 'bar', 'Longest Traveled City (Hours)');
+    drawBarChart(summary, '#city-by-time', 'overall-user-city-by-time', 'bar', 'Longest Traveeld City (Hours)');
     //    //console.log(summary)
     summary = runCustomQuery("SELECT b.user_id, b.first_name as name,  count(distinct a.city) as value from gpx_track a, gpx_users b  where a.user_id = b.user_id group by b.user_id, b.first_name order by count(distinct city) desc LIMIT " + LIMIT)
     drawBarChart(summary, '#users-by-city-count', 'overall-user-users-by-city-count', 'bar', 'Top City Hoppers');
@@ -97,7 +97,7 @@ function initUserDashboard(userId)
     //overall stats
 
     summary = runCustomQuery("select substr(city,1,9) as name, ROUND(sum(distance)*0.000621371) as value from gpx_track where user_id=" + userId + " and city is not null  and city <>'' group by city order by sum(distance) desc LIMIT " + LIMIT);
-    drawBarChart(summary, '#user-city-by-distance', 'user-city-by-distance', 'bar', 'Most Trevled City (Miles)');
+    drawBarChart(summary, '#user-city-by-distance', 'user-city-by-distance', 'bar', 'Most Traveled City (Miles)');
     summary = runCustomQuery("select substr(city,1,9) as name, ROUND(sum(delta_time)*0.000277778) as value from gpx_track where user_id=" + userId + " and  city is not null and city <>'' group by city order by sum(delta_time) desc LIMIT " + LIMIT);
     drawBarChart(summary, '#user-city-by-time', 'user-city-by-time', 'bar', 'Longest Traveled City (Hours)');
     addIconEvents();
