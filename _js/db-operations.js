@@ -496,29 +496,34 @@ function getDataSummary()
 
 }
 //function getSummaryByDate()
-function getSummary(start, end, usersIds, activeOnly, byDate)
+function getSummary(start, end, usersIds, activeOnly, byDate, byTransMode)
 {
     var conditions = parseConditions(start, end, usersIds, activeOnly);
     var sql = "SELECT "
             + ((usersIds) ? "user_id," : "")
             + ((byDate) ? "Date(track_timestamp) as date," : "")
-            + "trans_mode"
-            + ",COUNT(track_id) as track_count"
-            + ",ROUND(SUM(distance),2)AS total_distance_m"
-            + ",ROUND(SUM(delta_time),2)AS total_time_s"
-            + ",ROUND(AVG(speed),2) AS average_speed_ms"
-            + ",ROUND((SUM(distance)*0.000621371),2) AS total_distance_mi"
-            + ",ROUND((SUM(delta_time)/(60*60)),2) AS total_time_hr "
-            + ",ROUND((AVG(speed)*2.23694),2) AS average_speed_mph "
+            + ((byTransMode) ? "trans_mode," : "")
+            + "COUNT(track_id) as track_count"
+//            + ",ROUND(SUM(distance))AS total_distance_m"
+//            + ",ROUND(SUM(delta_time))AS total_time_s"
+//            + ",ROUND(SUM(distance)/sum(delta_time),1) AS average_speed_ms"
+            + ",ROUND((SUM(distance)*0.000621371)) AS total_distance_mi"
+            + ",ROUND((SUM(delta_time)/(60*60))) AS total_time_hr "
+            + ",ROUND((SUM(distance)/sum(delta_time)*2.23694),1) AS average_speed_mph "
             + " FROM gpx_track "
 
     sql += conditions;
-    sql += " GROUP BY trans_mode"
-            + ((usersIds) ? ",user_id" : "")
-            + ((byDate) ? ",Date(track_timestamp)" : "");
+    if (usersIds || byDate || byTransMode)
+    {
+        sql += " GROUP BY "
+                + ((byTransMode) ? "trans_mode," : "")
+                + ((usersIds) ? "user_id," : "")
+                + ((byDate) ? "Date(track_timestamp)," : "");
+        sql = sql.substr(0, sql.length - 1);
+    }
 
-    if (doLog)
-        console.log(sql);
+//    if (doLog)
+    console.log(sql);
     var jqXHR = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
