@@ -370,41 +370,42 @@ function drawBarChart(data, target, id, classes, title) {
 	attr("fill", "black");
 }
 
-function addIconEvents() {
-	$('svg .summary-arc').unbind('mouseenter').unbind('mouseleave');
-	$('svg .summary-arc').on('mouseenter', function() {
-		var self = $(this);
-		var name = self.attr('data-name');
-		var fo = self.siblings('.donut-trans-icon');
-		//        console.log(fo.children('.donut-trans-icon-text').attr('class'));
-		var donutIcon = fo.children('.donut-trans-icon-text');
-		donutIcon.empty().append(transModeSymbols[name]);
+function addIconEvents()
+{
+    $('svg .summary-arc').unbind('mouseenter').unbind('mouseleave');
+    $('svg .summary-arc').on('mouseenter', function() {
+        var self = $(this);
+        var name = self.attr('data-name');
+        var fo = self.siblings('.donut-trans-icon');
+//        console.log(fo.children('.donut-trans-icon-text').attr('class'));
+        var donutIcon = fo.children('.donut-trans-icon-text');
+        donutIcon.empty().append(transModeSymbola[name]);
 
-		fo.css('display', 'block');
-		donutIcon.css('display', 'block');
-
-
-		//        self.siblings('.donut-trans-icon').text(transModeSymbols[name]);
-		//        name = name.toLowerCase();
-		//console.log(name);
-		self.css('opacity', '.5');
-		//        var images = self.parent('image .' + name + '-icon');
-
-		//        console.log(images);
-		//        self.siblings('.donut-trans-icon').attr('font-family', 'Symbola').css('display', 'block').css('font-family', 'Symbola');
+        fo.css('display', 'block');
+        donutIcon.css('display', 'block');
 
 
-	}).on('mouseleave', function() {
-		var self = $(this);
-		var name = self.attr('data-name');
-		//        name = name.toLowerCase();
-		//console.log(name);
-		self.css('opacity', '1');
-		var fo = self.siblings('.donut-trans-icon');
-		//        console.log(fo.children('.donut-trans-icon-text').attr('class'));
-		fo.children('.donut-trans-icon-text').css('display', 'none');
-		//        self.siblings('.donut-trans-icon').css('display', 'none');
-	});
+//        self.siblings('.donut-trans-icon').text(transModeSymbols[name]);
+//        name = name.toLowerCase();
+        console.log(name);
+        self.css('opacity', '.5');
+//        var images = self.parent('image .' + name + '-icon');
+
+//        console.log(images);
+//        self.siblings('.donut-trans-icon').attr('font-family', 'Symbola').css('display', 'block').css('font-family', 'Symbola');
+
+
+    }).on('mouseleave', function() {
+        var self = $(this);
+        var name = self.attr('data-name');
+//        name = name.toLowerCase();
+        console.log(name);
+        self.css('opacity', '1');
+        var fo = self.siblings('.donut-trans-icon');
+//        console.log(fo.children('.donut-trans-icon-text').attr('class'));
+        fo.children('.donut-trans-icon-text').css('display', 'none');
+//        self.siblings('.donut-trans-icon').css('display', 'none');
+    });
 }
 
 function getCarSvg() {

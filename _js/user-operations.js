@@ -9,18 +9,33 @@ var currentUserId;
 var currentUser;
 var usersByTime = [];
 var usersByDistance = [];
+var usersTransModes = [];
+var userTopCities = [];
 
 var activeUserIds = [];
 var allUserIds = [];
 var colorScale;
+var go_bears_user;
 
 function loadUsers() {
-//    if(doLog) console.log("Step1:");
 
-    usersByTime = rankUsersByTime();
+    usersByTime     = rankUsersByTime();
     usersByDistance = rankUsersByDistance();
-    console.log('topUser-----');
-    console.log(usersByDistance);
+    usersTransModes = runCustomQuery("select distinct user_id, trans_mode from gpx_track where active=1 and trans_mode not in ('undefined','Stop') order by user_id");
+    userTopCities   = runCustomQuery("select  user_id, city, state, round((sum(delta_time))) as total_time_s, round((sum(delta_time)*0.000277778)) as total_time_hr, round(sum(distance)) as total_distance_m, round( sum(distance)*0.000621371) as total_distance_mi from gpx_track  where city<> 'undefined' and state<>'undefined' group by user_id, city, state order by user_id, round((sum(delta_time)))  desc");
+    usersByAvgSpeed = runCustomQuery("SELECT user_id, AVG( average_speed_mi_hrs ) AS avg FROM  `gpx_active_stats` GROUP BY user_id ORDER BY avg ASC");
+
+    // find who spent the most time in berkeley  // go bears award
+    var count = 0;
+    for (var i=0; i<userTopCities.length; i++) {
+        if (userTopCities[i].city == "Berkeley") {
+            if (count < userTopCities[i].total_time_s) {
+                go_bears_user = userTopCities[i].user_id;
+            }
+        }
+    }
+
+
 
     currentUsers = [];
     currentUserObjects = {};
@@ -166,19 +181,44 @@ function formatUserColumnHTML(user)
             + "<div class='user-button-img' data-mode='add'  style='background-color:" + colorScale(user.id) + "' >"
             + "<i class='fa fa-plus'></i>"
             + "</div><div class='user-facts'>"
-            + "<span class='name'>" + user.firstName + "</span><hr>"
-            + "<ul class='user-top-cities'>"
-            + "<li>Top City 1</li><li>Top City 2</li></ul><hr>"
-            + "<div class='user-data-viz'>Transport Breakdown</div>";
+            + "<span class='name'>" + user.firstName + "</span>";
 
+    for (var i=0; i<usersTransModes.length; i++) {
+        if (usersTransModes[i].user_id == user.id) {
+            str += "<span class='symbola trans-mode-symbol'>" + transModeSymbols[usersTransModes[i].trans_mode] + "</span>";
+        }
+    }
+    str += "<ol start='1' class='user-top-cities'>";
+    var count = 1;
+    for (var i=0; i<userTopCities.length; i++) {
+        if (userTopCities[i].user_id == user.id) {
+            str += "<li>" + userTopCities[i].city + ', ' + userTopCities[i].state + "</li>";
+            if (count > 2) {
+                break;
+            }
+            count++;
+        }
+    }
+    str += "</ol><ul class='user-awards'>";
+    // most time spent travelling badge
     if (usersByTime[0].user_id == user.id) {
-        str += "<span>Most Time Traveled Award</span><hr>";
+        str += "<li><span class='symbola award-symbol'>" + transModeSymbols['time'] + "</span></li>";
+        str += "<li>Most Time Spent Traveling</li>";
     }
+    // most distance travelled badge
     if (usersByDistance[0].user_id == user.id) {
-        str += "<span>Most Distance Traveled Award</span><hr>";
+        str += "<li><span class='symbola award-symbol'>" + transModeSymbols['distance'] + "</span></li>";
+        str += "<li>Most Distance Traveled</li>";
     }
-
-    str += "</div></div>";
+    if (go_bears_user == user.id) {
+        str += "<li><img class='award' src='_images/cal_bear.png'/></li>";
+        str += "<li>Go Bears</li>";
+    }
+    if (usersByAvgSpeed[0].user_id == user.id) {
+        str += "<li><span class='symbola award-symbol'>" + transModeSymbols['slow'] + "</span></li>";
+        str += "<li>Slowest Traveler</li>";
+    }
+    str += "</ul></div></div>";
 
 //    console.log(summary);
 
