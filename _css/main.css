@@ -575,6 +575,7 @@ svg .donut-trans-icon{
     margin: 0 0 5px 0;
     margin: 1;
     letter-spacing:2px;
+    border-radius: 20px 20px 0 0;
 }
 .overall-donut
 {
@@ -753,6 +754,7 @@ svg .summary-icon{
     display: none;
     font-family: Bangers, sans-serif;
     color: white;
+    padding-left: 1%;
 }
 #overall-stats{
 
@@ -760,14 +762,18 @@ svg .summary-icon{
 #user-stats{
 
 }
-
+.legend-title{
+    font-family: Bangers, sans-serif;
+    font-size: .5em;
+}
 .hide-button{
     display:block;
     position: absolute;
     width: 75px;
-    top:10px;
+    top: 0px;
     left: calc(100% - 75px);
     z-index:1000;
+    /* border-radius: 0px; */
 }
 
 .bar{
@@ -805,6 +811,7 @@ span.name {
     padding: 0px;
     border: 1aliceblue;
     letter-spacing:2px;
+    border-radius: 20px;
 }
 .stat-title{
 
@@ -814,4 +821,16 @@ span.name {
 }
 #select_all:hover {
     color: green;
+}
+.bar-header{
+    color:white;
+    fill: white;
+    font-family: Bangers, sans-serif;
+}
+.bar-data{
+        fill: white;
+    
+        font-family: digi;
+        font-size: 1.5em;
+        font-weight: bold;
 }
