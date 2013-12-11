@@ -1,7 +1,7 @@
 /* reset */
 
 html, body, address, blockquote, del, div, h1, h2, h3, h4, h5, h6, hr, ins, noscript, p, pre, dl, dt, dd, li, ol, ul, table, caption, colgroup, col, thead, tfoot, tbody, tr, td, th, form, button, fieldset, figure, legend, label, select, optgroup, option, textarea, a, bdo, br, img, map, area, object, param, q, script, span, sub, sup, abbr, acronym, cite, code, del, dfn, em, ins, kbd, samp, strong, var, b, big, i, small, tt{border:0;font-family:inherit;font-size:100%;font-style:inherit;font-weight:inherit;margin:0;outline:0;padding:0;vertical-align:baseline;}
-ol, ul{list-style:none;}
+/*ol, ul{list-style:none;}*/
 th{text-align:left;}
 table{border-collapse:collapse;}
  @font-face { font-family:Symbola; src:url(http://users.teilar.gr/~g1951d/Symbola.ttf); }
@@ -110,7 +110,6 @@ h3 {
 }
 .user-trans{
     font-family: Symbola;
-
     margin: 0;
     width: 80px;
     height: 80px;
@@ -124,6 +123,23 @@ h3 {
     background-color: rgba(255,255,255,0);
     border-radius: 50px;
     z-index: 350;
+}
+.trans-mode-symbol{
+    border-radius: 50px;
+    color: rgba(255,62,0,1);
+    padding: 5px;
+}
+.symbola {
+    font-family: Symbola;
+}
+.award-symbol {
+    border-radius: 50px;
+    padding: 5px;
+    font-size: 2em;
+}
+img.award {
+    width: 42px;
+    height: 42px;
 }
 
 #map-area{
@@ -163,19 +179,11 @@ h3 {
 }
 #slider
 {
-
     display: inline-block;
-
-
     height: 40%;
-
-
     width: 100%;
-
     -webkit-appearance: none;
-
     -webkit-border-radius: 10px;
-
     -webkit-box-shadow: inset 0 0 5px #333;
 }
 #slider-value{
@@ -578,7 +586,7 @@ svg .summary-icon{
 }
 #selected {
     background-color: rgba(200,200,200,.5);
-    height: auto;
+    height: 18%;
 }
 #selected * {
     display: inline-block;
@@ -597,20 +605,32 @@ svg .summary-icon{
     overflow-x:scroll;
 }
 .user-column {
-    display: inline-block;
-    width:10%;
-    height: 70%;
+    float: left;
+    width: 180px;
     text-align: center;
     background-color: rgba(200,200,200,.1);
     margin:5px;
-    padding: 20px;
+    padding: 5px;
 }
 .user-column img {
     margin: auto;
 }
 
-.user-top-cities li {
+.user-top-cities li, .user-awards {
     display: block;
+    font-size: .8em;
+}
+.user-top-cities {
+    padding-top: 20px;
+    text-align: left;
+}
+.user-facts ul {
+    padding-top: 20px;
+}
+.user-awards li:nth-child(odd) {
+    border-top: 1px solid white;
+    margin-top: 10px;
+    padding-top: 10px;
 }
 
 
@@ -647,7 +667,6 @@ svg .summary-icon{
 }
 
 .hide-button{
-<<<<<<< HEAD
 
 }
 
@@ -656,12 +675,9 @@ width:20px;
 background-color: red;
 margin-right: 1px;
 }
-=======
-    
-}
 
 span.name {
-    padding: 20px;
+    padding: 30px;
     font-family:Bangers, sans-serif;
     letter-spacing:2px;
     font-size:30px;
@@ -669,5 +685,4 @@ span.name {
     font-weight: 600;
     display: block;
 }
-}
->>>>>>> b22db6d56ded1609510836a7d000ceef66a41828
+
