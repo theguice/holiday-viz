@@ -749,7 +749,7 @@ svg .summary-icon{
 .stats-popup{
     width: 95%;
 
-    height: 95%;
+    max-height: 95%;
     position: absolute;
     background: rgba(0,0,0,1);
     left: 2.5%;
