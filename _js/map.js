@@ -584,6 +584,7 @@ function prepareData()
 //    console.log(activeUsers);
     var points = getActivePoints(startDate, endDate, activeUsers);
     pictures = getImages(startDate, endDate, activeUsers);
+    console.log(pictures);
     generateStats(points);
     prepareUsersPoints(points);
 }
@@ -681,11 +682,11 @@ function updateUserLocations()
 //            var txt = '&#128690;'
             $('#user-trans-' + uid).html(transModeSymbols[userTransModes[uid]]);
             console.log(userTransModes[uid]);
-            if(!userTransModes[uid]==='Stop' && !userTransModes[uid]==='undefined')
-            $('#user-trans-' + uid).css('background-color', 'rgba(255,255,255,.6)');
-        else{
-            $('#user-trans-' + uid).css('background-color', 'rgba(255,255,255,0)');
-        }
+            if (!userTransModes[uid] === 'Stop' && !userTransModes[uid] === 'undefined')
+                $('#user-trans-' + uid).css('background-color', 'rgba(255,255,255,.6)');
+            else {
+                $('#user-trans-' + uid).css('background-color', 'rgba(255,255,255,0)');
+            }
         }
         else
         {
@@ -881,41 +882,26 @@ function addUsersPictures()
 
         for (var i = 0, j = pictures.length; i < j; i++) {
             $('#image-list').append('<li><a class="gallery" target="_blank" title="' + pictures[i].title + '" href ="' + pictures[i].url + '" ><img src="' + pictures[i].url + '" alt="' + pictures[i].title + '"></a></li>');
-            //$('#image-canvas').append("<a class='gallery' title='" + pictures[i].title + "'' href ='" + pictures[i].url + "' ><img src='" + pictures[i].url + "' class='img-picture' id='" + pictures[i].pic_id + "''></a>");
-            LatLng = new google.maps.LatLng(pictures[i].latitude, pictures[i].longitude);
-            var marker = new google.maps.Marker({
-                position: LatLng,
-                map: map,
-                icon: iconBase + 'icon22.png',
-                _data: pictures[i].title
-            });
-            // var infowindow = new google.maps.InfoWindow({
-            //  content: '<div class="infocontent"><h4>' + pictures[i].pic_id + '</h4></div>;'
-            // });
-
-            google.maps.event.addListener(marker, 'click', function() {
-                if (doLog)
-                    console.log("In addListener", marker);
-                // if (_openWindow == null) {
-                if (!this.getMap()._infoWindow) {
-                    this.getMap()._infoWindow = new google.maps.InfoWindow();
-                }
-                this.getMap()._infoWindow.close();
-                this.getMap()._infoWindow.setContent(marker._data);
-                this.getMap()._infoWindow.open(this.getMap(), this);
-                // _openWindow.close();
-                if (doLog)
-                    console.log(pictures[i].pic_id, marker);
-                // }
-
-                // infowindow.open(map, marker);
-                // _openWindow = infowindow;
-            });
 
             if (doLog)
                 console.log("URL = ", pictures[i].url, pictures[i].pic_id, pictures[i].latitude, _openWindow, marker);
-
         }
+        // New marker code
+        map = new google.maps.Map(document.getElementById("map-canvas"), map);
+        for (var a = 0; a < pictures.length; a++) {
+            var tmpLat = pictures[a].latitude;
+            var tmpLng = pictures[a].longitude;
+            var marker = _newGoogleMapsMarker({
+                _map: map,
+                _lat: tmpLat,
+                _lng: tmpLng,
+                _head: '|' + new google.maps.LatLng(tmpLat, tmpLng),
+                //_data: '<div class="infowindow" id ="' + pictures[a].pic_id + '"><a class="gallery" title="thumbnail" href ="' + pictures[a].url + '" ><img class="thumbnail" src = "' + pictures[a].url + ' id ="' + pictures[a].pic_id + '" ></div>'
+                _data: '<div class="infowindow" id ="' + pictures[a].pic_id + '"><a class="gallery" target="_blank" title="' + pictures[a].title + '" href ="' + pictures[a].url + '" ><img class="thumbnail" src = "' + pictures[a].url + '" id ="' + pictures[a].pic_id + '" ></div>'
+            });
+            console.log("Marker", pictures[a].pic_id, marker._data, marker)
+        }
+
         if (($('#image-list li').size()) > 3) {
             $('.jcarousel-control').css('visibility', 'visible');
         }
@@ -935,6 +921,32 @@ function processUsersPictures(date1, date2)
     var activeUsers = getActiveUserIds();
     pictures = getImages(date1, date2, activeUsers);
     addUsersPictures();
+}
+
+function _newGoogleMapsMarker(param) {
+    var iconBase = 'http://maps.google.com/mapfiles/kml/pal2/';
+    var r = new google.maps.Marker({
+        map: param._map,
+        position: new google.maps.LatLng(param._lat, param._lng),
+        title: param._head,
+        //icon: IconType[place.types[0]]
+        icon: iconBase + '/icon22.png'
+    });
+    console.log("Made marker")
+
+    if (param._data) {
+        console.log("In addListener", param._data)
+        google.maps.event.addListener(r, 'click', function() {
+            // this -> the marker on which the onclick event is being attached
+            if (!this.getMap()._infoWindow) {
+                this.getMap()._infoWindow = new google.maps.InfoWindow();
+            }
+            this.getMap()._infoWindow.close();
+            this.getMap()._infoWindow.setContent(param._data);
+            this.getMap()._infoWindow.open(this.getMap(), this);
+        });
+    }
+    return r;
 }
 
 function toggleDrawMarkers()
@@ -1079,8 +1091,8 @@ function fillUserPoints()
 
                 if (firstPoint)
                 {
-                    var skipped = 0;
-                    while (i < sliderCount && points && points.length === 0)
+                    var skipped = 1;
+                    while (i < sliderCount && (!points || points.length === 0))
                     {
                         i++;
                         points = userTimePoints[uid][i];
@@ -1088,37 +1100,46 @@ function fillUserPoints()
 //                        console.log('skipping');
 
                     }
-//                    console.log('skipped =' + skipped);
-                    if (i < sliderCount && userTimePoints[uid][i])
+                    console.log('skipped =' + skipped);
+                    if (i < sliderCount && points)
                     {
 //                        console.log('skipped =' + skipped);
-                        var point = points[points.length - 1];
+                        var point = points[0];
                         var distance = distanceBetween(lastPoint, point);
-                        if (distance > 50)
+                        if (distance > 0 && point.transMode==='Fly')
                         {
                             var deltaLat = point.lat - lastPoint.lat;
                             var deltaLon = point.lon - lastPoint.lon;
-
-                            for (var k = 0; k <= skipped; k++)
+                            var userFilled = 0;
+                            for (var k = 1; k < skipped; k++)
                             {
+
                                 var fillPoint = new Point(lastPoint);
                                 fillPoint.lat += deltaLat * k / skipped;
                                 fillPoint.lon += deltaLon * k / skipped;
                                 fillPoint.refreshLatLng();
                                 var index = i - skipped + k;
 //                                console.log(index+"\t"+k);
-                                if (!userTimePoints[uid][index])
+                                if (userTimePoints[uid][index] && userTimePoints[uid][index].length === 0)
                                 {
-                                    userTimePoints[uid][index] = [];
+//                                    userTimePoints[uid][index] = [];
                                     userTimePoints[uid][index].push(fillPoint);
                                     pointCountByTime[index] = pointCountByTime[i - skipped + k] + 1;
                                     boundsByTime[index].extend(fillPoint.LatLng);
                                     filled++;
+                                    userFilled++;
                                 }
                             }
-
+//                            console.log('user filled = ' + userFilled);
                         }
+                        else
+                        {
+//                            console.log('distance too small');
+                        }
+
+                        lastPoint = points[points.length - 1];
                     }
+
                 }
             }
         }

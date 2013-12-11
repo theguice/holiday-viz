@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var doLog = true;
+var doLog = false;
 var currentUser = "";
 var DB_FILE = 'db-operations.php';
 var MAP_FILE = 'map-api.php';
@@ -45,10 +45,10 @@ function _newGoogleMapsMarker(param) {
         //icon: IconType[place.types[0]]
         icon: iconBase + '/icon22.png'
     });
-    console.log("Made marker")
+//    console.log("Made marker")
 
     if (param._data) {
-        console.log("In addListener", param._data);
+//        console.log("In addListener", param._data);
         google.maps.event.addListener(r, 'click', function() {
             // this -> the marker on which the onclick event is being attached
             if (!this.getMap()._infoWindow) {
