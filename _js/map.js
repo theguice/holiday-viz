@@ -880,8 +880,17 @@ function addUsersPictures()
 {
     if (pictures) {
 
+        var img_srcs = [];
         for (var i = 0, j = pictures.length; i < j; i++) {
-            $('#image-list').append('<li><a class="gallery" target="_blank" title="' + pictures[i].title + '" href ="' + pictures[i].url + '" ><img src="' + pictures[i].url + '" alt="' + pictures[i].title + '"></a></li>');
+
+            $.each($('#image-list').children(), function (k, v) {
+                img_srcs.push($(v).find('img').attr('src'));
+            });
+            
+            // only append new images if this one doesn't already exist in the DOM
+            if ($.inArray(pictures[i].url, img_srcs) == -1) {
+                $('#image-list').append('<li><a class="gallery" target="_blank" title="' + pictures[i].title + '" href ="' + pictures[i].url + '" ><img src="' + pictures[i].url + '" alt="' + pictures[i].title + '"></a></li>');
+            }
 
             if (doLog)
                 console.log("URL = ", pictures[i].url, pictures[i].pic_id, pictures[i].latitude, _openWindow, marker);
