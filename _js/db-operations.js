@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var doLog = true;
+var dbLog = false;
 var currentUser = "";
 var DB_FILE = 'db-operations.php';
 var MAP_FILE = 'map-api.php';
@@ -15,7 +15,7 @@ var geocoder;
 _openWindow = null;
 
 function initDb() {
-    if (doLog)
+    if (dbLog)
         console.log('initiating database');
     var sql = [];
     sql.push("DELETE FROM gpx_users WHERE 1");
@@ -29,7 +29,7 @@ function initDb() {
                 'q': sql[i]
             }
         }).done(function(data) {
-            if (doLog)
+            if (dbLog)
                 console.log(data);
         });
     }
@@ -78,8 +78,9 @@ function addGpxToDb(user, point) {
             + "VALUES (" + user['id'] + ",'" + point.time.toISOString() + "'," + point.lat
             + "," + point.lon + "," + point.elevation + ","
             + ((point.startPoint) ? point.startPoint : 0) + ")";
-    if (doLog)
-        console.log((insertCount++) + "\t" + sql);
+    insertCount++
+    if (dbLog)
+        console.log((insertCount) + "\t" + sql);
     $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -88,7 +89,7 @@ function addGpxToDb(user, point) {
         },
         async: 'false'
     }).done(function(data) {
-        //        if(doLog) console.log(data);
+        //        if(dbLog) console.log(data);
     });
 
 }
@@ -115,7 +116,7 @@ function updatGpxInDb(user, point, keys) {
 //    ,'street', 'city','county','state', 'country', 'zip'
 
             + " where track_id=" + point.id;
-    if (doLog)
+    if (dbLog)
         console.log("update sql:\n" + sql);
 
 //    var address = getAddress(point.lat, point.lon);
@@ -127,7 +128,7 @@ function updatGpxInDb(user, point, keys) {
         }
         , 'async': false
     }).done(function(data) {
-        //        if(doLog) console.log(data);
+        //        if(dbLog) console.log(data);
     });
 }
 
@@ -143,7 +144,7 @@ function resetActiveGpxPoints()
         }
         , 'async': false
     }).done(function(data) {
-        //        if(doLog) console.log(data);
+        //        if(dbLog) console.log(data);
     });
 }
 /**
@@ -154,7 +155,7 @@ function resetActiveGpxPoints()
 function addUserToDb(user) {
     var sql = "INSERT INTO gpx_users " + "(first_name, last_name, picture_url, twitter, instagram)" + " VALUES ('" + user.firstName + "','" + user.lastName + "','" + user.avatar + "','" + user.twitter + "','" + user.instagram + "')";
 
-    //    if(doLog) console.log(sql);
+    //    if(dbLog) console.log(sql);
 
     var jqXHR1 = $.ajax({
         'type': 'GET',
@@ -164,11 +165,11 @@ function addUserToDb(user) {
         },
         'async': false
     });
-    if (doLog)
+    if (dbLog)
         console.log(jqXHR1.responseText);
 
     var sql2 = "SELECT * FROM gpx_users WHERE first_name='" + user.firstName + "'" + " and last_name='" + user.lastName + "'" + " and twitter='" + user.twitter + "'";
-    if (doLog)
+    if (dbLog)
         console.log(sql2);
     var jqXHR2 = $.ajax({
         'type': 'GET',
@@ -181,15 +182,15 @@ function addUserToDb(user) {
 
     var data = $.parseJSON(jqXHR2.responseText);
 
-    if (doLog)
+    if (dbLog)
         console.log(data);
     return new User(data[0]);
 }
 
 function getUserById(id) {
     var sql = "SELECT * FROM gpx_users WHERE user_id=" + id;
-    if (doLog)
-        console.log(sql2);
+    if (dbLog)
+        console.log(sql);
     var jqXHR2 = $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -201,7 +202,7 @@ function getUserById(id) {
 
     var data = $.parseJSON(jqXHR2.responseText);
 
-    if (doLog)
+    if (dbLog)
         console.log(data);
     return new User(data[0]);
 }
@@ -218,8 +219,8 @@ function getAllUsers() {
     });
 
     var data = $.parseJSON(jqXHR.responseText);
-//	if(doLog) console.log("getAllUsers:");
-//	if(doLog) console.log(data);
+//	if(dbLog) console.log("getAllUsers:");
+//	if(dbLog) console.log(data);
     return data;
 }
 
@@ -236,37 +237,37 @@ function getPointsByUser(userID) {
 
 function getActivePoints(start, end, usersIds)
 {
-    if (doLog)
+    if (dbLog)
         console.log(start + "\t" + end);
 
 
-//    if(doLog) console.log("I am here now-4!")
-//    if(doLog) console.log(usersIds)
+//    if(dbLog) console.log("I am here now-4!")
+//    if(dbLog) console.log(usersIds)
     // usersIds = 21
     /*    var n = $("input:checked").length;
-     //    if(doLog) console.log("n=", n)
+     //    if(dbLog) console.log("n=", n)
      if (n > 0) {
      usersIds = new Array();
      $("input:checkbox").each(function() {
      if ($(this).is(":checked")) {
-     //                if(doLog) console.log($(this));
+     //                if(dbLog) console.log($(this));
      usersIds.push($(this).attr("id"));
      }
      });
      }
-     //    if(doLog) console.log("Generated usersids")
-     //    if(doLog) console.log(usersIds)
+     //    if(dbLog) console.log("Generated usersids")
+     //    if(dbLog) console.log(usersIds)
      */
     return getPoints(start, end, usersIds, true);
 }
 
 function getImages(start, end, usersIds) {
-    if (doLog)
+    if (dbLog)
         console.log("I am in getImages!")
     if (typeof (activeOnly) === 'undefined')
         activeOnly = false;
 
-    if (doLog)
+    if (dbLog)
         console.log(usersIds);
     var sql = "SELECT * FROM gpx_pictures ";
     var conditions = [];
@@ -285,7 +286,7 @@ function getImages(start, end, usersIds) {
         conditions.push(str);
     }
 
-    if (doLog)
+    if (dbLog)
         console.log(conditions);
     if (conditions.length > 0) {
         sql += " where ";
@@ -296,7 +297,7 @@ function getImages(start, end, usersIds) {
     }
 
     sql += " order by user_id, image_timestamp";
-    if (doLog)
+    if (dbLog)
         console.log(sql);
     var jqXHR = $.ajax({
         'type': 'GET',
@@ -308,7 +309,7 @@ function getImages(start, end, usersIds) {
     });
     var data = $.parseJSON(jqXHR.responseText);
     if (data) {
-        if (doLog)
+        if (dbLog)
             console.log(data);
 
         return(data);
@@ -316,7 +317,7 @@ function getImages(start, end, usersIds) {
     }
     else
     {
-        if (doLog)
+        if (dbLog)
             console.log('No Pictures');
     }
 }
@@ -337,9 +338,9 @@ function parseConditions(start, end, usersIds, activeOnly)
         conditions.push("track_timestamp<='" + end.toISOString() + "'");
     if (usersIds)
     {
-        if (doLog)
+        if (dbLog)
             console.log(typeof (usersIds));
-        if (doLog)
+        if (dbLog)
             console.log(usersIds);
         if (typeof (usersIds) === 'number')
         {
@@ -356,7 +357,7 @@ function parseConditions(start, end, usersIds, activeOnly)
         var str = " active=1";
         conditions.push(str);
     }
-    if (doLog)
+    if (dbLog)
         console.log(conditions);
     var sql = "";
     if (conditions.length > 0) {
@@ -369,11 +370,11 @@ function parseConditions(start, end, usersIds, activeOnly)
     return sql;
 }
 function getPoints(start, end, usersIds, activeOnly) {
-//    if(doLog) console.log("I am here now-3!")
+//    if(dbLog) console.log("I am here now-3!")
     if (typeof (activeOnly) === 'undefined')
         activeOnly = false;
 
-//    if(doLog) console.log(usersIds);
+//    if(dbLog) console.log(usersIds);
     var sql = "SELECT * FROM gpx_track ";
     sql += parseConditions(start, end, usersIds, activeOnly)
 
@@ -381,7 +382,7 @@ function getPoints(start, end, usersIds, activeOnly) {
 
 
     sql += " order by user_id, track_timestamp";
-    if (doLog)
+    if (dbLog)
         console.log(sql);
     var jqXHR = $.ajax({
         'type': 'GET',
@@ -393,7 +394,7 @@ function getPoints(start, end, usersIds, activeOnly) {
     });
 
     var data = $.parseJSON(jqXHR.responseText);
-//    if(doLog) console.log(data);
+//    if(dbLog) console.log(data);
     var points = [];
     if (data)
     {
@@ -401,7 +402,7 @@ function getPoints(start, end, usersIds, activeOnly) {
         for (var i = 0, j = data.length; i < j; i++)
             points.push(new Point(data[i]));
 
-        if (doLog)
+        if (dbLog)
             console.log(points.length + ' points retrieved');
     }
     return points;
@@ -413,7 +414,7 @@ function getPoints(start, end, usersIds, activeOnly) {
  */
 function archiveGpxPoint(point)
 {
-    if (doLog)
+    if (dbLog)
         console.log('archiving point ' + point.id);
     var sql = "INSERT INTO gpx_track_inactive "
             + "(user_id, track_timestamp, latitude, longitude, altitude,active, speed, delta_time, trans_mode) "
@@ -421,7 +422,7 @@ function archiveGpxPoint(point)
             + "'," + point.lat + "," + point.lon + "," + point.elevation
             + "," + point.active + "," + point.speed + "," + point.deltaTime + ",'" + point.transMode + "'"
             + ")";
-//         if(doLog) console.log(sql);
+//         if(dbLog) console.log(sql);
     $.ajax({
         'type': 'GET',
         'url': DB_FILE,
@@ -429,7 +430,7 @@ function archiveGpxPoint(point)
             'q': sql
         }
     }).done(function(data) {
-        //        if(doLog) console.log(data);
+        //        if(dbLog) console.log(data);
     });
 
 }
@@ -460,7 +461,7 @@ function deleteUselessPoints()
 
 function deleteGpxPoint(point)
 {
-    if (doLog)
+    if (dbLog)
         console.log('Deletes point ' + point.id);
     var sql = 'delete from gpx_track where track_id=' + point.id;
     var jqXHR = $.ajax({
@@ -488,9 +489,9 @@ function getDataSummary()
     });
 
     var data = $.parseJSON(jqXHR.responseText);
-    if (doLog)
+    if (dbLog)
         console.log('summary data');
-    if (doLog)
+    if (dbLog)
         console.log(data);
     return data;
 
@@ -522,7 +523,7 @@ function getSummary(start, end, usersIds, activeOnly, byDate, byTransMode)
         sql = sql.substr(0, sql.length - 1);
     }
 
-    if (doLog)
+    if (dbLog)
     console.log(sql);
     var jqXHR = $.ajax({
         'type': 'GET',
@@ -534,9 +535,9 @@ function getSummary(start, end, usersIds, activeOnly, byDate, byTransMode)
     }
     );
     var data = $.parseJSON(jqXHR.responseText);
-    if (doLog)
+    if (dbLog)
         console.log('summary data');
-    if (doLog)
+    if (dbLog)
         console.log(data);
     return data;
 
@@ -555,9 +556,9 @@ function getUserDataSummary()
     }
     );
     var data = $.parseJSON(jqXHR.responseText);
-    if (doLog)
+    if (dbLog)
         console.log('summary data');
-    if (doLog)
+    if (dbLog)
         console.log(data);
     return data;
 }
@@ -577,9 +578,9 @@ function getDatesFromDb()
     }
     );
     var data = $.parseJSON(jqXHR.responseText);
-    if (doLog)
+    if (dbLog)
         console.log('dates');
-    if (doLog)
+    if (dbLog)
         console.log(data);
     return data;
 }
@@ -598,7 +599,7 @@ function backupTable(table)
 
 function cloneTable(from, to)
 {
-    if (doLog)
+    if (dbLog)
         console.log('cloning table from ' + from + " to " + to);
     var sql = "DROP TABLE IF EXISTS " + to;
     var jqXHR = $.ajax({
@@ -672,7 +673,7 @@ function getAddress(lat, lon)
     var data = jqXHR.responseJSON.contents.results;
 //    var data = $.parseJSON(response.responseText);
     var address = new Address(data[0]);
-    /*   if (doLog)
+    /*   if (dbLog)
      console.log(address);
      */ return address;
 
@@ -692,7 +693,7 @@ function runCustomQuery(sql)
     }
     );
     var data = $.parseJSON(jqXHR.responseText);
-    if (doLog)
+    if (dbLog)
         console.log(data);
     return data;
 }
@@ -722,7 +723,7 @@ function runCustomFetch(url)
 //    var data = jqXHR.responseJSON.contents.results;
 //    var data = $.parseJSON(response.responseText);
 //    var address = new Address(data[0]);
-//    /*   if (doLog)
+//    /*   if (dbLog)
 //     console.log(address);
 //     */ return address;
 }
@@ -741,9 +742,9 @@ function rankUsersByTime() {
     });
 
     var data = $.parseJSON(jqXHR.responseText);
-    if (doLog)
+    if (dbLog)
         console.log('Top User By Time data');
-    if (doLog)
+    if (dbLog)
         console.log(data);
     return data;
 }
@@ -762,9 +763,9 @@ function rankUsersByDistance() {
     });
 
     var data = $.parseJSON(jqXHR.responseText);
-    if (doLog)
+    if (dbLog)
         console.log('Top User By Distance data');
-    if (doLog)
+    if (dbLog)
         console.log(data);
     return data;
 }

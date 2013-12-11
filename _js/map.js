@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var doLog = true;
+var mapLog = false;
 var draw_elevation = false;
 var map;
 var geocoder;
@@ -85,8 +85,6 @@ function addConfigEvents()
     $('#inactive-steps').val(oldPointWindow);
     $('#config-button').unbind('click').on('click', function()
     {
-        if (doLog)
-            console.log('show config');
         $('#config-div').show();
     });
     $('#hide-config').unbind('click').on('click', function() {
@@ -100,7 +98,7 @@ function addConfigEvents()
 //        drawPointMarkers = Boolean($('#draw-markers').prop('checked'));
         drawPointMarkers = Boolean($('#draw-markers-button').hasClass('active'));
         autoCenter = Boolean($('#auto-center-button').hasClass('active'));
-        if (doLog)
+        if (mapLog)
             console.log("Config=" + increment + "\t" + pointWindow + "\t" + oldPointWindow + "\t" + drawPointMarkers);
         $('#config-div').hide();
         return false;
@@ -126,31 +124,30 @@ function loadDates()
 //        endDate = new Date();
 
             var self = $(this);
-//        if(doLog)console.log(self);
+
             self.parent().parent().attr('data-date', self.text());
             self.parent().parent().siblings('.dropdown-toggle').text(self.text());
-//        if(doLog)console.log(self.text());
-//        if(doLog)console.log(self.parent().parent().singlins('.dropdown-toggle'));
+
 
             var dateType = self.parent().parent().attr('id');
-            if (doLog)
+            if (mapLog)
                 console.log(dateType);
             var date = new Date(self.text());
-            if (doLog)
+            if (mapLog)
                 console.log(date.toString());
             if (dateType === 'end-date-menu')
             {
 
                 setEndDate(date);
-                if (doLog)
+                if (mapLog)
                     console.log('changed endDate=' + endDate);
             } else
             {
                 setStartDate(date);
-                if (doLog)
+                if (mapLog)
                     console.log('changed startDate=' + startDate);
             }
-            if (doLog)
+            if (mapLog)
                 console.log(startDate + "\t" + endDate);
             initDashboard(startDate, endDate);
         });
@@ -180,8 +177,8 @@ function setCurrentLocation() {
 function showPosition(position) {
 
     var point = new Point(position);
-//    if(doLog)console.log(position);
-//    if(doLog)console.log(point);
+
+
 
     getAddress(point.lat, point.lon);
 
@@ -194,9 +191,9 @@ function showPosition(position) {
  */
 function showMap(point)
 {
-    if (doLog)
+    if (mapLog)
         console.log('showing map');
-    if (doLog)
+    if (mapLog)
         console.log(point);
     point.refreshLatLng();
     mapCenter = point.LatLng;
@@ -217,7 +214,7 @@ function centerMap(point) {
 }
 
 function createPointMarker(point, title, userId) {
-//    if(doLog)console.log('adding marker ' + point.lat + ' ' + point.lon);
+
 
     userId = (userId) ? userId : 0;
     var marker = new google.maps.Marker({
@@ -261,14 +258,14 @@ function createUserMarker(point, userId)
             strokeColor: colorScale(userId)}
     });
     userMarkers[userId] = marker;
-//    if(doLog)console.log(point);
+//    if(mapLog)console.log(point);
 //    userLocations[userId] = point.address;
-//    if(doLog)console.log(userMarkers);
+//    if(mapLog)console.log(userMarkers);
 }
 
 function createPath(pts, userId, oldPath) {
 
-    if(doLog)console.log('Creating path');
+//    if(mapLog)console.log('Creating path');
     userId = (userId) ? userId : 0;
 //    userId = (userId) ? userId : userId;
 //    createMarkers = (createMarkers) ? createMarkers : true;
@@ -280,8 +277,8 @@ function createPath(pts, userId, oldPath) {
     {
 
     }
-//    if(doLog)console.log('ele=' + ele);
-//    if(doLog)console.log(pts);
+//    if(mapLog)console.log('ele=' + ele);
+//    if(mapLog)console.log(pts);
     for (var i = 0, j = pts.length; i < j; i++)
     {
         var point = pts[i];
@@ -315,7 +312,7 @@ function createPath(pts, userId, oldPath) {
                     createPointMarker(point, title, userId);
                 }
             }
-            if (point.deltaTime === -1)
+            if (point.startPoint === 1)
             {
                 drawPath(polyPoints, userId, oldPath);
                 polyPoints = [];
@@ -349,7 +346,7 @@ function drawPath(polyPoints, userId, oldPath)
     var path;
     if (oldPath)
     {
-        if (doLog)
+        if (mapLog)
             console.log('oldPath');
         var lineSymbol = {
             path: 'M 0,-1 0,1',
@@ -372,7 +369,7 @@ function drawPath(polyPoints, userId, oldPath)
     }
     else
     {
-//        console.log('new points');
+        console.log('new points');
         console.log(polyPoints);
         path = new google.maps.Polyline({
             path: polyPoints,
@@ -392,20 +389,20 @@ function drawPath(polyPoints, userId, oldPath)
 }
 
 function getElevationColor(ele) {
-//    if(doLog)console.log(elevation);
+//    if(mapLog)console.log(elevation);
     var color = Math.ceil((ele - elevation['min']) / (elevation['max'] - elevation['min']) * 255);
     return (color >= 0) ? color : 0;
 }
 
 function mapZoomIn() {
-    if (doLog)
+    if (mapLog)
         console.log('zoom in');
     var zoom = map.getZoom();
     map.setZoom(zoom + 1);
 }
 
 function mapZoomOut() {
-    if (doLog)
+    if (mapLog)
         console.log('Zoom out');
     var zoom = map.getZoom();
     map.setZoom(zoom - 1);
@@ -421,7 +418,7 @@ function deleteMarkers()
 
 function hideMarkers()
 {
-    if (doLog)
+    if (mapLog)
         console.log(userMarkers);
     for (var i = 0, j = markers.length; i < j; i++)
     {
@@ -457,12 +454,10 @@ function deletePaths()
 
 function hidePaths()
 {
-    
     for (var i = 0, j = paths.length; i < j; i++)
     {
         paths[i].setMap(null);
     }
-    console.log('hiding path count='+paths.length);
 }
 function manageCenter(evt, val, statistics)
 {
@@ -470,8 +465,8 @@ function manageCenter(evt, val, statistics)
 //    var sw = new google.maps.LatLng(statistics.lat.min, statistics.lon.min);
 //    var ne = new google.maps.LatLng(statistics.lat.max, statistics.lon.max);
 //    var bounds = new google.maps.LatLngBounds(sw, ne);
-//    if(doLog)console.log(val);
-//    if(doLog)console.log(bounds);
+//    if(mapLog)console.log(val);
+//    if(mapLog)console.log(bounds);
     if (val)
         map.fitBounds(boundsByTime[val]);
     else
@@ -480,85 +475,15 @@ function manageCenter(evt, val, statistics)
     }
 }
 
-/*
- function manageCenter_OLD(val, statistics)
- {
- 
- if(doLog)console.log(statistics);
- //    if(doLog)console.log(coordinateStats);
- var stat = (statistics) ? statistics : coordinateStats;
- if(doLog)console.log(stat);
- // using the active marker for each user
- // if one of them gets close to an edge, zoom out
- 
- // if all are close to center, zoom in
- if(doLog)console.log('Re-center');
- var count = 0;
- var center = new Point();
- center.lat = stat.lat.min + (stat.lat.max - stat.lat.min) / 2;
- center.lon = stat.lon.min + (stat.lon.max - stat.lon.min) / 2;
- center.refreshLatLng();
- centerMap(center);
- var zoomout = false;
- var zoomin = true;
- while ((zoomout || zoomin) && count < 20)
- {
- var bounds = map.getBounds();
- if(doLog)console.log(bounds);
- var bounds2 = [];
- counter = 0;
- for (var key in bounds)
- {
- bounds2.push(bounds[key]);
- }
- if(doLog)console.log(bounds2);
- if(doLog)console.log(stat.lat.min + "\t" + bounds2[0]['d']);
- if (Math.abs(stat.lat.min) < Math.abs(bounds2[0]['d']))
- {
- if(doLog)console.log('zoom rule 1\t' + stat.lat.min + "\t" + bounds2[0]['d']);
- zoomout = true;
- }
- else if (Math.abs(stat.lat.max) > Math.abs(bounds2[0]['b']))
- {
- if(doLog)console.log('zoom rule 2\t' + stat.lat.max + "\t" + bounds2[0]['b']);
- zoomout = true;
- }
- else if (Math.abs(stat.lon.min) < Math.abs(bounds2[1]['d']))
- {
- if(doLog)console.log('zoom rule 3\t' + stat.lon.min + "\t" + bounds2[1]['d']);
- zoomout = true;
- }
- else if (Math.abs(stat.lon.max) > Math.abs(bounds2[1]['b']))
- {
- if(doLog)console.log('zoom rule 4\t' + stat.lon.max + "\t" + bounds2[1]['b']);
- zoomout = true;
- }
- else
- {
- if(doLog)console.log('zoom rule 5');
- zoomout = false;
- }
- if (zoomout)
- {
- zoomin = false;
- mapZoomOut();
- }
- else if (zoomin)
- {
- mapZoomIn();
- }
- count++;
- }
- }
- */
+
 function generateUserColors()
 {
     usrs = getActiveUserIds();
-    if (doLog)
+    if (mapLog)
         console.log(usrs);
     numUsers = usrs.length;
     numUsers = (numUsers && numUsers > 0) ? numUsers : 1;
-    if (doLog)
+    if (mapLog)
         console.log('generating user colors for ' + numUsers);
     var cmax = 255, R = 0, G1 = 64, G2 = 255, B = cmax;
     for (var i = 0; i < numUsers; i++)
@@ -580,7 +505,7 @@ function generateUserColors()
 function processTrkpts()
 {
 
-    if (doLog)
+    if (mapLog)
         console.log('Animation');
     prepareData();
     reloadSlider();
@@ -591,13 +516,13 @@ function processTrkpts()
 //    drawUsersPoints();
 
 
-//    if(doLog)console.log(points);
+//    if(mapLog)console.log(points);
     userPoints = [];
 }
 
 function drawAll()
 {
-    if (doLog)
+    if (mapLog)
         console.log('Drawing');
     prepareData();
     drawUsersPoints();
@@ -609,13 +534,13 @@ function prepareData()
     clearMap();
 //    generateUserColors();
 //    var start, end;
-    if (doLog)
+    if (mapLog)
         console.log('preparing data');
     var activeUsers = getActiveUserIds();
-//    if(doLog)console.log(activeUsers);
+//    if(mapLog)console.log(activeUsers);
     var points = getActivePoints(startDate, endDate, activeUsers);
     pictures = getImages(startDate, endDate, activeUsers);
-    if (doLog)
+    if (mapLog)
         console.log(pictures);
     generateStats(points);
     prepareUsersPoints(points);
@@ -638,7 +563,7 @@ function reloadSlider()
             timeStats.max.getHours(), 0, 0, 0);
     maxDate = new Date(maxDate.getTime() + (60 * 60 * 1000)); //add 1 hour
     var dateRangeMinutes = (maxDate - minDate) / (1000 * 60);
-    if (doLog)
+    if (mapLog)
         console.log("dateRange=" + dateRangeMinutes);
     var min = 0;
     var max = Math.ceil(dateRangeMinutes / increment);
@@ -646,15 +571,15 @@ function reloadSlider()
     {
         var dateInc = i * increment * 1000 * 60;
         var newDate = new Date(minDate.getTime() + dateInc);
-//        if(doLog)console.log(newDate);
+//        if(mapLog)console.log(newDate);
         sliderMap[i] = newDate;
         boundaryTimeStats[i] = {'lat': {'min': 180, 'max': -180}, 'lon': {'min': 180, 'max': -180}};
         boundsByTime[i] = new google.maps.LatLngBounds();
         pointCountByTime[i] = 0;
     }
     sliderCount = max + 1;
-//    if(doLog)console.log(sliderMap);
-//    if(doLog)console.log(boundaryTimeStats);
+//    if(mapLog)console.log(sliderMap);
+//    if(mapLog)console.log(boundaryTimeStats);
     slider.prop('min', min).prop('max', max).prop('value', min);
     addSliderEvent();
 }
@@ -684,7 +609,7 @@ function updateMapStyle(val)
     date = sliderMap[val];
     var date2 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 18, 0, 0, 0);
     var date3 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 6, 0, 0, 0);
-//    if(doLog)console.log(date + "\t" + date2);
+//    if(mapLog)console.log(date + "\t" + date2);
     if (date > date2 || date < date3)
         map.setOptions({styles: mapNightStyle})
     else
@@ -695,7 +620,7 @@ function updateMapStyle(val)
 function updateUserLocations()
 {
     var activeUserIds = getActiveUserIds();
-//    if(doLog)console.log(userLocations);
+//    if(mapLog)console.log(userLocations);
     for (var i = 0, j = activeUserIds.length; i < j; i++)
     {
         var uid = activeUserIds[i];
@@ -714,7 +639,7 @@ function updateUserLocations()
         {
 //            var txt = '&#128690;'
             $('#user-trans-' + uid).html(transModeSymbola[userTransModes[uid]]);
-            if (doLog)
+            if (mapLog)
                 console.log(userTransModes[uid]);
             if (!userTransModes[uid] === 'Stop' && !userTransModes[uid] === 'undefined')
                 $('#user-trans-' + uid).css('background-color', 'rgba(255,255,255,0)');
@@ -737,24 +662,24 @@ function prepareUsersPoints(points)
         var id = point['userId'];
         if (typeof (userPoints[id]) === 'undefined')
         {
-//            if(doLog)console.log('New user array ' + id);
+//            if(mapLog)console.log('New user array ' + id);
             userPoints[id] = [];
         }
         userPoints[id].push(point);
     }
-    if (doLog)
+    if (mapLog)
         console.log(userPoints);
 
 }
 
 function prepareUsersTimePoints()
 {
-    if (doLog)
+    if (mapLog)
         console.log('preparing time points');
     for (var userId in userPoints)
     {
         var pts = userPoints[userId];
-        if (doLog)
+        if (mapLog)
             console.log(pts);
         userTimePoints[userId] = {};
         var mapCount = 0;
@@ -779,7 +704,7 @@ function prepareUsersTimePoints()
                     skipped++;
                     userTimePoints[userId][mapCount] = [];
                 }
-//                if(doLog)console.log('skipped ' + skipped);
+//                if(mapLog)console.log('skipped ' + skipped);
                 userTimePoints[userId][mapCount].push(point);
                 boundsByTime[mapCount].extend(point.LatLng);
                 updateCoundaryStats(mapCount, point);
@@ -799,16 +724,16 @@ function prepareUsersTimePoints()
 //       
         if (boundaryTimeStats[i]['lat']['min'] === 180 && boundaryTimeStats[i]['lat']['max'] === -180)
         {
-//            if(doLog)console.log('clearing boundary ' + i);
+//            if(mapLog)console.log('clearing boundary ' + i);
 
             boundaryTimeStats[i] = temp;
         }
 //        else
-//            if(doLog)console.log(i + "\t" + boundaryTimeStats[i]['lat']['min'] + "\t" + boundaryTimeStats[i]['lat']['max']);
+//            if(mapLog)console.log(i + "\t" + boundaryTimeStats[i]['lat']['min'] + "\t" + boundaryTimeStats[i]['lat']['max']);
     }
-    if (doLog)
+    if (mapLog)
         console.log(boundaryTimeStats);
-//    if(doLog)console.log(userTimePoints);
+//    if(mapLog)console.log(userTimePoints);
 }
 /**
  * 
@@ -826,8 +751,8 @@ function updateCoundaryStats(index, point)
         boundaryTimeStats[index]['lon']['max'] = (point.lon > stat.lon.max) ? point.lon : stat.lon.max;
     } catch (e)
     {
-//        if(doLog)console.log(e);
-//        if(doLog)console.log(stat);
+//        if(mapLog)console.log(e);
+//        if(mapLog)console.log(stat);
 
     }
 }
@@ -835,12 +760,13 @@ function drawUsersPoints()
 {
     for (var userId in userPoints)
     {
-//        if (typeof (userPoints[userId]) !== 'undefined')
+        if (typeof (userPoints[userId]) !== 'undefined')
         {
-            if (doLog)
+            if (mapLog)
                 console.log('Drawing user:' + userId);
+            console.log(userPoints[userId]);
 //            userPoints[user] = sortPoints(userPoints[user]);
-            createPath(userPoints[userId], userId, false);
+            createPath(userPoints[userId], userId);
         }
     }
 //    manageCenter();
@@ -854,15 +780,15 @@ function drawUsersTimePoints(sliderMapVal, window, oldPathWindow)
 //    var start = new Date(end.getTime() - window * 60 * 1000);
     var stepCount = Math.floor(window / increment);
     var oldStepCount = Math.floor(oldPathWindow / increment);
-//    if(doLog)console.log('drawing time points ' + sliderMapVal);
+//    if(mapLog)console.log('drawing time points ' + sliderMapVal);
     var activeUserIds = getActiveUserIds();
-//    if(doLog)console.log(activeUserIds);
+//    if(mapLog)console.log(activeUserIds);
     for (var i = 0, j = activeUserIds.length; i < j; i++)
     {
 
         var id = activeUserIds[i];
         userTransModes[id] = '';
-//        if(doLog)console.log('drawing user ' + id);
+//        if(mapLog)console.log('drawing user ' + id);
         var points = [];
         var oldPoints = [];
         for (var k = stepCount; k >= 0; k--)
@@ -891,11 +817,11 @@ function drawUsersTimePoints(sliderMapVal, window, oldPathWindow)
          for (var k = 0, l = oldPoints.length; k < l; k++)
          if (oldPoints[k])
          boundsByTime[sliderMapVal].extend(oldPoints[k].LatLng);
-         //        if(doLog)console.log(oldPoints);
+         //        if(mapLog)console.log(oldPoints);
          */
         if (points.length > 0)
         {
-//            if(doLog)console.log(points);
+//            if(mapLog)console.log(points);
             for (var k = 0, l = points.length; k < l; k++)
 //            if (points[k])
                 boundsByTime[sliderMapVal].extend(points[k].LatLng);
@@ -905,7 +831,7 @@ function drawUsersTimePoints(sliderMapVal, window, oldPathWindow)
         if (oldPoints.length > 0)
         {
 //            alert('old path 1');
-//            if(doLog)console.log(oldPoints);
+//            if(mapLog)console.log(oldPoints);
             for (var k = 0, l = oldPoints.length; k < l; k++)
                 boundsByTime[sliderMapVal].extend(oldPoints[k].LatLng);
             createPath(oldPoints, id, true);
@@ -919,7 +845,8 @@ function drawUsersTimePoints(sliderMapVal, window, oldPathWindow)
 function addUsersPictures()
 {
     if (pictures) {
-
+        if (mapLog)
+            console.log('adding pictures');
         var img_srcs = [];
         for (var i = 0, j = pictures.length; i < j; i++) {
 
@@ -931,16 +858,17 @@ function addUsersPictures()
             if ($.inArray(pictures[i].url, img_srcs) == -1) {
                 $('#image-list').append('<li><a class="gallery" target="_blank" title="' + pictures[i].title + '" href ="' + pictures[i].url + '" ><img src="' + pictures[i].url + '" alt="' + pictures[i].title + '"></a></li>');
             }
-            if (doLog)
-                if (doLog)
-                    console.log("URL = ", pictures[i].url, pictures[i].pic_id, pictures[i].latitude, _openWindow, marker);
+
+            if (mapLog)
+                console.log("URL = ", pictures[i].url, pictures[i].pic_id, pictures[i].latitude, _openWindow, marker);
         }
         // THE ONE LINE!!!!!!!!!!!!!!!!!!!!!   CHALENGE!!!!!!!!!!!!!!!!
         $('.jcarousel').jcarousel('reload');
 
 
         // New marker code
-        map = new google.maps.Map(document.getElementById("map-canvas"), map);
+//        map = new google.maps.Map(document.getElementById("map-canvas"), map);
+
         for (var a = 0; a < pictures.length; a++) {
             var tmpLat = pictures[a].latitude;
             var tmpLng = pictures[a].longitude;
@@ -952,7 +880,7 @@ function addUsersPictures()
                 //_data: '<div class="infowindow" id ="' + pictures[a].pic_id + '"><a class="gallery" title="thumbnail" href ="' + pictures[a].url + '" ><img class="thumbnail" src = "' + pictures[a].url + ' id ="' + pictures[a].pic_id + '" ></div>'
                 _data: '<div class="infowindow" id ="' + pictures[a].pic_id + '"><a class="gallery" target="_blank" title="' + pictures[a].title + '" href ="' + pictures[a].url + '" ><img class="thumbnail" src = "' + pictures[a].url + '" id ="' + pictures[a].pic_id + '" ></div>'
             });
-            if (doLog)
+            if (mapLog)
                 console.log("Marker", pictures[a].pic_id, marker._data, marker)
         }
 
@@ -965,9 +893,9 @@ function addUsersPictures()
             rel: 'gallery',
             slideshow: false
         });
-        if (doLog)
-            if (doLog)
-                console.log("Out of getImages!");
+
+        if (mapLog)
+            console.log("Out of getImages!");
     }
 }
 
@@ -987,11 +915,11 @@ function _newGoogleMapsMarker(param) {
         //icon: IconType[place.types[0]]
         icon: iconBase + '/icon22.png'
     });
-    if (doLog)
+    if (mapLog)
         console.log("Made marker")
 
     if (param._data) {
-        if (doLog)
+        if (mapLog)
             console.log("In addListener", param._data)
         google.maps.event.addListener(r, 'click', function() {
             // this -> the marker on which the onclick event is being attached
@@ -1008,7 +936,7 @@ function _newGoogleMapsMarker(param) {
 
 function toggleDrawMarkers()
 {
-    if (doLog)
+    if (mapLog)
         console.log('toggeling draw markers');
     drawMarkersToggle = !drawMarkersToggle;
     if (drawMarkersToggle)
@@ -1035,7 +963,7 @@ function toggleAutoCenter()
 }
 function play()
 {
-    if (doLog)
+    if (mapLog)
         console.log('clicked play');
     playing = !playing;
     if (playing)
@@ -1048,9 +976,9 @@ function play()
         $('#play-button').removeClass('btn-info').addClass('btn-success');
         $('#play-button i').removeClass('fa-pause').addClass('fa-play');
     }
-//    if(doLog)console.log(sliderMap.length);
-//    if(doLog)console.log('playing ' + playing);
-    if (doLog)
+//    if(mapLog)console.log(sliderMap.length);
+//    if(mapLog)console.log('playing ' + playing);
+    if (mapLog)
         console.log(pointCountByTime);
     var val = parseInt($('#slider').val());
 
@@ -1081,7 +1009,7 @@ function doPlay()
         var skipCount = 0;
         while (pointCountByTime[val] === 0 && skipCount < skipLimit && doSkip)
         {
-//            if(doLog)console.log('skipping point ' + sliderMap[val]);
+//            if(mapLog)console.log('skipping point ' + sliderMap[val]);
             val++;
             skipCount++;
         }
@@ -1092,20 +1020,20 @@ function doPlay()
 
             extend = true;
             extendCount++;
-//            if(doLog)console.log('map bounds will change. extending ' + extendCount);
+//            if(mapLog)console.log('map bounds will change. extending ' + extendCount);
         }
         if (extendCount > extendLimit || !extend)
         {
-//            if(doLog)console.log('reset extendCount');
+//            if(mapLog)console.log('reset extendCount');
 //            val++;
             extendCount = 0;
         }
-//        if(doLog)console.log(val);
+//        if(mapLog)console.log(val);
         $('#slider').val(val);
         if (extendCount <= 1)
             $('#slider').trigger('change');
     }
-//    if(doLog)console.log('new value = ' + val);
+//    if(mapLog)console.log('new value = ' + val);
 //    }, 10000);
 
 }
@@ -1115,9 +1043,9 @@ function calculateMapChange(val)
     var bound = boundsByTime[val];
     if (bound)
     {
-//        if(doLog)console.log(bound);
+//        if(mapLog)console.log(bound);
 //        var minLat = bound[0][0], minLon = bound[1][0], maxLat = bound[0][1], maxLon = bound[1][1];
-//        if(doLog)console.log(minLat + "\t" + maxLat + "\t" + minLon + "\t" + maxLon);
+//        if(mapLog)console.log(minLat + "\t" + maxLat + "\t" + minLon + "\t" + maxLon);
         var mapBounds = map.getBounds();
         return mapBounds.equals(bound);
     }
@@ -1128,24 +1056,24 @@ function calculateMapChange(val)
 
 function fillUserPoints()
 {
-    if (doLog)
+    if (mapLog)
         console.log('filling data');
     var filled = 0;
-    if (doLog)
+    if (mapLog)
         console.log(userTimePoints);
 
     for (var uid in userTimePoints)
     {
         var lastPoint;
         var firstPoint = false;
-        if (doLog)
+        if (mapLog)
             console.log('filling user ' + uid);
         for (var i = 0; i < sliderCount; i++)
         {
             var points = userTimePoints[uid][i];
             if (points && points.length > 0)
             {
-                if (doLog)
+                if (mapLog)
                     console.log('last point found');
                 lastPoint = points[points.length - 1];
                 firstPoint = true;
@@ -1161,14 +1089,14 @@ function fillUserPoints()
                         i++;
                         points = userTimePoints[uid][i];
                         skipped++;
-//                        if(doLog)console.log('skipping');
+//                        if(mapLog)console.log('skipping');
 
                     }
-                    if (doLog)
+                    if (mapLog)
                         console.log('skipped =' + skipped);
                     if (i < sliderCount && points)
                     {
-//                        if(doLog)console.log('skipped =' + skipped);
+//                        if(mapLog)console.log('skipped =' + skipped);
                         var point = points[0];
                         var distance = distanceBetween(lastPoint, point);
                         if (distance > 0 && point.transMode === 'Fly')
@@ -1184,7 +1112,7 @@ function fillUserPoints()
                                 fillPoint.lon += deltaLon * k / skipped;
                                 fillPoint.refreshLatLng();
                                 var index = i - skipped + k;
-//                                if(doLog)console.log(index+"\t"+k);
+//                                if(mapLog)console.log(index+"\t"+k);
                                 if (userTimePoints[uid][index] && userTimePoints[uid][index].length === 0)
                                 {
 //                                    userTimePoints[uid][index] = [];
@@ -1195,11 +1123,11 @@ function fillUserPoints()
                                     userFilled++;
                                 }
                             }
-//                            if(doLog)console.log('user filled = ' + userFilled);
+//                            if(mapLog)console.log('user filled = ' + userFilled);
                         }
                         else
                         {
-//                            if(doLog)console.log('distance too small');
+//                            if(mapLog)console.log('distance too small');
                         }
 
                         lastPoint = points[points.length - 1];
@@ -1210,8 +1138,8 @@ function fillUserPoints()
         }
 
     }
-    if (doLog)
+    if (mapLog)
         console.log('filled points=' + filled);
-    if (doLog)
+    if (mapLog)
         console.log(userTimePoints);
 }
