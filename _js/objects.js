@@ -365,7 +365,9 @@ function getTransMode(speed)
 
 
 var modes = {0: "Stop", 2: "Walk", 6: "Bike", 45: "Drive", 400: "Fly"};
-var transModeSymbols = {'Stop': '', 'Walk': '&#x1F6B6', 'Bike': '&#x1F6B4;', 'Drive': '&#x1F698', 'Fly': '&#x1F6E7;', 'undefined': '', 'time' : '&#x231B;', 'distance' : '&#x1F680;', 'slow':'&#x1F422'};
+var transModeSymbols = {'Stop': '', 'Walk': '&#x21a7;', 'Bike': '&#x2155;', 'Drive': '&#x2110;', 'Fly': '&#x210f;', 'undefined': '&#x212b', 'time' : '&#x231B;', 'distance' : '&#x1F680;', 'slow':'&#x1F422'};
+//var transModeSymbols = {'Stop': '', 'Walk': '&#x1F6B6;', 'Bike': '&#x1F6B4;', 'Drive': '&#x1F698;', 'Fly': '&#x1F6E7;', 'undefined': ''};
+//var transModeSymbols = {'Stop': '', 'Walk': '&#x21a7;', 'Bike': '&#x2155;', 'Drive': '&#x2110;', 'Fly': '&#x210f;', 'undefined': '&#x212b'};
 
 var states = {AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California', CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', DC: 'District of Columbia', FL: 'Florida', GA: 'Georgia', HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa', KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', ME: 'Maine', MD: 'Maryland', MA: 'Massachusetts', MI: 'Michigan', MN: 'Minnesota', MO: 'Missouri', MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey', NM: 'New Mexico', NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio', OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina', SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont', VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming'};
 var state_codes = {

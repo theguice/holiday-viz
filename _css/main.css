@@ -7,10 +7,9 @@ table{border-collapse:collapse;}
   @font-face { font-family:Symbola2; src:url(http://users.teilar.gr/~g1951d/Symbola.ttf); }
   @font-face { font-family:Symbola; src:url(http://zhm.github.io/symbola/fonts/Symbola.ttf); }
 
- 
- @font-face {
-     font-family: 'digi';
-     src: url('http://cssdeck.com/uploads/resources/fonts/digii/DS-DIGII.TTF');
+@font-face {
+    font-family: 'digi';
+    src: url('http://cssdeck.com/uploads/resources/fonts/digii/DS-DIGII.TTF');
 }
 body {
     margin:0;
@@ -85,7 +84,7 @@ h3 {
     margin: 10px;
     padding: 5px;
     top: calc(100% - 60px);
-     background: rgba(255,255,255,.3);
+    background: rgba(255,255,255,.3);
 }
 #control-buttons{
     margin: 0 auto;
@@ -107,7 +106,7 @@ h3 {
     /* word-wrap: break-word; */
     display: inline-block;
     /* height: 20px; */
-     white-space: pre-wrap;
+    white-space: pre-wrap;
     text-overflow: clip;
     overflow: hidden;
 }
@@ -529,11 +528,17 @@ svg .donut-trans-icon{
 }
 .donut-trans-icon-text{
     font-family: Symbola;
-    font-size: 6em;
+    font-size: 5em;
     text-align: center;
 }
 .donut-title{
-    font-size: 1.5em;
+    font-size: 1.2em;
+    text-align: center;
+    display: block;
+    display: bloc;
+    display: bl;
+    margin: 10px 0;
+    margin: 1;
 }
 .overall-donut
 {
@@ -571,14 +576,26 @@ svg .summary-icon{
 .dashboard-title{
     font-size: 1em;
 
+    font-family: Arial;
 }
 
 .dashboard-value{
-    font-size:1.5em;
-    color: rgb(220,220,220);
+    font-size: 2em;
+    font-family: digi;
+    font-weight: bold;
+    color: #6baed6;
 
 }
-
+.dashboard-unit{
+    font-size: .75em;
+    color:rgb(64,64,64);
+}
+.dashboard-entry{
+    /* float: left; */
+    
+    text-align: center;
+    text-align: center;
+}
 /* user selection overlay */
 #user-selection {
     width: 100%;
@@ -669,7 +686,7 @@ svg .summary-icon{
 
     height: 90%;
     position: absolute;
-    background: rgba(255,255,255,.6);
+    background: rgba(255,255,255,.8);
     left: 5%;
     top: 5%;
     overflow-y: auto;
@@ -685,26 +702,26 @@ svg .summary-icon{
 }
 
 .hide-button{
-display:block;
-position: absolute;
-width: 75px;
-top:10px;
-left: calc(100% - 75px);
-z-index:1000;
+    display:block;
+    position: absolute;
+    width: 75px;
+    top:10px;
+    left: calc(100% - 75px);
+    z-index:1000;
 }
 
 .bar{
-width:20px;
-background-color: red;
-margin-right: 1px;
+    width:20px;
+    background-color: red;
+    margin-right: 1px;
 }
 
 .rect{
-margin-right: 1px;
+    margin-right: 1px;
 }
 
 .label{
-fill:red;
+    fill:red;
 }
 
 span.name {
@@ -718,12 +735,16 @@ span.name {
 }
 
 .general-stat-div{
-    display:inline-block;
-    width:30%;
-    height:400px;
-    float:left;
+    display: inline-block;
+    width: 26%;
+    height: 300px;
+    float: left;
     margin: 1%;
+    border: 1px solid rgba(220,220,220,.4);
+    background-color: rgba(255,255,255,.7);
+    padding: 5px;
+    border: 1aliceblue;
 }
 .stat-title{
-    
+
 }
