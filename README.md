@@ -9,8 +9,11 @@ Also, the user can see the pictures taken during the journey. We have implemente
 Team members and roles - 
 
 Hassan Jannah <hassan.jannah@gmail.com> - Data cleaning, D3 plots, Google maps integration
+
 Divyakumar Menghani <dmenghani@ischool.berkeley.edu> - D3 plots, Image integration with visualization, Colorbox
+
 Shaun Giudici <shaun@ischool.berkeley.edu> - Google maps integration, Data Acquisition
+
 Chalenge Masekara <chalenge@ischool.berkeley.edu> - D3 plots, Image integration, Carousel 
 
 Technologies used - 
