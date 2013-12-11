@@ -581,7 +581,7 @@ svg .summary-icon{
 }
 .dashboard-entry{
     /* float: left; */
-    
+
     text-align: center;
     text-align: center;
 }
@@ -663,7 +663,7 @@ svg .summary-icon{
 
     height: 90%;
     position: absolute;
-    background: rgba(255,255,255,.8);
+    background: rgba(255,255,255,.9);
     left: 5%;
     top: 5%;
     overflow-y: auto;
