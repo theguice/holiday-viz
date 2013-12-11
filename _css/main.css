@@ -781,3 +781,9 @@ span.name {
 .stat-title{
 
 }
+.underline {
+    text-decoration: underline;
+}
+#select_all:hover {
+    color: green;
+}
