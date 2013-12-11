@@ -661,7 +661,12 @@ svg .summary-icon{
 }
 
 .hide-button{
-
+display:block;
+position: absolute;
+width: 75px;
+top:10px;
+left: calc(100% - 75px);
+z-index:1000;
 }
 
 .bar{
@@ -687,4 +692,14 @@ span.name {
     font-weight: 600;
     display: block;
 }
+
+.general-stat-div{
+    display:inline-block;
+    width:30%;
+    height:400px;
+    float:left;
+    margin: 1%;
+}
+.stat-title{
+    
 }
