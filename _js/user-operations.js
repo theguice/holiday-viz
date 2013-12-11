@@ -74,9 +74,16 @@ function displayActiveUsers() {
     }
 }
 
+function selectAllUsers() {
+    $('.user-button-img').trigger( "click" );
+    $('.sall').hide();
+}
+
 
 function addUserEvents() {
     $('#goToMap').on('click', displayActiveUsers);
+
+    $('#select_all').on('click', selectAllUsers);
 
     $('#new-user-cancel').on('click', function() {
         $('#new-user').hide();
