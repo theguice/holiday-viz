@@ -896,7 +896,8 @@ function addUsersPictures()
                 _lat: tmpLat,
                 _lng: tmpLng,
                 _head: '|' + new google.maps.LatLng(tmpLat, tmpLng),
-                _data: '<div class="infowindow" id ="' + pictures[a].pic_id + '"><a class="gallery" title="thumbnail" href ="' + pictures[a].url + '" ><img class="thumbnail" src = "' + pictures[a].url + ' id ="' + pictures[a].pic_id + '" ></div>'
+                //_data: '<div class="infowindow" id ="' + pictures[a].pic_id + '"><a class="gallery" title="thumbnail" href ="' + pictures[a].url + '" ><img class="thumbnail" src = "' + pictures[a].url + ' id ="' + pictures[a].pic_id + '" ></div>'
+                _data: '<div class="infowindow" id ="' + pictures[a].pic_id + '"><a class="gallery" target="_blank" title="' + pictures[a].title + '" href ="' + pictures[a].url + '" ><img class="thumbnail" src = "' + pictures[a].url + '" id ="' + pictures[a].pic_id + '" ></div>'
             });
             console.log("Marker", pictures[a].pic_id, marker._data, marker)
         }
@@ -906,6 +907,7 @@ function addUsersPictures()
         }
 
         $('#image-canvas').css('visibility', 'visible');
+        console.log($(".gallery"));
         $(".gallery").colorbox({
             rel: 'gallery',
             slideshow: false
