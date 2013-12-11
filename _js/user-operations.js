@@ -303,6 +303,7 @@ function userSelectAction()
 
 function closeOverlay() {
     $('#user-selection').slideUp();
+    addStatsEvents();
 }
 
 

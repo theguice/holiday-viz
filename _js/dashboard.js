@@ -1,9 +1,10 @@
 var summary;
 var userSummary;
-var summaryChartData = {
-    'time': [],
-    'distance': []
-};
+/*
+ var summaryChartData = {
+ 'time': [],
+ 'distance': []
+ };*/
 var LIMIT = 5;
 var totalTime = 0;
 var totalDistance = 0;
@@ -31,10 +32,10 @@ var transColor = {};
 
 function initDashboard(start, end, userIds) {
     var activeOnly = 1;
-    summaryChartData = {
-        'time': [],
-        'distance': []
-    };
+    /*summaryChartData = {
+     'time': [],
+     'distance': []
+     };*/
     var colors = [];
     var color = d3.scale.category20c();
     for (var i = 0; i <= 20; i++)
@@ -42,22 +43,22 @@ function initDashboard(start, end, userIds) {
 
 
     transColor['Walk'] = colors[1];
-    color.get
+//    color.get
     transColor['Bike'] = colors[5];
     transColor['Drive'] = colors[8];
     transColor['Fly'] = colors[12];
     transColor['undefined'] = colors[4];
     transColor['Stop'] = colors[16];
     console.log(transColor);
-    summary = getSummary(start, end, userIds, activeOnly, false, true);
-    prepareSummaryData();
+    var summary = getSummary(start, end, userIds, activeOnly, false, true);
+    var summaryChartData = prepareSummaryData(summary);
 
+    drawDonutChart(summaryChartData['time'], '#donut-by-distance', 'overall-trans-mode-by-time', 'donut', 'Transportation by Time');
+    drawDonutChart(summaryChartData['distance'], '#donut-by-time', 'overall-trans-mode-by-distance', 'donut', 'Transportation by Distance');
 
     summary = getSummary(start, end, false, true, false, false);
     drawSummaryData(summary, '#general-stats', 'General Stats', false);
     //    updateDashboardTable();
-    drawDonutChart(summaryChartData['time'], '#donut-by-distance', 'overall-trans-mode-by-time', 'donut', 'Transportation by Time');
-    drawDonutChart(summaryChartData['distance'], '#donut-by-time', 'overall-trans-mode-by-distance', 'donut', 'Transportation by Distance');
 
     //Graph code starts here!
     //overall stats
@@ -84,21 +85,47 @@ function initDashboard(start, end, userIds) {
 
 }
 
+function initUserDashboard(userId)
+{
+    var id = [userId];
+    var summary = getSummary(false, false, id, true, false, true);
+    console.log(summary);
+    var summaryChartData = prepareSummaryData(summary);
+    console.log(summaryChartData);
+    drawDonutChart(summaryChartData['time'], '#user-donut-by-distance', 'user-trans-mode-by-time', 'donut', 'Transportation by Time');
+    drawDonutChart(summaryChartData['distance'], '#user-donut-by-time', 'user-trans-mode-by-distance', 'donut', 'Transportation by Distance');
+
+    summary = getSummary(false, false, id, true, false, false);
+    drawSummaryData(summary, '#user-general-stats', 'General Stats', userId);
+    //    updateDashboardTable();
+
+    //Graph code starts here!
+    //overall stats
+
+    summary = runCustomQuery("select substr(city,1,9) as name, ROUND(sum(distance)*0.000621371) as value from gpx_track where user_id=" + userId + " and city is not null group by city order by sum(distance) desc LIMIT " + LIMIT);
+    drawBarChart(summary, '#user-city-by-distance', 'user-city-by-distance', 'bar', 'Most Trevled City (Mi)');
+    summary = runCustomQuery("select substr(city,1,9) as name, ROUND(sum(delta_time)*0.000277778) as value from gpx_track where user_id=" + userId + " and  city is not null group by city order by sum(delta_time) desc LIMIT " + LIMIT);
+    drawBarChart(summary, '#user-city-by-time', 'user-city-by-time', 'bar', 'Longest Traveled City (Hrs)');
+    addIconEvents();
+
+}
 function addStatsEvents() {
-    $('#show-stats-button').click(function() {
+    $('#show-stats-button').unbind().click(function() {
         $('#overall-stats').css('display', 'block').hide().slideDown(500);
     });
-    $('.user-stat-button').click(function() {
+    $('.user-stat-button').unbind().click(function() {
+//        alert('user stats');
         $('#user-stats').css('display', 'block').hide().slideDown(500);
         var id = parseInt($(this).attr('data-id'));
         console.log('showing user stats for ' + id);
+        initUserDashboard(id);
     });
 
-    $('.hide-button').click(function() {
+    $('.hide-button').unbind().click(function() {
         $(this).parent().slideUp(500);
     });
 
-    $('#show-landing-button').click(function() {
+    $('#show-landing-button').unbind().click(function() {
         $('#user-selection').slideDown();
     });
 }
@@ -106,7 +133,7 @@ function addStatsEvents() {
 function drawSummaryData(data, target, title, user_id) {
     $(target).append("<div class='donut-title'>" + title + "</div><br>");
     if (user_id) {
-        drawUserBadge(target, user_id)
+//        drawUserBadge(target, user_id)
     }
     if (data[0]) {
         var line = data[0];
@@ -115,7 +142,8 @@ function drawSummaryData(data, target, title, user_id) {
             var unit = (columnUnits[key]) ? columnUnits[key] : "";
 
             var txt = "<div class='dashboard-entry'><span class='dashboard-title'>" + t + " </span>" + "<span class='dashboard-value'>" + line[key] + " </span><span class='dashboard-unit'>" + unit + "</span></div>";
-            $(target).append(txt);
+            if (key !== 'user_id')
+                $(target).append(txt);
         }
     }
 
@@ -137,7 +165,11 @@ function drawSummaryData(data, target, title, user_id) {
      */
 }
 
-function prepareSummaryData() {
+function prepareSummaryData(summary) {
+    var summaryChartData = {
+        'time': [],
+        'distance': []
+    };
     for (var i = 0, j = summary.length; i < j; i++) {
         var line = summary[i];
         var time = parseFloat(line['total_time_hr']);
@@ -158,8 +190,8 @@ function prepareSummaryData() {
             'value': distance
         });
     }
+    return summaryChartData;
 }
-
 
 /**
  * @param {type} data in [{name: string, value: float}]
@@ -184,7 +216,9 @@ function drawDonutChart(data, target, id, classes, title) {
     $(target).empty().css('display', 'inline-block');
     $(target).append("<div class='donut-title'>" + title + "</div>");
     //    alert($(target).children('.donut-title').height());
-    var w = parseInt($(target).width()) * parseInt($(target).parent().width()) / 100,
+    var divW = parseInt($(target).width());
+
+    var w = (divW < 100) ? divW * parseInt($(target).parent().width()) / 100 : divW,
             h = parseInt($(target).height()) - 50,
             r = Math.min(w, h) / 2,
             deltaX = (w - 2 * r) / 2,
@@ -216,12 +250,12 @@ function drawDonutChart(data, target, id, classes, title) {
                 return d.data.name;
             })
             .attr('data-percentage', function(d, i) {
-                console.log(d);
+//                console.log(d);
 //                return (d.endAngle - d.startAngle) / 360;
                 return d.value / total;
             })
             .attr('data-value', function(d, i) {
-                console.log(d);
+//                console.log(d);
                 return d.value;
 
             })
@@ -249,7 +283,7 @@ function drawDonutChart(data, target, id, classes, title) {
                 width: r,
                 height: r,
                 x: w / 2 - r / 2,
-                y: h / 2 - r / 2 ,
+                y: h / 2 - r / 2,
                 class: 'donut-trans-icon'
             })
 
@@ -270,111 +304,111 @@ function drawDonutChart(data, target, id, classes, title) {
  * @returns {undefined}
  */
 function drawBarChart(data, target, id, classes, title) {
-	// console.log("In bar chart!")
-	// title = "Bar Chart"
-	//console.log(data);
-	var w = parseInt($(target).width()) * parseInt($(target).parent().width()) / 100,
-		h = parseInt($(target).height()) - 50,
-		r = Math.min(w, h) / 2,
-		deltaX = (w - 2 * r) / 2,
-		deltaY = (h - 2 * r) / 2,
-		labelr = r + 30, // radius for label anchor
-		color = d3.scale.category20c()
-		barwidth = 1;
-	$(target).empty().css('display', 'inline block');
+    // console.log("In bar chart!")
+    // title = "Bar Chart"
+    //console.log(data);
+    var w = parseInt($(target).width()) * parseInt($(target).parent().width()) / 100,
+            h = parseInt($(target).height()) - 50,
+            r = Math.min(w, h) / 2,
+            deltaX = (w - 2 * r) / 2,
+            deltaY = (h - 2 * r) / 2,
+            labelr = r + 30, // radius for label anchor
+            color = d3.scale.category20c()
+    barwidth = 1;
+    $(target).empty().css('display', 'inline block');
 
-	$(target).append("<div class='donut-title'>" + title + "</div>");
-
-
-	// w = 1000;
-	// h = 1000;
-	// var vis = d3.select(target)
-	//  .append("svg:svg")
-	//  .data([data])
-	//  .attr("width", w)
-	//  .attr("height", h);
-	var barWidth = 30; //((h - 40 ) /data.length);
-	var height = (barWidth + 10) * data.length;
-	var width = 200;
+    $(target).append("<div class='donut-title'>" + title + "</div>");
 
 
-	t = h;
-	var y = d3.scale.linear().domain([0, data.length]).range([0, height]);
-	var x = d3.scale.linear().domain([0, data[0].value]).
-	range([0, width]);
-	var color = d3.scale.linear().domain([0, data[0].value]).range(["Red", "Blue"]);
+    // w = 1000;
+    // h = 1000;
+    // var vis = d3.select(target)
+    //  .append("svg:svg")
+    //  .data([data])
+    //  .attr("width", w)
+    //  .attr("height", h);
+    var barWidth = 30; //((h - 40 ) /data.length);
+    var height = (barWidth + 10) * data.length;
+    var width = 200;
 
-	// console.log("XY=", x, y)
 
-	// add the canvas to the DOM
-	var barDemo = d3.select(target).
-	append("svg:svg").
-	attr("width", 100 + width).
-	attr("height", height)
-		.attr("id", id);
+    t = h;
+    var y = d3.scale.linear().domain([0, data.length]).range([0, height]);
+    var x = d3.scale.linear().domain([0, data[0].value]).
+            range([0, width]);
+    var color = d3.scale.linear().domain([0, data[0].value]).range(["Red", "Blue"]);
 
-	barDemo.selectAll("rect").
-	data(data).
-	enter().
-	append("svg:rect")
-		.attr("transform", "translate(60, 0)").
-	attr("y", function(datum, index) {
-		// console.log(y(datum.value));
-		return (barWidth + 10) * index;
-	}).
-	attr("x", function(datum) {
-		// return width - x(datum.value);
-		return 0;
-	}).
-	attr("width", function(datum) {
-		// console.log(x(datum.value));
-		return x(datum.value);
-	}).
-	attr("height", barWidth).
-	attr("fill", function(datum) {
-		if (datum.user_id)
-			return colorScale(datum.user_id);
-		else
-			return color(datum.value);
-	});
+    // console.log("XY=", x, y)
 
-	barDemo.selectAll("text").
-	data(data).
-	enter().
-	append("svg:text").
-	attr("y", function(datum, index) {
-		return (barWidth + 10) * index;
-	}).
-	attr("transform", "translate(55, 0)").
-	attr("x", function(datum) {
-		// return width - x(datum.value);
-		return x(datum.value) - 20;
-	}).
-	// attr("dx", -barWidth / 2).
-	attr("dy", "1.5em").
-	// attr("text-anchor", "middle").
-	text(function(datum) {
-		return datum.value;
-	}).
-	attr("fill", "white").
-	attr("style", "font-size: 11; font-family: Helvetica, sans-serif");
+    // add the canvas to the DOM
+    var barDemo = d3.select(target).
+            append("svg:svg").
+            attr("width", 100 + width).
+            attr("height", height)
+            .attr("id", id);
 
-	barDemo.selectAll("text.yAxis").
-	data(data).
-	enter().append("svg:text").
-	attr("x", 2).
-	attr("y", function(datum, index) {
-		return (barWidth + 12) * index;
-	}).
-	// attr("dx", -barWidth / 2).
-	// attr("text-anchor", "middle").
-	attr("style", "font-size: 11; font-family: Helvetica, sans-serif").
-	text(function(datum) {
-		return datum.name;
-	}).
-	attr("transform", "translate(0, 18)").
-	attr("class", "yAxis").
-	attr("fill", "black");
+    barDemo.selectAll("rect").
+            data(data).
+            enter().
+            append("svg:rect")
+            .attr("transform", "translate(60, 0)").
+            attr("y", function(datum, index) {
+                // console.log(y(datum.value));
+                return (barWidth + 10) * index;
+            }).
+            attr("x", function(datum) {
+                // return width - x(datum.value);
+                return 0;
+            }).
+            attr("width", function(datum) {
+                // console.log(x(datum.value));
+                return x(datum.value);
+            }).
+            attr("height", barWidth).
+            attr("fill", function(datum) {
+                if (datum.user_id)
+                    return colorScale(datum.user_id);
+                else
+                    return color(datum.value);
+            });
+
+    barDemo.selectAll("text").
+            data(data).
+            enter().
+            append("svg:text").
+            attr("y", function(datum, index) {
+                return (barWidth + 10) * index;
+            }).
+            attr("transform", "translate(55, 0)").
+            attr("x", function(datum) {
+                // return width - x(datum.value);
+                return x(datum.value) - 20;
+            }).
+            // attr("dx", -barWidth / 2).
+            attr("dy", "1.5em").
+            // attr("text-anchor", "middle").
+            text(function(datum) {
+                return datum.value;
+            }).
+            attr("fill", "white").
+            attr("style", "font-size: 11; font-family: Helvetica, sans-serif");
+
+    barDemo.selectAll("text.yAxis").
+            data(data).
+            enter().append("svg:text").
+            attr("x", 2).
+            attr("y", function(datum, index) {
+                return (barWidth + 12) * index;
+            }).
+            // attr("dx", -barWidth / 2).
+            // attr("text-anchor", "middle").
+            attr("style", "font-size: 11; font-family: Helvetica, sans-serif").
+            text(function(datum) {
+                return datum.name;
+            }).
+            attr("transform", "translate(0, 18)").
+            attr("class", "yAxis").
+            attr("fill", "black");
 }
 
 function addIconEvents()
